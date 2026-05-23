@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>HUMN Labs — The Human Layer of the AI Internet</title>
+    <meta name="description" content="HUMN Labs explores the future of human verification, AI trust systems, reputation infrastructure, and human-first identity in the AI-dominated internet.">
+    
+    <!-- Open Graph for Premium Link Sharing -->
+    <meta property="og:title" content="HUMN Labs — The Human Layer of the AI Internet">
+    <meta property="og:description" content="Verifying humanity, trust, and reputation in the age of synthetic intelligence.">
+    <meta property="og:type" content="website">
+
+    <!-- Premium Google Fonts: Outfit (Futuristic & Geometric) + Inter (Clean & Minimal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient Interactive Canvas Background -->
+    <canvas id="canvas-bg"></canvas>
+    
+    <!-- Ambient glowing light sources for cinematic background -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="header-container">
+            <a href="#" class="logo-link" id="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" stroke-dasharray="8 8"/>
+                        <path d="M50 25V75M25 50H75" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="12" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="logo-text">HUMN <span class="thin">LABS</span></span>
+            </a>
+            
+            <nav class="main-nav">
+                <a href="#layer" class="nav-link">The Layer</a>
+                <a href="#why" class="nav-link">Why Trust</a>
+                <a href="#dashboard" class="nav-link">Technology</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="#waitlist" class="btn-primary-mini">Enter Layer</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <!-- HERO SECTION -->
+        <section class="hero-section" id="hero">
+            <div class="hero-content">
+                <div class="badge reveal-fade">
+                    <span class="badge-dot"></span>
+                    <span class="badge-text">SECURE IDENTITY ENVIRONMENT v1.0</span>
+                </div>
+                
+                <h1 class="hero-title reveal-slide">
+                    ARE YOU HUMAN?
+                </h1>
+                
+                <p class="hero-subtitle reveal-fade">
+                    The internet no longer knows who is real.
+                </p>
+                
+                <div class="hero-actions reveal-fade">
+                    <a href="#waitlist" class="btn-primary">
+                        <span>Enter HUMN Layer</span>
+                        <i class="fa-solid fa-chevron-right icon-slide"></i>
+                    </a>
+                    <a href="#waitlist" class="btn-secondary">
+                        <span>Join Waitlist</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="scroll-indicator">
+                <span class="mouse-icon">
+                    <span class="mouse-wheel"></span>
+                </span>
+                <span class="scroll-text">EXPLORE HUMN</span>
+            </div>
+        </section>
+
+        <!-- SECOND SECTION: The Human Layer -->
+        <section class="features-section" id="layer">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="tag">01 / ARCHITECTURE</div>
+                    <h2 class="section-title">The Human Layer of the AI Internet</h2>
+                    <p class="section-desc">HUMN Labs is developing the trust framework required to safeguard and verify genuine human interaction in a synthetically generated world.</p>
+                </div>
+                
+                <div class="grid-layout cols-4">
+                    <!-- Card 1 -->
+                    <div class="feature-card glass-panel reveal-fade">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                        </div>
+                        <h3>Human Verification</h3>
+                        <p>Sophisticated zero-knowledge biometrics that prove you are real without harvesting your private data.</p>
+                    </div>
+                    
+                    <!-- Card 2 -->
+                    <div class="feature-card glass-panel reveal-fade">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94-3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                            </svg>
+                        </div>
+                        <h3>AI Trust Systems</h3>
+                        <p>Continuous verification dynamic handshakes between agents, APIs, and real humans to prevent malicious spoofing.</p>
+                    </div>
+                    
+                    <!-- Card 3 -->
+                    <div class="feature-card glass-panel reveal-fade">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h18" />
+                            </svg>
+                        </div>
+                        <h3>Reputation Infrastructure</h3>
+                        <p>Decentralized identity points tracking long-term authentic web history without tying it to direct physical passports.</p>
+                    </div>
+                    
+                    <!-- Card 4 -->
+                    <div class="feature-card glass-panel reveal-fade">
+                        <div class="card-glow"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <h3>Human-First Identity</h3>
+                        <p>Restoring agency to the user. Own your voice, protect your digital twin, and dictate who gets access to your intelligence.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- THIRD SECTION: Why This Matters -->
+        <section class="importance-section" id="why">
+            <div class="section-container">
+                <div class="section-header-centered">
+                    <div class="tag">02 / NARRATIVE</div>
+                    <h2 class="section-title">Why This Matters</h2>
+                    <p class="section-desc">The digital environment is crossing an irreversible tipping point.</p>
+                </div>
+                
+                <div class="grid-layout cols-2-large gap-md">
+                    <!-- Narrative Box 1 -->
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">01</div>
+                        <h3>AI agents are growing rapidly</h3>
+                        <p>Within years, over 90% of the active traffic, transactions, and content creation on the internet will be managed or generated by autonomous AI agents, bypassing traditional interfaces entirely.</p>
+                    </div>
+                    
+                    <!-- Narrative Box 2 -->
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">02</div>
+                        <h3>Bots & synthetic identities are increasing</h3>
+                        <p>Social manipulation, deepfaked voices, video feeds, and synthetic web profiles have democratized spoofing. Distinguishing between genuine thought and computed synthesis has become impossible manually.</p>
+                    </div>
+                    
+                    <!-- Narrative Box 3 -->
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">03</div>
+                        <h3>Trust on the internet is breaking</h3>
+                        <p>Without a reliable, immutable, yet privacy-preserving trust protocol, secure financial agreements, intellectual property ownership, and organic online communities will collapse under the weight of noise.</p>
+                    </div>
+                    
+                    <!-- Narrative Box 4 -->
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">04</div>
+                        <h3>Human verification is essential</h3>
+                        <p>Protecting humans is not about limiting AI—it is about carving out a safe, validated layer where human connection, value transaction, and digital citizenship can remain fully trusted.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOURTH SECTION: Building the Future of Human Trust (Technology Showroom) -->
+        <section class="tech-section" id="dashboard">
+            <div class="section-container">
+                <div class="grid-layout cols-2-unequal">
+                    <div class="tech-info reveal-fade">
+                        <div class="tag">03 / ENGINE</div>
+                        <h2 class="section-title-left">Building the Future of Human Trust</h2>
+                        <p class="section-desc-left">We are building high-throughput verification nodes, real-time trust telemetry, and zero-knowledge human indicators that integrate seamlessly with modern web browsers, servers, and communication APIs.</p>
+                        
+                        <ul class="tech-bullets">
+                            <li>
+                                <div class="bullet-icon"><i class="fa-solid fa-shield"></i></div>
+                                <div>
+                                    <h4>AI vs Human Detection</h4>
+                                    <p>Passive biometric signals and behavior entropy analysis to isolate synthetic actors from humans instantly.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="bullet-icon"><i class="fa-solid fa-network-wired"></i></div>
+                                <div>
+                                    <h4>Reputation Systems</h4>
+                                    <p>Decentralized reputation ledgers built to trace human identity history without collecting or compromising offline data.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="bullet-icon"><i class="fa-solid fa-bolt"></i></div>
+                                <div>
+                                    <h4>Dynamic Trust Scoring</h4>
+                                    <p>Real-time trust metrics recalculating on-the-fly to authenticate human verification streams.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="bullet-icon"><i class="fa-solid fa-dna"></i></div>
+                                <div>
+                                    <h4>Verification Infrastructure</h4>
+                                    <p>Robust SDKs and developer protocols engineered to shield APIs, financial rails, and social hubs.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Futuristic UI Dashboard Mockup -->
+                    <div class="tech-mockup reveal-fade">
+                        <div class="mockup-frame glass-panel">
+                            <div class="mockup-header">
+                                <div class="mockup-dots">
+                                    <span class="dot red"></span>
+                                    <span class="dot yellow"></span>
+                                    <span class="dot green"></span>
+                                </div>
+                                <div class="mockup-address">
+                                    <i class="fa-solid fa-lock"></i> node-092.humn.layer/verify
+                                </div>
+                                <div class="mockup-status">
+                                    <span class="pulse-dot"></span> LIVE
+                                </div>
+                            </div>
+                            
+                            <div class="mockup-body">
+                                <div class="scanner-block">
+                                    <div class="scanner-header">
+                                        <span>ACTIVE TELEMETRY SCANNER</span>
+                                        <span id="scan-node-id" class="code-font">NODE_ID: HMN-7281-X</span>
+                                    </div>
+                                    <div class="scanner-screen">
+                                        <div class="scan-bar"></div>
+                                        <div class="scan-grid"></div>
+                                        <div class="scan-target">
+                                            <svg viewBox="0 0 100 100" fill="none" class="biometric-fingerprint">
+                                                <path d="M50 15C32 15 20 28 20 45C20 48 21 51 22 54" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                                <path d="M30 25C22 30 18 38 18 48C18 55 20 62 25 68" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                                <path d="M50 5C22 5 5 22 5 50C5 60 8 70 14 78" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1.5"/>
+                                                <path d="M50 25C60 25 70 33 70 45C70 55 60 65 50 65C40 65 30 55 30 45" stroke="currentColor" stroke-width="2"/>
+                                                <path d="M40 35C45 32 55 32 60 35C65 38 68 45 68 50C68 58 60 68 50 68C40 68 35 58 35 50" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                <path d="M50 40V50" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                            </svg>
+                                            <div class="scan-status-text" id="mockup-scan-status">ANALYST_PENDING</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="telemetry-grid">
+                                    <div class="tel-box">
+                                        <span class="label">IDENTITY SOURCE</span>
+                                        <span class="value code-font" id="mockup-source">IP_SEC: 104.22.4.9</span>
+                                    </div>
+                                    <div class="tel-box">
+                                        <span class="label">SYNTHETIC ENTROPY</span>
+                                        <span class="value code-font" id="mockup-entropy">0.00042 bits</span>
+                                    </div>
+                                    <div class="tel-box text-right">
+                                        <span class="label">TRUST EVALUATION</span>
+                                        <span class="value highlight code-font" id="mockup-trust">99.82%</span>
+                                    </div>
+                                </div>
+
+                                <div class="verification-bars">
+                                    <div class="bar-row">
+                                        <div class="bar-label">BIOMETRIC INTEGRITY</div>
+                                        <div class="bar-container">
+                                            <div class="bar-fill green-glow" id="mockup-bar-biometric" style="width: 98%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-row">
+                                        <div class="bar-label">BEHAVIORAL CONSISTENCY</div>
+                                        <div class="bar-container">
+                                            <div class="bar-fill blue-glow" id="mockup-bar-behavioral" style="width: 95%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="bar-row">
+                                        <div class="bar-label">SYNTHETIC NOISE FILTER</div>
+                                        <div class="bar-container">
+                                            <div class="bar-fill purple-glow" id="mockup-bar-noise" style="width: 2%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="terminal-log">
+                                    <div class="terminal-header">
+                                        <i class="fa-solid fa-terminal"></i> SECURE CRYPTO_LEDGER LOGS
+                                    </div>
+                                    <div class="terminal-lines" id="mockup-terminal">
+                                        <div class="line green">&gt; connection established at node-092</div>
+                                        <div class="line">&gt; listening for identity broadcast...</div>
+                                        <div class="line blue">&gt; cryptographic zero-knowledge handshake active</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WAITLIST SECTION -->
+        <section class="waitlist-section" id="waitlist">
+            <div class="waitlist-container glass-panel reveal-fade">
+                <div class="waitlist-glow"></div>
+                <div class="tag">04 / ACCESS</div>
+                <h2 class="section-title">Enter the HUMN Layer</h2>
+                <p class="section-desc">Secure your slot in the decentralized identity protocol. Request early credentials and be part of the future of trust.</p>
+                
+                <form class="waitlist-form" id="signup-form">
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <input type="email" placeholder="Enter your email address" required id="user-email" class="email-input">
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <span class="btn-text">Request Early Access</span>
+                        <i class="fa-solid fa-arrow-right btn-icon"></i>
+                    </button>
+                </form>
+                
+                <div class="form-feedback" id="form-message">
+                    <div class="success-message">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Welcome to the human register. Verification email dispatched.</span>
+                    </div>
+                </div>
+                
+                <div class="security-caption">
+                    <i class="fa-solid fa-shield-halved"></i> Privacy Secured. Cryptographically encrypted. No spam.
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" stroke-dasharray="8 8"/>
+                            <path d="M50 25V75M25 50H75" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="50" cy="50" r="12" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span class="logo-text">HUMN <span class="thin">LABS</span></span>
+                </div>
+                <p class="footer-tagline">The Human Layer of the AI Internet</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="link-group">
+                    <h5>Protocol</h5>
+                    <a href="#">The Layer</a>
+                    <a href="#">Security</a>
+                    <a href="#">Whitepaper</a>
+                </div>
+                <div class="link-group">
+                    <h5>Company</h5>
+                    <a href="#">About</a>
+                    <a href="#">Research</a>
+                    <a href="#">Press</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2026 HUMN Labs Inc. All rights reserved.
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-icon" aria-label="X (Twitter)">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="GitHub">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
