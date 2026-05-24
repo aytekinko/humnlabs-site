@@ -14,8 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let height = (canvas.height = window.innerHeight);
     
     let particles = [];
-    const maxParticles = Math.min(100, Math.floor((width * height) / 15000)); // Responsive particle count
-    const connectionDist = 120;
+    
+    // Detect mobile or touch devices to optimize rendering performance
+    const isMobileOrTablet = window.innerWidth < 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const maxParticles = isMobileOrTablet ? 25 : Math.min(100, Math.floor((width * height) / 15000)); 
+    const connectionDist = isMobileOrTablet ? 90 : 120; // Reduce line calculations on mobile
     
     const mouse = {
         x: null,

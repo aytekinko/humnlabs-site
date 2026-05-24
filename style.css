@@ -111,6 +111,7 @@ a {
     pointer-events: none;
     opacity: 0.12;
     mix-blend-mode: screen;
+    will-change: transform;
 }
 
 .glow-1 {
@@ -458,9 +459,11 @@ a {
 /* Interactive Mouse Scroll Indicator */
 .scroll-indicator {
     position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -468,10 +471,7 @@ a {
     z-index: 10;
     opacity: 0.6;
     transition: var(--transition-medium);
-}
-
-.scroll-indicator:hover {
-    opacity: 1;
+    pointer-events: none;
 }
 
 .mouse-icon {
@@ -1228,13 +1228,20 @@ a {
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 80px 24px 40px 24px;
+    padding: 32px 24px 24px 24px;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: 40px;
+    gap: 32px;
+    align-items: start;
 }
 
 @media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
     .footer-container {
         grid-template-columns: 1fr;
     }
@@ -1243,7 +1250,7 @@ a {
 .footer-brand {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 .footer-logo {
@@ -1253,7 +1260,7 @@ a {
 }
 
 .footer-tagline {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-dark);
     max-width: 280px;
 }
@@ -1261,15 +1268,16 @@ a {
 .link-group {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 .link-group h5 {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--text-bright);
+    margin-bottom: 2px;
 }
 
 .link-group a {
@@ -1285,13 +1293,13 @@ a {
 .footer-bottom {
     grid-column: 1 / -1;
     border-top: 1px solid var(--border-color);
-    padding-top: 30px;
-    margin-top: 20px;
+    padding-top: 16px;
+    margin-top: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 12px;
 }
 
 .copyright {
@@ -1308,22 +1316,119 @@ a {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-color);
-    display: flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--text-muted);
-    font-size: 14px;
     transition: var(--transition-medium);
+}
+
+.x-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    transition: var(--transition-medium);
+    filter: drop-shadow(0 0 0px transparent);
 }
 
 .social-icon:hover {
     color: var(--cyan);
     border-color: var(--cyan);
-    box-shadow: 0 0 10px var(--cyan-glow);
-    background: rgba(0, 240, 255, 0.05);
+    box-shadow: 0 0 14px var(--cyan-glow), 0 0 4px var(--cyan-glow) inset;
+    background: rgba(0, 240, 255, 0.06);
     transform: translateY(-2px);
+}
+
+.social-icon:hover .x-icon {
+    filter: drop-shadow(0 0 6px var(--cyan));
+}
+
+/* ==========================================================================
+   Fixed Floating X / Twitter Follow Pill
+   ========================================================================== */
+.x-float-pill {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px 12px 14px;
+    background: rgba(5, 5, 10, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: -4px 0 20px rgba(0, 240, 255, 0.08), inset 0 0 16px rgba(0, 240, 255, 0.03);
+    animation: pill-entrance 1s 1.5s both ease-out;
+}
+
+@keyframes pill-entrance {
+    from { transform: translateY(-50%) translateX(100%); opacity: 0; }
+    to   { transform: translateY(-50%) translateX(0);   opacity: 1; }
+}
+
+.x-float-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse at 80% 50%, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
+    animation: pill-glow-pulse 3s infinite ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes pill-glow-pulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1; }
+}
+
+.x-float-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--cyan);
+    filter: drop-shadow(0 0 5px var(--cyan));
+    transition: var(--transition-medium);
+}
+
+.x-float-label {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--cyan);
+    white-space: nowrap;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-width 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+}
+
+.x-float-pill:hover {
+    padding: 12px 18px 12px 14px;
+    border-color: var(--cyan);
+    box-shadow: -6px 0 28px var(--cyan-glow), inset 0 0 20px rgba(0, 240, 255, 0.06);
+    color: var(--cyan);
+    background: rgba(0, 240, 255, 0.06);
+}
+
+.x-float-pill:hover .x-float-label {
+    max-width: 120px;
+    opacity: 1;
+}
+
+.x-float-pill:hover .x-float-icon {
+    filter: drop-shadow(0 0 10px var(--cyan));
+    transform: scale(1.15);
 }
 
 /* ==========================================================================
@@ -1346,4 +1451,111 @@ a {
 .revealed {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ==========================================================================
+   Premium Mobile & Tablet Compatibility Optimization (iOS, iPadOS, Android)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    /* Prevent heavy GPU filters from lagging on Safari/iOS */
+    .ambient-glow {
+        will-change: auto; /* Turn off dynamic will-change to save memory */
+        filter: blur(100px); /* Lower blur size for mobile GPU performance */
+    }
+    .glow-1, .glow-2, .glow-3 {
+        animation: none !important; /* Stop heavy background animation loop */
+    }
+    
+    /* Section paddings optimized for tighter screens */
+    .section-container {
+        padding: 60px 20px;
+    }
+    
+    /* Grid layout tweaks */
+    .cols-2-large {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Header layout optimization */
+    .header-container {
+        padding: 12px 16px;
+    }
+    .main-nav {
+        gap: 16px;
+    }
+    .nav-link {
+        font-size: 13px;
+    }
+    .header-actions {
+        display: none; /* Keep header strictly single-row without crowded buttons */
+    }
+    
+    /* Hero section font sizing to prevent wrap breaks */
+    .hero-title {
+        font-size: clamp(2.2rem, 7vw, 4rem);
+        margin-bottom: 16px;
+    }
+    .hero-subtitle {
+        font-size: 1.15rem;
+        margin-bottom: 28px;
+    }
+    
+    /* Stack buttons for easy thumb-reach */
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 24px;
+    }
+    
+    /* Technology Section Mockup tweaks */
+    .tech-mockup {
+        max-width: 100%;
+    }
+    .mockup-body {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ensure footer fits completely on narrow devices */
+    .footer-container {
+        padding: 30px 16px;
+        gap: 24px;
+    }
+    
+    /* Break Telemetry columns to single column or smaller size */
+    .telemetry-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .tel-box.text-right {
+        text-align: left;
+        align-items: flex-start;
+    }
+    
+    .scanner-screen {
+        height: 100px;
+    }
+    
+    /* Card padding tweaks */
+    .feature-card {
+        padding: 24px;
+    }
+    .narrative-card {
+        padding: 24px;
+    }
+    
+    .waitlist-container {
+        padding: 40px 20px;
+    }
 }
