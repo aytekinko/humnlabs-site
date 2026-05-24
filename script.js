@@ -3,21 +3,19 @@
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.documentElement.classList.remove("no-js");
-    const isMobile = window.innerWidth <= 768;
     
     // ---------------------------------------------------------
     // 1. Ambient Interactive Particle Canvas Network
     // ---------------------------------------------------------
     const canvas = document.getElementById("canvas-bg");
-    const ctx = canvas ? canvas.getContext("2d") : null;
+    const ctx = canvas.getContext("2d");
     
-    let width = canvas ? (canvas.width = window.innerWidth) : window.innerWidth;
-    let height = canvas ? (canvas.height = window.innerHeight) : window.innerHeight;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
     
     let particles = [];
-    const maxParticles = Math.min(45, Math.floor((width * height) / 18000)); // Responsive particle count
-    const connectionDist = 80;
+    const maxParticles = Math.min(100, Math.floor((width * height) / 15000)); // Responsive particle count
+    const connectionDist = 120;
     
     const mouse = {
         x: null,
@@ -36,9 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     window.addEventListener("resize", () => {
-        width = canvas ? (canvas.width = window.innerWidth) : window.innerWidth;
-        height = canvas ? (canvas.height = window.innerHeight) : window.innerHeight;
-        if (!isMobile && canvas) initParticles();
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initParticles();
     });
     
     class Particle {
@@ -146,10 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(animate);
     }
     
-    if (!isMobile && canvas && ctx) {
-        initParticles();
-        animate();
-    }
+    initParticles();
+    animate();
     
     
     // ---------------------------------------------------------
@@ -178,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let statusIndex = 0;
     
     // Live loop to update statuses and bar values
-    if (scanStatusText && scanNodeText && mockupEntropyText && mockupTrustText && mockupSourceText && terminalLines && barBiometric && barBehavioral && barNoise) {
     setInterval(() => {
         statusIndex = (statusIndex + 1) % statuses.length;
         const current = statuses[statusIndex];
@@ -231,7 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
         addTerminalLog(current.text);
         
     }, 4500);
-    }
     
     // Terminal Log system
     const terminalLogs = [
@@ -272,7 +266,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     // Fluctuate IP / Node ID slightly
-    if (scanNodeText && mockupSourceText) {
     setInterval(() => {
         const nodeNum = Math.floor(Math.random() * 9000 + 1000);
         scanNodeText.textContent = `NODE_ID: HMN-${nodeNum}-X`;
@@ -287,7 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const randomIp = ipArr[Math.floor(Math.random() * ipArr.length)];
         mockupSourceText.textContent = `IP_SEC: ${randomIp}`;
     }, 8000);
-    }
     
     
     // ---------------------------------------------------------
@@ -321,12 +313,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // ---------------------------------------------------------
     const waitlistForm = document.querySelector(".waitlist-form");
     const feedbackBlock = document.getElementById("form-message");
+    const submitBtn = waitlistForm.querySelector(".btn-submit");
+    const btnText = submitBtn.querySelector(".btn-text");
+    const btnIcon = submitBtn.querySelector(".btn-icon");
+    const emailInput = document.getElementById("user-email");
     
     if (waitlistForm) {
-        const submitBtn = waitlistForm.querySelector(".btn-submit");
-        const btnText = submitBtn.querySelector(".btn-text");
-        const btnIcon = submitBtn.querySelector(".btn-icon");
-        const emailInput = document.getElementById("user-email");
         waitlistForm.addEventListener("submit", async (event) => {
             event.preventDefault();
             
