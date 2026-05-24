@@ -1,359 +1,390 @@
-/* -------------------------------------------------------------
- * HUMN Labs Interactive Controller
- * Premium Interactive Backgrounds & Live Simulators
- * ------------------------------------------------------------- */
-const isMobile = window.innerWidth <= 768;
+/* ==========================================================================
+   HUMN Labs - Premium Cybernetic Engine & Interaction Layer
+   ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+    document.documentElement.classList.remove("no-js");
+    const isMobile = window.innerWidth <= 768;
     
     // ---------------------------------------------------------
-    // 1. HTML5 Canvas Interactive Particle Network
+    // 1. Ambient Interactive Particle Canvas Network
     // ---------------------------------------------------------
-    const canvas = document.getElementById('canvas-bg');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouse = { x: null, y: null, radius: 120 };
-        
-        // Handle window resizing
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
+    const canvas = document.getElementById("canvas-bg");
+    const ctx = canvas ? canvas.getContext("2d") : null;
+    
+    let width = canvas ? (canvas.width = window.innerWidth) : window.innerWidth;
+    let height = canvas ? (canvas.height = window.innerHeight) : window.innerHeight;
+    
+    let particles = [];
+    const maxParticles = Math.min(45, Math.floor((width * height) / 18000)); // Responsive particle count
+    const connectionDist = 80;
+    
+    const mouse = {
+        x: null,
+        y: null,
+        radius: 180,
+    };
+    
+    window.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+    
+    window.addEventListener("mouseout", () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+    
+    window.addEventListener("resize", () => {
+        width = canvas ? (canvas.width = window.innerWidth) : window.innerWidth;
+        height = canvas ? (canvas.height = window.innerHeight) : window.innerHeight;
+        if (!isMobile && canvas) initParticles();
+    });
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            // Extremely gentle, organic speeds to prevent distraction
+            this.vx = (Math.random() - 0.5) * 0.35;
+            this.vy = (Math.random() - 0.5) * 0.35;
+            this.radius = Math.random() * 2 + 1;
+            
+            // Varied cyan/violet glow
+            this.color = Math.random() > 0.4 ? "rgba(0, 240, 255, 0.45)" : "rgba(112, 0, 255, 0.45)";
         }
         
-        // Particle Class definition
-        class Particle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.baseX = x;
-                this.baseY = y;
-                this.size = Math.random() * 1.5 + 1;
-                this.density = (Math.random() * 20) + 10;
-                this.vx = (Math.random() * 0.4) - 0.2;
-                this.vy = (Math.random() * 0.4) - 0.2;
-                this.alpha = Math.random() * 0.5 + 0.25;
-            }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
             
-            draw() {
-                ctx.fillStyle = `rgba(0, 180, 216, ${this.alpha})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
-            }
+            // Screen boundaries wrap around
+            if (this.x < 0) this.x = width;
+            if (this.x > width) this.x = 0;
+            if (this.y < 0) this.y = height;
+            if (this.y > height) this.y = 0;
             
-            update() {
-                // Drifting motion
-                this.x += this.vx;
-                this.y += this.vy;
+            // Interactive push away from mouse
+            if (mouse.x !== null && mouse.y !== null) {
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const distance = Math.hypot(dx, dy);
                 
-                // Keep inside screen
-                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
-                
-                // Mouse interaction (Push/Spring physics)
-                if (mouse.x !== null && mouse.y !== null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const angle = Math.atan2(dy, dx);
                     
-                    if (distance < mouse.radius) {
-                        let force = (mouse.radius - distance) / mouse.radius;
-                        let directionX = dx / distance;
-                        let directionY = dy / distance;
-                        
-                        // Push away from mouse
-                        this.x -= directionX * force * 1.5;
-                        this.y -= directionY * force * 1.5;
-                    }
+                    // Push gently
+                    this.x += Math.cos(angle) * force * 1.5;
+                    this.y += Math.sin(angle) * force * 1.5;
                 }
             }
         }
         
-        function initParticles() {
-            particles = [];
-            let numberOfParticles = Math.floor((canvas.width * canvas.height) / 14000);
-            // Cap particles for mobile performance
-            if (numberOfParticles > 120) numberOfParticles = 120;
-            if (numberOfParticles < 30) numberOfParticles = 30;
-            
-            for (let i = 0; i < numberOfParticles; i++) {
-                let x = Math.random() * canvas.width;
-                let y = Math.random() * canvas.height;
-                particles.push(new Particle(x, y));
-            }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+    }
+    
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new Particle());
+        }
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Update and draw particles
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
         }
         
-        // Connect nearby particles with thin lines
-        function connectParticles() {
-            let maxDistance = 110;
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dx = particles[a].x - particles[b].x;
-                    let dy = particles[a].y - particles[b].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < maxDistance) {
-                        // Calculate opacity based on distance
-                        let opacity = (1 - (distance / maxDistance)) * 0.12;
-                        ctx.strokeStyle = `rgba(0, 180, 216, ${opacity})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
-                    }
+        // Draw lines connecting close particles
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.hypot(dx, dy);
+                
+                if (distance < connectionDist) {
+                    // Line opacity scales down the further apart they are
+                    const opacity = (1 - distance / connectionDist) * 0.12;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(0, 240, 255, ${opacity})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+            
+            // Connect particles to mouse
+            if (mouse.x !== null && mouse.y !== null) {
+                const dx = particles[i].x - mouse.x;
+                const dy = particles[i].y - mouse.y;
+                const distance = Math.hypot(dx, dy);
+                
+                if (distance < mouse.radius) {
+                    const opacity = (1 - distance / mouse.radius) * 0.18;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    // Beautiful subtle gradient effect via canvas stroke
+                    ctx.strokeStyle = `rgba(112, 0, 255, ${opacity})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
                 }
             }
         }
         
-        // Animation Loop
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].draw();
-                particles[i].update();
-            }
-            
-            connectParticles();
-            if (!isMobile) {
-    requestAnimationFrame(animate);
-        }
-        
-        // Event Listeners
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
-        window.addEventListener('mouseleave', () => {
-            mouse.x = null;
-            mouse.y = null;
-        });
-        
-        // Init and start
-        resizeCanvas();
+        requestAnimationFrame(animate);
+    }
+    
+    if (!isMobile && canvas && ctx) {
+        initParticles();
         animate();
     }
     
+    
     // ---------------------------------------------------------
-    // 2. IntersectionObserver Scroll Reveal Animations
+    // 2. Interactive Telemetry UI Dashboard Simulator
     // ---------------------------------------------------------
-    const revealElements = document.querySelectorAll('.reveal-fade, .reveal-slide');
+    const scanStatusText = document.getElementById("mockup-scan-status");
+    const scanNodeText = document.getElementById("scan-node-id");
+    const mockupEntropyText = document.getElementById("mockup-entropy");
+    const mockupTrustText = document.getElementById("mockup-trust");
+    const mockupSourceText = document.getElementById("mockup-source");
+    const terminalLines = document.getElementById("mockup-terminal");
     
-    if (revealElements.length > 0) {
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    // Once animated, no need to keep observing
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px' // Trigger slightly before element is centered
-        });
+    // UI Progress Bar elements
+    const barBiometric = document.getElementById("mockup-bar-biometric");
+    const barBehavioral = document.getElementById("mockup-bar-behavioral");
+    const barNoise = document.getElementById("mockup-bar-noise");
+    
+    const statuses = [
+        { text: "ANALYST_PENDING", color: "#00f0ff" },
+        { text: "ZK_HANDSHAKE_INITIATED", color: "#7000ff" },
+        { text: "SCANNING_BEHAVIORAL_ENTROPY", color: "#ff007f" },
+        { text: "CRYPTOGRAPHIC_VERIFICATION", color: "#00f0ff" },
+        { text: "HUMAN_REGISTER_CONFIRMED", color: "#00ff87" }
+    ];
+    
+    let statusIndex = 0;
+    
+    // Live loop to update statuses and bar values
+    if (scanStatusText && scanNodeText && mockupEntropyText && mockupTrustText && mockupSourceText && terminalLines && barBiometric && barBehavioral && barNoise) {
+    setInterval(() => {
+        statusIndex = (statusIndex + 1) % statuses.length;
+        const current = statuses[statusIndex];
         
-        revealElements.forEach(el => revealObserver.observe(el));
-    }
-    
-    // Proactively active hero elements just in case
-    setTimeout(() => {
-        const heroElements = document.querySelectorAll('#hero .reveal-fade, #hero .reveal-slide');
-        heroElements.forEach(el => el.classList.add('active'));
-    }, 150);
-
-    // ---------------------------------------------------------
-    // 3. Interactive Trust-Score Mockup Simulation
-    // ---------------------------------------------------------
-    const mockScannerStatus = document.getElementById('mockup-scan-status');
-    const mockFingerprint = document.querySelector('.biometric-fingerprint');
-    const mockNodeId = document.getElementById('scan-node-id');
-    const mockSource = document.getElementById('mockup-source');
-    const mockEntropy = document.getElementById('mockup-entropy');
-    const mockTrust = document.getElementById('mockup-trust');
-    
-    const mockBarBiometric = document.getElementById('mockup-bar-biometric');
-    const mockBarBehavioral = document.getElementById('mockup-bar-behavioral');
-    const mockBarNoise = document.getElementById('mockup-bar-noise');
-    
-    const mockTerminal = document.getElementById('mockup-terminal');
-    
-    let isHumanState = true;
-    
-    // Terminal Log helper
-    function appendTerminalLog(text, type = '') {
-        if (!mockTerminal) return;
-        const line = document.createElement('div');
-        line.className = `line ${type}`;
-        line.innerHTML = `&gt; ${text}`;
-        mockTerminal.appendChild(line);
-        
-        // Limit lines to 5
-        while (mockTerminal.children.length > 5) {
-            mockTerminal.removeChild(mockTerminal.firstChild);
-        }
-    }
-    
-    function runSimulationCycle() {
-        if (!mockScannerStatus) return;
-        
-        // Phase 1: Scanner Analysing
-        mockScannerStatus.textContent = "ANALYSIS_IN_PROGRESS";
-        mockScannerStatus.style.color = "var(--color-accent-blue)";
-        if (mockFingerprint) {
-            mockFingerprint.style.color = "var(--color-accent-blue)";
-            mockFingerprint.style.transform = "scale(1.05)";
-        }
-        
-        appendTerminalLog("initiating connection node protocol...", "blue");
-        appendTerminalLog("polling biometric packets...", "");
-        
-        // Phase 2: Complete Scan & Display Results (after 2 seconds)
+        // Fade text transition
+        scanStatusText.style.opacity = 0;
         setTimeout(() => {
-            if (isHumanState) {
-                // Verified Human State
-                mockScannerStatus.textContent = "HUMAN_VERIFIED";
-                mockScannerStatus.style.color = "var(--color-accent-green)";
-                if (mockFingerprint) {
-                    mockFingerprint.style.color = "var(--color-accent-green)";
-                    mockFingerprint.style.transform = "scale(1.0)";
-                }
-                
-                if (mockNodeId) mockNodeId.textContent = "NODE_ID: HMN-9031-H";
-                if (mockSource) mockSource.textContent = "GATEWAY: Browser Client (Safari)";
-                if (mockEntropy) mockEntropy.textContent = "0.00031 entropy bits";
-                if (mockTrust) {
-                    mockTrust.textContent = "99.88%";
-                    mockTrust.style.color = "var(--color-accent-green)";
-                }
-                
-                if (mockBarBiometric) mockBarBiometric.style.width = "99%";
-                if (mockBarBehavioral) mockBarBehavioral.style.width = "97%";
-                if (mockBarNoise) mockBarNoise.style.width = "1%";
-                
-                appendTerminalLog("zero-knowledge authentication: PASS", "green");
-                appendTerminalLog("trust token ledger synchronized.", "green");
+            scanStatusText.textContent = current.text;
+            scanStatusText.style.color = current.color;
+            scanStatusText.style.opacity = 1;
+            
+            // Adjust biometric graphics or scanner speed based on status
+            const scannerFingerprint = document.querySelector(".biometric-fingerprint");
+            if (current.text === "HUMAN_REGISTER_CONFIRMED") {
+                scannerFingerprint.style.color = "#00ff87";
+                scannerFingerprint.style.filter = "drop-shadow(0 0 12px rgba(0, 255, 135, 0.5))";
+            } else if (current.text === "ZK_HANDSHAKE_INITIATED" || current.text === "CRYPTOGRAPHIC_VERIFICATION") {
+                scannerFingerprint.style.color = "#7000ff";
+                scannerFingerprint.style.filter = "drop-shadow(0 0 10px rgba(112, 0, 255, 0.4))";
             } else {
-                // Synthetic AI Threat State
-                mockScannerStatus.textContent = "SYNTHETIC_AI_DETECTED";
-                mockScannerStatus.style.color = "#ff5f56";
-                if (mockFingerprint) {
-                    mockFingerprint.style.color = "#ff5f56";
-                    mockFingerprint.style.transform = "scale(0.95)";
-                }
-                
-                if (mockNodeId) mockNodeId.textContent = "NODE_ID: SYN-4109-A";
-                if (mockSource) mockSource.textContent = "GATEWAY: Headless Script (Puppeteer)";
-                if (mockEntropy) mockEntropy.textContent = "1.84920 entropy bits";
-                if (mockTrust) {
-                    mockTrust.textContent = "03.14%";
-                    mockTrust.style.color = "#ff5f56";
-                }
-                
-                if (mockBarBiometric) mockBarBiometric.style.width = "6%";
-                if (mockBarBehavioral) mockBarBehavioral.style.width = "12%";
-                if (mockBarNoise) mockBarNoise.style.width = "98%";
-                
-                appendTerminalLog("synthetic mimic signature detected!", "red");
-                appendTerminalLog("access authorization: REVOKED", "red");
+                scannerFingerprint.style.color = "#00f0ff";
+                scannerFingerprint.style.filter = "drop-shadow(0 0 8px rgba(0, 240, 255, 0.35))";
             }
-            
-            // Toggle state for next iteration
-            isHumanState = !isHumanState;
-            
-        }, 1800);
+        }, 200);
+        
+        // Fluctuate telemetry figures
+        // Synthetic Entropy
+        const randEntropy = (Math.random() * 0.0003 + 0.0003).toFixed(5);
+        mockupEntropyText.textContent = `${randEntropy} bits`;
+        
+        // Trust Evaluation Score
+        const randTrust = (99.70 + Math.random() * 0.25).toFixed(2);
+        mockupTrustText.textContent = `${randTrust}%`;
+        
+        // Verification Bars fluctuation
+        if (current.text === "HUMAN_REGISTER_CONFIRMED") {
+            barBiometric.style.width = "99.8%";
+            barBehavioral.style.width = "99.2%";
+            barNoise.style.width = "0.08%";
+        } else {
+            const bioVal = Math.floor(Math.random() * 8 + 90);
+            const behVal = Math.floor(Math.random() * 10 + 85);
+            const noiseVal = (Math.random() * 4 + 1).toFixed(1);
+            barBiometric.style.width = `${bioVal}%`;
+            barBehavioral.style.width = `${behVal}%`;
+            barNoise.style.width = `${noiseVal}%`;
+        }
+        
+        // Add log outputs to terminal
+        addTerminalLog(current.text);
+        
+    }, 4500);
     }
     
-    // Start simulation loop (runs cycle every 6 seconds)
-    if (mockScannerStatus) {
-        setInterval(runSimulationCycle, 6000);
-        // Run first cycle slightly after page load
-        setTimeout(runSimulationCycle, 2000);
+    // Terminal Log system
+    const terminalLogs = [
+        "validating cryptographic signature broadcasts...",
+        "analyzing human interactive entropy fields...",
+        "zero-knowledge biometric proof verified.",
+        "evaluating passive cursor acceleration path details...",
+        "secure handshakes completed with local validator #821",
+        "minting cryptographically secure human token key...",
+        "identity signature registered on decentral database.",
+        "noise filtering active (attenuation: 98.4dB)",
+        "connection telemetry metrics refreshed."
+    ];
+    
+    function addTerminalLog(statusText) {
+        const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        let logLine = "";
+        
+        if (statusText === "HUMAN_REGISTER_CONFIRMED") {
+            logLine = `<div class="line green">&gt; [${time}] REGISTER_SUCCESS // Trust verified securely</div>`;
+        } else if (statusText === "ZK_HANDSHAKE_INITIATED") {
+            logLine = `<div class="line blue">&gt; [${time}] ZK_HANDSHAKE // Handshake broadcasting</div>`;
+        } else {
+            const randomMsg = terminalLogs[Math.floor(Math.random() * terminalLogs.length)];
+            logLine = `<div class="line">&gt; [${time}] ${randomMsg}</div>`;
+        }
+        
+        terminalLines.innerHTML += logLine;
+        
+        // Keep the latest 5 log lines visible
+        const lines = terminalLines.getElementsByClassName("line");
+        if (lines.length > 5) {
+            terminalLines.removeChild(lines[0]);
+        }
+        
+        // Auto scroll terminal to the bottom
+        terminalLines.scrollTop = terminalLines.scrollHeight;
     }
-
+    
+    // Fluctuate IP / Node ID slightly
+    if (scanNodeText && mockupSourceText) {
+    setInterval(() => {
+        const nodeNum = Math.floor(Math.random() * 9000 + 1000);
+        scanNodeText.textContent = `NODE_ID: HMN-${nodeNum}-X`;
+        
+        const ipArr = [
+            "104.22.4.9",
+            "172.67.20.144",
+            "104.22.5.9",
+            "192.168.1.104",
+            "185.190.140.2"
+        ];
+        const randomIp = ipArr[Math.floor(Math.random() * ipArr.length)];
+        mockupSourceText.textContent = `IP_SEC: ${randomIp}`;
+    }, 8000);
+    }
+    
+    
     // ---------------------------------------------------------
-    // 4. Interactive Waitlist Capture Form
+    // 3. Scroll Reveal System (IntersectionObserver)
     // ---------------------------------------------------------
-    const signupForm = document.getElementById('signup-form');
-    const formMessage = document.getElementById('form-message');
-    const emailInput = document.getElementById('user-email');
+    const revealElements = document.querySelectorAll(".reveal-fade, .reveal-slide");
     
-    if (signupForm && formMessage) {
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const email = emailInput ? emailInput.value.trim() : '';
-            if (!email) return;
-            
-            // Animate Button submission state
-            const submitBtn = signupForm.querySelector('.btn-submit');
-            const btnText = signupForm.querySelector('.btn-text');
-            const btnIcon = signupForm.querySelector('.btn-icon');
-            
-            if (submitBtn) {
-                submitBtn.style.opacity = '0.7';
-                submitBtn.disabled = true;
-                if (btnText) btnText.textContent = "Verifying Identity...";
-                if (btnIcon) {
-                    btnIcon.className = "fa-solid fa-spinner fa-spin";
-                }
-            }
-            
-            // Simulate cryptographic verification and registration latency
-            setTimeout(() => {
-                // Success state transition
-                signupForm.style.display = 'none';
-                formMessage.classList.add('active');
-                
-                // If simulator exists, print registration log to mockup
-                appendTerminalLog(`Waitlist registered: ${email}`, "green");
-                appendTerminalLog("Assigned HUMN Layer priority #20,491", "blue");
-            }, 1500);
-        });
-    }
+    const observerOptions = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.12, // Reveal when 12% visible
+    };
     
-    // Smooth scrolling adjustments for anchors
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetEl = document.querySelector(targetId);
-            if (targetEl) {
-                targetEl.scrollIntoView({
-                    behavior: 'smooth'
-                });
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+                // Stop observing once animated
+                observer.unobserve(entry.target);
             }
         });
+    }, observerOptions);
+    
+    revealElements.forEach((el) => {
+        revealObserver.observe(el);
     });
-});
     
-const form = document.querySelector('.waitlist-form');
-
-form.addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const data = new FormData(form);
-
-  const response = await fetch(form.action, {
-    method: 'POST',
-    body: data,
-    headers: {
-      'Accept': 'application/json'
+    
+    // ---------------------------------------------------------
+    // 4. Formspree Early Access Waitlist Ajax Submission
+    // ---------------------------------------------------------
+    const waitlistForm = document.querySelector(".waitlist-form");
+    const feedbackBlock = document.getElementById("form-message");
+    
+    if (waitlistForm) {
+        const submitBtn = waitlistForm.querySelector(".btn-submit");
+        const btnText = submitBtn.querySelector(".btn-text");
+        const btnIcon = submitBtn.querySelector(".btn-icon");
+        const emailInput = document.getElementById("user-email");
+        waitlistForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            
+            // Set loading state on button
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.7";
+            btnText.textContent = "Verifying Humanity...";
+            btnIcon.className = "fa-solid fa-spinner fa-spin";
+            
+            const data = new FormData(event.target);
+            
+            try {
+                const response = await fetch(event.target.action, {
+                    method: waitlistForm.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Success UI Sequence
+                    feedbackBlock.style.display = "block";
+                    feedbackBlock.style.opacity = "0";
+                    setTimeout(() => {
+                        feedbackBlock.style.transition = "opacity 0.5s ease";
+                        feedbackBlock.style.opacity = "1";
+                    }, 50);
+                    
+                    waitlistForm.reset();
+                    btnText.textContent = "Registered";
+                    btnIcon.className = "fa-solid fa-check";
+                    submitBtn.style.background = "#00ff87";
+                    submitBtn.style.color = "#030305";
+                    submitBtn.style.boxShadow = "0 0 15px rgba(0, 255, 135, 0.4)";
+                } else {
+                    const responseData = await response.json();
+                    if (responseData.errors) {
+                        alert(responseData.errors.map(error => error.message).join(", "));
+                    } else {
+                        alert("An error occurred. Verification failed. Please attempt again.");
+                    }
+                    resetSubmitButton();
+                }
+            } catch (error) {
+                alert("Network latency detected. Proof transmission failed.");
+                resetSubmitButton();
+            }
+        });
     }
-  });
-
-  if (response.ok) {
-    form.innerHTML = `
-      <div class="success-message">
-        ✓ Access request received.
-      </div>
-    `;
-  }
+    
+    function resetSubmitButton() {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        btnText.textContent = "Request Early Access";
+        btnIcon.className = "fa-solid fa-arrow-right";
+        submitBtn.style.background = "";
+        submitBtn.style.color = "";
+        submitBtn.style.boxShadow = "";
+    }
 });
