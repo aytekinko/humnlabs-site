@@ -1451,3 +1451,29 @@ section {
         text-align: center;
     }
 }
+@media (max-width: 768px) {
+    #canvas-bg {
+        display: none;
+    }
+
+    .ambient-glow {
+        display: none;
+    }
+
+    .glass-panel {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .reveal-fade,
+    .reveal-slide {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .card-glow,
+    .waitlist-glow {
+        display: none;
+    }
+}
