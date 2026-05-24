@@ -331,3 +331,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+    
+const form = document.querySelector('.waitlist-form');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const data = new FormData(form);
+
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: {
+      'Accept': 'application/json'
+    }
+  });
+
+  if (response.ok) {
+    form.innerHTML = `
+      <div class="success-message">
+        ✓ Access request received.
+      </div>
+    `;
+  }
+});
