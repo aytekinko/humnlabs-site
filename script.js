@@ -2,6 +2,7 @@
  * HUMN Labs Interactive Controller
  * Premium Interactive Backgrounds & Live Simulators
  * ------------------------------------------------------------- */
+const isMobile = window.innerWidth <= 768;
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -118,7 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             connectParticles();
-            requestAnimationFrame(animate);
+            if (!isMobile) {
+    requestAnimationFrame(animate);
         }
         
         // Event Listeners
