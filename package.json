@@ -1,0 +1,14 @@
+{
+  "name": "humn-labs",
+  "version": "1.0.0",
+  "description": "The Human Layer of the AI Internet",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
