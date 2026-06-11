@@ -292,15 +292,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const observerOptions = {
         root: null,
-        rootMargin: "0px",
-        threshold: 0.12, // Reveal when 12% visible
+        rootMargin: "0px 0px -40px 0px", // Trigger 40px before bottom edge
+        threshold: 0.05, // Reveal when just 5% visible
     };
     
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("revealed");
-                // Stop observing once animated
                 observer.unobserve(entry.target);
             }
         });
@@ -309,6 +308,14 @@ document.addEventListener("DOMContentLoaded", () => {
     revealElements.forEach((el) => {
         revealObserver.observe(el);
     });
+    
+    // Safety fallback: after 1.5s, force-reveal any elements that still haven't animated
+    // This handles cases where observer doesn't fire (e.g. page already scrolled, browser quirks)
+    setTimeout(() => {
+        document.querySelectorAll(".reveal-fade:not(.revealed), .reveal-slide:not(.revealed)").forEach(el => {
+            el.classList.add("revealed");
+        });
+    }, 1500);
     
     
     // ---------------------------------------------------------
@@ -376,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function resetSubmitButton() {
         submitBtn.disabled = false;
         submitBtn.style.opacity = "1";
-        btnText.textContent = "Request Early Access";
+        btnText.textContent = "Get Early Access";
         btnIcon.className = "fa-solid fa-arrow-right";
         submitBtn.style.background = "";
         submitBtn.style.color = "";
