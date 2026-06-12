@@ -48,6 +48,11 @@
     scroll-behavior: smooth;
 }
 
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     background-color: var(--bg-darker);
     color: var(--text-muted);
@@ -201,6 +206,7 @@ a {
     font-weight: 900;
     color: var(--text-pure);
     letter-spacing: 2px;
+    white-space: nowrap;
 }
 
 .logo-text .thin {
@@ -220,6 +226,49 @@ a {
     letter-spacing: 0.5px;
     position: relative;
     padding: 6px 0;
+}
+
+/* Mobile Navigation Base & Toggle Buttons */
+.mobile-menu-btn {
+    display: none;
+}
+
+.mobile-nav-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 102;
+    flex-direction: column;
+    gap: 6px;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+}
+
+.hamburger-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: var(--text-bright);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, background-color 0.3s ease;
+    border-radius: 2px;
+}
+
+.mobile-nav-toggle[aria-expanded="true"] .line-1 {
+    transform: translateY(8px) rotate(45deg);
+    background-color: var(--cyan);
+}
+
+.mobile-nav-toggle[aria-expanded="true"] .line-2 {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.mobile-nav-toggle[aria-expanded="true"] .line-3 {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: var(--cyan);
 }
 
 .nav-link::after {
@@ -1209,6 +1258,7 @@ a {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     transition: var(--transition-medium);
 }
@@ -1395,16 +1445,32 @@ a {
     filter: drop-shadow(0 0 0px transparent);
 }
 
-.social-icon:hover {
-    color: var(--cyan);
-    border-color: var(--cyan);
-    box-shadow: 0 0 14px var(--cyan-glow), 0 0 4px var(--cyan-glow) inset;
-    background: rgba(0, 240, 255, 0.06);
-    transform: translateY(-2px);
+/* Desktop hover — only devices with a real pointer */
+@media (hover: hover) {
+    .social-icon:hover {
+        color: var(--cyan);
+        border-color: var(--cyan);
+        box-shadow: 0 0 14px var(--cyan-glow), 0 0 4px var(--cyan-glow) inset;
+        background: rgba(0, 240, 255, 0.06);
+        transform: translateY(-2px);
+    }
+
+    .social-icon:hover .x-icon {
+        filter: drop-shadow(0 0 6px var(--cyan));
+    }
 }
 
-.social-icon:hover .x-icon {
-    filter: drop-shadow(0 0 6px var(--cyan));
+/* Mobile tap glow — triggered by JS touchstart/touchend via .is-touching class */
+.social-icon.is-touching {
+    color: var(--cyan) !important;
+    border-color: var(--cyan) !important;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.7), 0 0 6px rgba(0, 240, 255, 0.4) inset !important;
+    background: rgba(0, 240, 255, 0.1) !important;
+    transform: scale(1.08) !important;
+}
+
+.social-icon.is-touching .x-icon {
+    filter: drop-shadow(0 0 10px var(--cyan)) !important;
 }
 
 /* ==========================================================================
@@ -1418,6 +1484,7 @@ a {
     z-index: 200;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     padding: 12px 14px 12px 14px;
     background: rgba(5, 5, 10, 0.75);
@@ -1426,7 +1493,7 @@ a {
     border: 1px solid rgba(0, 240, 255, 0.25);
     border-right: none;
     border-radius: 12px 0 0 12px;
-    color: var(--text-muted);
+    color: var(--cyan);
     text-decoration: none;
     overflow: hidden;
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -1456,8 +1523,10 @@ a {
 .x-float-icon {
     width: 18px;
     height: 18px;
+    display: block;
     flex-shrink: 0;
     color: var(--cyan);
+    fill: var(--cyan);
     filter: drop-shadow(0 0 5px var(--cyan));
     transition: var(--transition-medium);
 }
@@ -1490,6 +1559,7 @@ a {
 
 .x-float-pill:hover .x-float-icon {
     filter: drop-shadow(0 0 10px var(--cyan));
+    fill: var(--cyan);
     transform: scale(1.15);
 }
 
@@ -1562,28 +1632,122 @@ a {
     .header-container {
         padding: 12px 16px;
     }
+    
+    /* Mobile nav toggle */
+    .mobile-nav-toggle {
+        display: flex;
+    }
+    
     .main-nav {
-        gap: 16px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(3, 3, 5, 0.98);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        z-index: 99;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, visibility 0.3s ease;
     }
-    .nav-link {
-        font-size: 13px;
+    
+    .main-nav.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: all;
     }
+    
+    .main-nav .nav-link {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+    }
+    
     .header-actions {
         display: none; /* Keep header strictly single-row without crowded buttons */
     }
     
-    /* Hero section font sizing to prevent wrap breaks */
+    /* Floating follow button completely hidden on mobile — footer icon used instead */
+    .x-float-pill {
+        display: none !important;
+    }
+    
+    /* Prevent scrolling behind menu when active */
+    body.nav-open {
+        overflow: hidden;
+    }
+    
+    /* Typography updates */
+    body {
+        font-size: 17px;
+        line-height: 1.7;
+    }
+    p {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+    .feature-card p,
+    .research-area-card p,
+    .research-project-card p,
+    .tech-bullets p,
+    .footer-tagline,
+    .link-group a {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+    
+    /* Mobile neon pulse for footer X icon - animation now triggered on hover/active */
+    
+    /* Hero section clutter reduction & spacing optimization */
+    .hero-section {
+        padding: 100px 16px 60px 16px;
+        min-height: auto;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0;
+    }
+    .hero-section .badge {
+        display: none;
+    }
+    .hero-tagline {
+        display: none;
+    }
+    .hero-supporting-line {
+        display: none;
+    }
+    .hero-actions .btn-secondary {
+        display: none;
+    }
+    .scroll-indicator {
+        display: none;
+    }
     .hero-title {
         font-size: clamp(2rem, 6.5vw, 3.5rem);
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
     .hero-subtitle {
-        font-size: 1.05rem;
-        margin-bottom: 12px;
-    }
-    .hero-detail {
-        font-size: 0.9rem;
-        margin-bottom: 32px;
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 24px;
+        max-width: 90%;
     }
     
     /* Stack buttons for easy thumb-reach */
@@ -1593,11 +1757,27 @@ a {
         max-width: 320px;
         margin: 0 auto;
     }
-    .hero-actions .btn-primary,
-    .hero-actions .btn-secondary {
+    .hero-actions .btn-primary {
         width: 100%;
         justify-content: center;
         padding: 12px 24px;
+    }
+    
+    /* Stack cards in single-column layout on mobile */
+    .cols-4,
+    .cols-5,
+    .cols-2-large,
+    .current-research-grid,
+    .grid-layout {
+        grid-template-columns: 1fr !important;
+        gap: 24px;
+    }
+    
+    .feature-card,
+    .research-area-card,
+    .research-project-card,
+    .narrative-card {
+        padding: 24px !important;
     }
     
     /* Technology Section Mockup tweaks */
@@ -1614,6 +1794,17 @@ a {
     .footer-container {
         padding: 30px 16px;
         gap: 24px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .footer-legal-links {
+        justify-content: center;
     }
     
     /* Break Telemetry columns to single column or smaller size */

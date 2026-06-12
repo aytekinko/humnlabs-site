@@ -389,4 +389,71 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.style.color = "";
         submitBtn.style.boxShadow = "";
     }
+    
+    // ---------------------------------------------------------
+    // 5. Mobile Responsive Hamburger Menu Interaction
+    // ---------------------------------------------------------
+    const navToggle = document.querySelector(".mobile-nav-toggle");
+    const mainNav = document.querySelector(".main-nav");
+    const navLinks = document.querySelectorAll(".main-nav .nav-link");
+
+    if (navToggle && mainNav) {
+        navToggle.addEventListener("click", () => {
+            const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
+            navToggle.setAttribute("aria-expanded", !isExpanded);
+            mainNav.classList.toggle("active");
+            document.body.classList.toggle("nav-open");
+        });
+
+        // Close menu and restore body scrolling when a link is clicked
+        navLinks.forEach((link) => {
+            link.addEventListener("click", () => {
+                navToggle.setAttribute("aria-expanded", "false");
+                mainNav.classList.remove("active");
+                document.body.classList.remove("nav-open");
+            });
+        });
+    }
+
+    // ---------------------------------------------------------
+    // 6. Floating Action Button Footer Overlap Prevention
+    // ---------------------------------------------------------
+    const xFloatPill = document.querySelector(".x-float-pill");
+    const appFooter = document.querySelector(".app-footer");
+    
+    if (xFloatPill && appFooter) {
+        window.addEventListener("scroll", () => {
+            const footerRect = appFooter.getBoundingClientRect();
+            // If the top of the footer is visible in the viewport, fade out the FAB
+            if (footerRect.top < window.innerHeight) {
+                xFloatPill.style.opacity = "0";
+                xFloatPill.style.pointerEvents = "none";
+            } else {
+                xFloatPill.style.opacity = "1";
+                xFloatPill.style.pointerEvents = "all";
+            }
+        });
+    }
+
+    // ---------------------------------------------------------
+    // 7. Mobile Touch Glow — Social Icon
+    // CSS :active is unreliable on iOS/Android. We use a JS-driven
+    // .is-touching class via touchstart/touchend for guaranteed feedback.
+    // ---------------------------------------------------------
+    const socialIcons = document.querySelectorAll(".social-icon");
+
+    socialIcons.forEach((icon) => {
+        icon.addEventListener("touchstart", (e) => {
+            icon.classList.add("is-touching");
+        }, { passive: true });
+
+        icon.addEventListener("touchend", () => {
+            // Brief delay so user can see the glow before it fades
+            setTimeout(() => icon.classList.remove("is-touching"), 300);
+        });
+
+        icon.addEventListener("touchcancel", () => {
+            icon.classList.remove("is-touching");
+        });
+    });
 });
