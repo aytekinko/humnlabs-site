@@ -170,8 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
         { text: "ANALYST_PENDING", color: "#00f0ff" },
         { text: "ZK_HANDSHAKE_INITIATED", color: "#7000ff" },
         { text: "SCANNING_BEHAVIORAL_ENTROPY", color: "#ff007f" },
-        { text: "CRYPTOGRAPHIC_VERIFICATION", color: "#00f0ff" },
-        { text: "HUMAN_REGISTER_CONFIRMED", color: "#00ff87" }
+        { text: "CRYPTOGRAPHIC_EVALUATION", color: "#00f0ff" },
+        { text: "PRESENCE_CONFIDENCE_ESTIMATED", color: "#00ff87" }
     ];
     
     let statusIndex = 0;
@@ -190,10 +190,10 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // Adjust biometric graphics or scanner speed based on status
             const scannerFingerprint = document.querySelector(".biometric-fingerprint");
-            if (current.text === "HUMAN_REGISTER_CONFIRMED") {
+            if (current.text === "PRESENCE_CONFIDENCE_ESTIMATED") {
                 scannerFingerprint.style.color = "#00ff87";
                 scannerFingerprint.style.filter = "drop-shadow(0 0 12px rgba(0, 255, 135, 0.5))";
-            } else if (current.text === "ZK_HANDSHAKE_INITIATED" || current.text === "CRYPTOGRAPHIC_VERIFICATION") {
+            } else if (current.text === "ZK_HANDSHAKE_INITIATED" || current.text === "CRYPTOGRAPHIC_EVALUATION") {
                 scannerFingerprint.style.color = "#7000ff";
                 scannerFingerprint.style.filter = "drop-shadow(0 0 10px rgba(112, 0, 255, 0.4))";
             } else {
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mockupTrustText.textContent = `${randTrust}%`;
         
         // Verification Bars fluctuation
-        if (current.text === "HUMAN_REGISTER_CONFIRMED") {
+        if (current.text === "PRESENCE_CONFIDENCE_ESTIMATED") {
             barBiometric.style.width = "99.8%";
             barBehavioral.style.width = "99.2%";
             barNoise.style.width = "0.08%";
@@ -234,11 +234,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const terminalLogs = [
         "validating cryptographic signature broadcasts...",
         "analyzing human interactive entropy fields...",
-        "zero-knowledge biometric proof verified.",
+        "zero-knowledge presence signal evaluated.",
         "evaluating passive cursor acceleration path details...",
         "secure handshakes completed with local validator #821",
-        "minting cryptographically secure human token key...",
-        "identity signature registered on decentral database.",
+        "generating cryptographically secure confidence score...",
+        "presence confidence registered on research ledger.",
         "noise filtering active (attenuation: 98.4dB)",
         "connection telemetry metrics refreshed."
     ];
@@ -247,8 +247,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
         let logLine = "";
         
-        if (statusText === "HUMAN_REGISTER_CONFIRMED") {
-            logLine = `<div class="line green">&gt; [${time}] REGISTER_SUCCESS // Trust verified securely</div>`;
+        if (statusText === "PRESENCE_CONFIDENCE_ESTIMATED") {
+            logLine = `<div class="line green">&gt; [${time}] PRESENCE_ESTIMATED // Confidence calculation complete</div>`;
         } else if (statusText === "ZK_HANDSHAKE_INITIATED") {
             logLine = `<div class="line blue">&gt; [${time}] ZK_HANDSHAKE // Handshake broadcasting</div>`;
         } else {
@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Set loading state on button
             submitBtn.disabled = true;
             submitBtn.style.opacity = "0.7";
-            btnText.textContent = "Verifying Humanity...";
+            btnText.textContent = "Evaluating Signals...";
             btnIcon.className = "fa-solid fa-spinner fa-spin";
             
             const data = new FormData(event.target);
@@ -369,12 +369,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (responseData.errors) {
                         alert(responseData.errors.map(error => error.message).join(", "));
                     } else {
-                        alert("An error occurred. Verification failed. Please attempt again.");
+                        alert("An error occurred. Signal evaluation failed. Please try again.");
                     }
                     resetSubmitButton();
                 }
             } catch (error) {
-                alert("Network latency detected. Proof transmission failed.");
+                alert("Network latency detected. Signal transmission failed.");
                 resetSubmitButton();
             }
         });
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function resetSubmitButton() {
         submitBtn.disabled = false;
         submitBtn.style.opacity = "1";
-        btnText.textContent = "Get Early Access";
+        btnText.textContent = "Access the Report";
         btnIcon.className = "fa-solid fa-arrow-right";
         submitBtn.style.background = "";
         submitBtn.style.color = "";
