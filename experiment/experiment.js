@@ -308,7 +308,7 @@ function beginMovementCollection(ctx, canvas, timerEl) {
   const tick = setInterval(() => {
     if (!state.collecting) { clearInterval(tick); return; }
     state.timeRemaining--;
-    if (timerEl) timerEl.textContent = state.timeRemaining > 0 ? state.timeRemaining : 'âœ“';
+    if (timerEl) timerEl.textContent = state.timeRemaining > 0 ? state.timeRemaining : '\u2713';
 
     if (state.timeRemaining <= 0) {
       clearInterval(tick);
@@ -601,7 +601,7 @@ function initResult() {
       ['r', 'm', 't'].forEach(id => {
         const badge = document.getElementById(`exp-badge-${id}`);
         if (badge) {
-          badge.textContent = 'â€”';
+          badge.textContent = '\u2014';
           badge.className = 'explainability-badge';
         }
       });
