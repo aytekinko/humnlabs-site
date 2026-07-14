@@ -2515,3 +2515,128 @@ a {
     max-width: 320px;
 }
 
+/* ==========================================================================
+   Experiment CTA Section
+   ========================================================================== */
+.experiment-cta-section {
+    padding: 80px 24px;
+}
+
+.experiment-cta-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 72px 48px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.experiment-cta-glow {
+    position: absolute;
+    top: -50%;
+    left: 20%;
+    width: 60%;
+    height: 100%;
+    background: radial-gradient(ellipse at top, var(--cyan-glow) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.experiment-cta-container .section-title {
+    margin-bottom: 16px;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    z-index: 2;
+}
+
+.experiment-cta-container .section-desc {
+    max-width: 540px;
+    margin-bottom: 36px;
+    line-height: 1.75;
+    font-size: 16px;
+    color: var(--text-muted);
+    z-index: 2;
+}
+
+.cta-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+    margin-bottom: 40px;
+}
+
+.cta-secondary-text {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dark);
+}
+
+.disclaimer-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 580px;
+    text-align: left;
+    z-index: 2;
+}
+
+.disclaimer-icon {
+    font-size: 18px;
+    color: var(--cyan);
+    opacity: 0.85;
+    display: flex;
+    align-items: center;
+}
+
+.disclaimer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.disclaimer-text-primary {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.disclaimer-text-secondary {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Mobile responsive adjustments for the CTA section */
+@media (max-width: 768px) {
+    .experiment-cta-section {
+        padding: 60px 16px;
+    }
+    .experiment-cta-container {
+        padding: 48px 24px;
+    }
+    .disclaimer-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+        padding: 18px;
+    }
+    .disclaimer-icon {
+        justify-content: center;
+    }
+}
+

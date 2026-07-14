@@ -70,6 +70,7 @@
                 <a href="#research-areas" class="nav-link">Research</a>
                 <a href="#current-research" class="nav-link">Our Work</a>
                 <a href="#boundaries" class="nav-link">Principles</a>
+                <a href="/experiment" class="nav-link">Experiment</a>
             </nav>
 
             <div class="header-actions">
@@ -451,21 +452,24 @@
                     </div>
 
                     <!-- Project 2 -->
-                    <div class="research-project-card glass-panel reveal-fade">
+                    <a href="/experiment" class="research-project-card glass-panel reveal-fade" style="display: flex; flex-direction: column; text-decoration: none; color: inherit;">
                         <div class="card-glow"></div>
                         <div class="research-project-meta">
                             <span class="research-project-type">Experiment</span>
-                            <span class="research-status-pill in-development" style="background: rgba(0, 240, 255, 0.05); border-color: rgba(0, 240, 255, 0.2); color: var(--cyan);">
-                                <span class="status-dot" style="background-color: var(--cyan); box-shadow: 0 0 8px var(--cyan);"></span>
-                                Concept
+                            <span class="research-status-pill in-development" style="background: rgba(0, 255, 135, 0.05); border-color: rgba(0, 255, 135, 0.2); color: var(--green);">
+                                <span class="status-dot" style="background-color: var(--green); box-shadow: 0 0 8px var(--green);"></span>
+                                Public Preview
                             </span>
                         </div>
                         <h3>Human Presence Experiment v0.1</h3>
                         <p class="research-project-desc">
                             An experimental demonstration exploring whether interaction signals can contribute to confidence that a human may be present.
                         </p>
-                        <div class="research-project-footer">HUMNLABS &mdash; 2026</div>
-                    </div>
+                        <div class="research-project-footer" style="display: flex; justify-content: space-between; width: 100%;">
+                            <span>HUMNLABS &mdash; 2026</span>
+                            <span style="color: var(--cyan); font-weight: 500;">Try Experiment <i class="fa-solid fa-arrow-right" style="font-size: 10px; margin-left: 4px;"></i></span>
+                        </div>
+                    </a>
 
                     <!-- Project 3 -->
                     <div class="research-project-card glass-panel reveal-fade">
@@ -553,6 +557,44 @@
         </section>
 
         <!-- =============================================
+             EXPERIMENT CTA SECTION
+             ============================================= -->
+        <section class="experiment-cta-section" id="experiment">
+            <div class="experiment-cta-container glass-panel reveal-fade">
+                <div class="experiment-cta-glow"></div>
+                
+                <div class="badge reveal-fade">
+                    <span class="badge-dot"></span>
+                    <span class="badge-text">Experimental Research Demo</span>
+                </div>
+                
+                <h2 class="section-title reveal-slide">Explore the Human Presence Experiment</h2>
+                
+                <p class="section-desc reveal-fade">
+                    Can interaction-derived signals contribute to confidence in human presence without requiring identity, biometrics, or personal data?
+                </p>
+                
+                <div class="cta-actions reveal-fade">
+                    <a href="/experiment" class="btn-primary">
+                        <span>Try the Experiment</span>
+                        <i class="fa-solid fa-chevron-right icon-slide"></i>
+                    </a>
+                    <span class="cta-secondary-text">v0.1 Research Preview</span>
+                </div>
+
+                <div class="disclaimer-card reveal-fade">
+                    <div class="disclaimer-icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                    <div class="disclaimer-content">
+                        <p class="disclaimer-text-primary">This is an experimental research demonstration.</p>
+                        <p class="disclaimer-text-secondary">Results are probabilistic and are not proof of humanity or identity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
              WAITLIST SECTION
              ============================================= -->
         <section class="waitlist-section" id="waitlist">
@@ -621,6 +663,7 @@
                 <h5>Initiative</h5>
                 <a href="#problem">Why It Matters</a>
                 <a href="#dashboard">Technology</a>
+                <a href="/experiment">Experiment v0.1</a>
                 <a href="mailto:hello@humnlabs.ai">Contact</a>
             </div>
 
