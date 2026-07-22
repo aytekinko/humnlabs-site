@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>Privacy Policy | HUMNLABS</title>
+    <meta name="description" content="Privacy Policy for HUMNLABS — Privacy-preserving human presence research initiative.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Privacy Policy | HUMNLABS">
+    <meta property="og:description" content="Privacy Policy for HUMNLABS — Privacy-preserving human presence research initiative.">
+    <meta property="og:image" content="../favicon.png">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="apple-touch-icon" href="../favicon.png">
+
+    <!-- Fonts: Outfit + Inter + Lora -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        .privacy-page-wrapper {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+
+        .privacy-header {
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .privacy-main-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--text-pure);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .privacy-effective-date {
+            font-family: var(--font-mono, monospace);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: var(--cyan);
+            text-transform: uppercase;
+        }
+
+        .privacy-glance-card {
+            background: rgba(0, 240, 255, 0.03);
+            border: 1px solid rgba(0, 240, 255, 0.18);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .privacy-glance-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--violet));
+        }
+
+        .glance-title {
+            font-family: var(--font-heading);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .glance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .glance-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .glance-item i {
+            color: var(--cyan);
+            font-size: 14px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .glance-item-text {
+            font-family: var(--font-body);
+            font-size: 13.5px;
+            color: var(--text-bright);
+            line-height: 1.55;
+        }
+
+        .glance-item-text strong {
+            color: var(--text-pure);
+        }
+
+        .privacy-content-section {
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+        }
+
+        .policy-block {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 30px 32px;
+            text-align: left;
+        }
+
+        .policy-block-title {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-pure);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .policy-block-title span.num {
+            font-family: var(--font-mono, monospace);
+            font-size: 12px;
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .policy-block-text {
+            font-family: var(--font-body);
+            font-size: 14.5px;
+            color: #8a99ad;
+            line-height: 1.7;
+        }
+
+        .policy-block-text p {
+            margin-bottom: 12px;
+        }
+
+        .policy-block-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .policy-block-text ul {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .policy-block-text li {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .policy-block-text li::before {
+            content: '•';
+            position: absolute;
+            left: 4px;
+            color: var(--cyan);
+        }
+
+        .policy-contact-link {
+            color: var(--cyan);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        @media (max-width: 600px) {
+            .privacy-page-wrapper {
+                padding: 90px 16px 60px;
+            }
+            .policy-block {
+                padding: 22px 20px;
+            }
+            .privacy-glance-card {
+                padding: 22px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Interactive Canvas Background -->
+    <canvas id="canvas-bg"></canvas>
+    
+    <!-- Ambient glowing light sources -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <!-- Fixed Floating X Follow Button -->
+    <a href="https://x.com/Humnlayer"
+       class="x-float-pill"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Follow HUMN Labs on X">
+        <span class="x-float-glow"></span>
+        <svg class="x-float-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        <span class="x-float-label">Follow on X</span>
+    </a>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="header-container">
+           <a href="/" class="logo-link" id="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" stroke-dasharray="8 8"/>
+                        <path d="M50 25V75M25 50H75" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="12" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="logo-text">HUMN <span class="thin">LABS</span></span>
+            </a>
+            
+            <nav class="main-nav">
+                <a href="/#insight" class="nav-link">Insights</a>
+                <a href="/#challenge" class="nav-link">The Challenge</a>
+                <a href="/#research-areas" class="nav-link">Research</a>
+                <a href="/#current-research" class="nav-link">Our Work</a>
+                <a href="/#boundaries" class="nav-link">Principles</a>
+                <a href="/experiment" class="nav-link">Experiment</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="/#waitlist" class="btn-primary-mini">Access the Report</a>
+            </div>
+
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger-line line-1"></span>
+                <span class="hamburger-line line-2"></span>
+                <span class="hamburger-line line-3"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="privacy-page-wrapper">
+
+        <div class="privacy-header">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span class="badge-text">LEGAL DOKÜMANTASYON</span>
+            </div>
+            <h1 class="privacy-main-title">HUMNLABS Privacy Policy</h1>
+            <div class="privacy-effective-date">Effective Date: July 22, 2026</div>
+        </div>
+
+        <!-- Privacy at a Glance -->
+        <div class="privacy-glance-card">
+            <div class="glance-title">
+                <i class="fa-solid fa-shield-halved"></i>
+                Privacy at a Glance
+            </div>
+            <div class="glance-grid">
+                <div class="glance-item">
+                    <i class="fa-solid fa-check"></i>
+                    <div class="glance-item-text">
+                        <strong>Browser-Only Analysis:</strong> Behavioral interaction signals (reaction timing, movement rhythm, typing dynamics) are processed locally inside your browser memory.
+                    </div>
+                </div>
+                <div class="glance-item">
+                    <i class="fa-solid fa-check"></i>
+                    <div class="glance-item-text">
+                        <strong>No Accounts Required:</strong> The experiment does not ask for, collect, or link to any personal identity.
+                    </div>
+                </div>
+                <div class="glance-item">
+                    <i class="fa-solid fa-check"></i>
+                    <div class="glance-item-text">
+                        <strong>Session-Only Storage:</strong> In-memory experimental state is cleared when the page is refreshed or closed.
+                    </div>
+                </div>
+                <div class="glance-item">
+                    <i class="fa-solid fa-check"></i>
+                    <div class="glance-item-text">
+                        <strong>No Intentional Tracking:</strong> The experiment does not intentionally use tracking cookies, advertising pixels, or third-party web analytics.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Policy Blocks -->
+        <div class="privacy-content-section">
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">01</span> Overview & Scope</h2>
+                <div class="policy-block-text">
+                    <p>HUMNLABS ("we", "us", or "our") is an experimental research initiative exploring privacy-preserving trust signals and confidence in human presence. This Privacy Policy describes how technical and experimental data are handled when you visit our website and participate in the HUMNLABS Experiment (<code>humnlabs.io/experiment/</code>).</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">02</span> Experimental Behavioral Signals vs. Web Hosting Operations</h2>
+                <div class="policy-block-text">
+                    <p>We explicitly distinguish between two types of processing on this website:</p>
+                    <ul>
+                        <li><strong>Experimental Behavioral Signals (Browser-Only):</strong> When you participate in the experiment, your browser temporarily measures session-level interaction signals (reaction timing latency, pointer/touch movement coordinates, and inter-keystroke intervals). This data is processed strictly within your browser’s volatile local memory (RAM). It is not transmitted to our servers, saved to persistent storage, or linked to your identity.</li>
+                        <li><strong>Standard Web Hosting Operations:</strong> Like virtually all web applications, standard web hosting and network infrastructure automatically process technical request data (such as your IP address, browser user-agent, operating system, and request timestamps) to deliver web pages securely and prevent malicious traffic.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">03</span> Data Processed</h2>
+                <div class="policy-block-text">
+                    <ul>
+                        <li><strong>No Identity Credentials (Experiment Only):</strong> The experiment does not require, ask for, or collect accounts, names, email addresses, phone numbers, or government identification credentials.</li>
+                        <li><strong>No Biometric Profiles:</strong> The experiment does not create, store, or extract biometric signatures, facial templates, or persistent typing profiles.</li>
+                        <li><strong>Volatile Interaction Metrics:</strong> Raw interaction values (timing deltas, cursor trajectories, typing rhythms) are calculated locally in your browser's JavaScript memory during your active session.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">04</span> Purpose of Processing</h2>
+                <div class="policy-block-text">
+                    <ul>
+                        <li><strong>Research & Proof-of-Concept:</strong> Exploring whether privacy-preserving behavioral signals can establish reasonable confidence in human presence without identity disclosure.</li>
+                        <li><strong>Privacy-First Demonstration:</strong> Demonstrating client-side, edge-computed alternatives to tracking-heavy CAPTCHAs.</li>
+                        <li><strong>Infrastructure Security:</strong> Technical server logs (such as IP addresses) are processed solely for network delivery, server health monitoring, and DDoS protection.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">05</span> Data Storage & Retention</h2>
+                <div class="policy-block-text">
+                    <ul>
+                        <li><strong>Experimental Signals: Session-only retention.</strong> Experimental signal metrics exist only in volatile RAM while your browser tab is active. The experiment's in-memory state is cleared when the page is refreshed or closed.</li>
+                        <li><strong>Server Logs:</strong> Retention periods for standard web hosting and security logs are determined by the relevant infrastructure providers and may vary according to operational and security requirements.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">06</span> Data Sharing & Third Parties</h2>
+                <div class="policy-block-text">
+                    <p>We do not sell, rent, or trade user data. Experimental signal data remains isolated inside your local browser sandbox and is not shared with third parties. Standard web hosting logs are processed solely by infrastructure providers for content delivery and network security.</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">07</span> Cookies & Tracking</h2>
+                <div class="policy-block-text">
+                    <p>The experiment does not intentionally use tracking cookies, advertising cookies, or persistent browser storage. No tracking pixels or third-party web analytics services (such as Google Analytics or Meta Pixel) are operated by the experiment.</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">08</span> Data Security</h2>
+                <div class="policy-block-text">
+                    <p>We follow a <em>Privacy-by-Design</em> architecture centered on data minimization and edge computation. By processing experimental signals exclusively inside your local browser memory, this architecture substantially reduces server-side exposure of experimental behavioral signals.</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">09</span> User Rights & Legal Frameworks</h2>
+                <div class="policy-block-text">
+                    <p>Depending on your jurisdiction (including under the General Data Protection Regulation / GDPR or state privacy statutes), you may have legal rights regarding personal data processed by hosting infrastructure (such as server log IP addresses). Because experimental signals are processed in local memory without identity identifiers or server storage, the experiment is not designed to associate session interaction scores with any specific individual.</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">10</span> Children's Privacy</h2>
+                <div class="policy-block-text">
+                    <p>Our experiment is not directed to children under 13 years of age (or 16 in applicable jurisdictions), and we do not knowingly collect personal information from children.</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">11</span> Changes to This Policy</h2>
+                <div class="policy-block-text">
+                    <p>We may update this Privacy Policy periodically to reflect research refinements or legal updates. The "Effective Date" at the top indicates when the latest revisions took effect.</p>
+                </div>
+            </div>
+
+            <div class="policy-block">
+                <h2 class="policy-block-title"><span class="num">12</span> Contact Us</h2>
+                <div class="policy-block-text">
+                    <p>If you have questions or feedback regarding this Privacy Policy or our research, please contact us:</p>
+                    <p><strong>Email:</strong> <a href="mailto:humnlabsio@gmail.com" class="policy-contact-link">humnlabsio@gmail.com</a><br>
+                    <strong>Website:</strong> <a href="https://humnlabs.io" class="policy-contact-link">https://humnlabs.io</a></p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="logo-icon">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" stroke-dasharray="8 8"/>
+                            <path d="M50 25V75M25 50H75" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="50" cy="50" r="12" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span class="logo-text">HUMN <span class="thin">LABS</span></span>
+                </div>
+                <p class="footer-tagline">HUMNLABS is an experimental research initiative exploring privacy-preserving trust signals and confidence in human presence.</p>
+                <p class="footer-disclaimer">HUMNLABS does not provide proof of humanity, identity verification, or guaranteed human detection.</p>
+            </div>
+
+            <div class="link-group">
+                <h5>Research</h5>
+                <a href="/#insight">Insights</a>
+                <a href="/#challenge">The Challenge</a>
+                <a href="/#research-areas">Research Areas</a>
+                <a href="/#current-research">Our Work</a>
+                <a href="/#boundaries">Principles</a>
+            </div>
+
+            <div class="link-group">
+                <h5>Initiative</h5>
+                <a href="/#problem">Why It Matters</a>
+                <a href="/#dashboard">Technology</a>
+                <a href="/experiment">Experiment v0.1</a>
+                <a href="mailto:humnlabsio@gmail.com">Contact</a>
+            </div>
+
+            <div class="link-group">
+                <h5>Follow</h5>
+                <a href="https://x.com/Humnlayer" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+                <a href="https://www.linkedin.com/company/119474335/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a href="/privacy/">Privacy Policy</a>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2026 HUMN Labs Inc. All rights reserved.
+                </div>
+                <div class="footer-legal-links">
+                    <a href="/privacy/" class="legal-link">Privacy Policy</a>
+                    <span class="divider">•</span>
+                    <a href="#" class="legal-link">Terms of Service</a>
+                </div>
+                <div class="social-links">
+                    <a href="https://x.com/Humnlayer" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="HUMN Labs on X">
+                        <svg class="x-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/company/119474335/" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Open HUMN Labs LinkedIn page">
+                        <svg class="x-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../script.js"></script>
+</body>
+</html>

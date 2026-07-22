@@ -1,5 +1,5 @@
 /**
- * Human Presence Experiment v0.1 â€” HUMNLABS
+ * Human Presence Experiment v0.1 — HUMNLABS
  * All signal collection and scoring runs entirely in the browser.
  * No data is transmitted to any server.
  */
@@ -10,6 +10,7 @@
 // STATE
 // ============================================================
 const ExpState = {
+  isSessionActive: false,
   currentPhase: 'welcome',
   signals: {
     reaction: { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0 },
@@ -20,9 +21,147 @@ const ExpState = {
 };
 
 // ============================================================
+// REFRESH SAFETY — named so it can be added/removed cleanly
+// ============================================================
+function warnOnRefresh(e) {
+  e.preventDefault();
+  e.returnValue = '';
+}
+
+// ============================================================
+// ACTIVE LISTENER & TIMER REGISTRY
+// Tracks all phase-scoped listeners/timers so they can be
+// torn down cleanly before any phase transition (incl. Back/Fwd).
+// ============================================================
+const ActiveListeners = {
+  listeners: [],   // { target, type, fn, opts }
+  intervals: [],   // intervalId
+  timeouts:  [],   // timeoutId
+
+  addListener(target, type, fn, opts) {
+    target.addEventListener(type, fn, opts || false);
+    this.listeners.push({ target, type, fn, opts });
+  },
+
+  addInterval(id) {
+    this.intervals.push(id);
+  },
+
+  addTimeout(id) {
+    this.timeouts.push(id);
+  },
+
+  teardown() {
+    this.listeners.forEach(({ target, type, fn, opts }) => {
+      target.removeEventListener(type, fn, opts || false);
+    });
+    this.listeners = [];
+    this.intervals.forEach(id => clearInterval(id));
+    this.intervals = [];
+    this.timeouts.forEach(id => clearTimeout(id));
+    this.timeouts = [];
+  }
+};
+
+// ============================================================
+// ROUTER & STATE VALIDATION (Zero-persistence privacy protection)
+// ============================================================
+function getPhaseFromHash(hash) {
+  if (!hash) return 'welcome';
+  const clean = hash.replace(/^#/, '').replace(/^exp-/, '').replace(/^task-/, '');
+  const map = {
+    'welcome': 'welcome',
+    'instructions': 'instructions',
+    'reaction': 'task-reaction',
+    'movement': 'task-movement',
+    'typing': 'task-typing',
+    'analyzing': 'analyzing',
+    'result': 'result'
+  };
+  return map[clean] || 'welcome';
+}
+
+function hasValidStateForPhase(phase) {
+  if (phase === 'welcome' || phase === 'instructions') {
+    return true;
+  }
+
+  const s = ExpState.signals;
+
+  if (phase === 'task-reaction') {
+    return ExpState.isSessionActive === true || (s.reaction && s.reaction.round > 0);
+  }
+
+  if (phase === 'task-movement') {
+    return s.reaction && Array.isArray(s.reaction.times) && s.reaction.times.length > 0;
+  }
+
+  if (phase === 'task-typing') {
+    return s.reaction && Array.isArray(s.reaction.times) && s.reaction.times.length > 0 &&
+           s.movement && Array.isArray(s.movement.points) && s.movement.points.length >= 10;
+  }
+
+  if (phase === 'analyzing' || phase === 'result') {
+    return s.reaction && Array.isArray(s.reaction.times) && s.reaction.times.length > 0 &&
+           s.movement && Array.isArray(s.movement.points) && s.movement.points.length >= 10 &&
+           s.typing && Array.isArray(s.typing.keyIntervals) && s.typing.keyIntervals.length > 0;
+  }
+
+  return false;
+}
+
+function resetToWelcome() {
+  ExpState.isSessionActive = false;
+  if (ExpState.signals.reaction.timeoutId) {
+    clearTimeout(ExpState.signals.reaction.timeoutId);
+    ExpState.signals.reaction.timeoutId = null;
+  }
+  history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
+  showPhase('welcome');
+}
+
+// ============================================================
 // PHASE MANAGEMENT
 // ============================================================
 function showPhase(name) {
+  if (name !== 'welcome' && !hasValidStateForPhase(name)) {
+    resetToWelcome();
+    return;
+  }
+
+  // Tear down all active listeners, intervals, and timeouts
+  // from the previous phase BEFORE initializing the next one.
+  ActiveListeners.teardown();
+
+  // Also cancel the reaction timeout stored on state (may have
+  // been set before the registry existed or after a hard reset).
+  if (ExpState.signals.reaction.timeoutId) {
+    clearTimeout(ExpState.signals.reaction.timeoutId);
+    ExpState.signals.reaction.timeoutId = null;
+  }
+
+  // Stop any in-progress movement collection
+  ExpState.signals.movement.collecting = false;
+
+  // Bind refresh warning during active data collection phases
+  const activeDataPhases = ['task-reaction', 'task-movement', 'task-typing', 'analyzing'];
+  if (activeDataPhases.includes(name)) {
+    window.addEventListener('beforeunload', warnOnRefresh);
+  } else {
+    window.removeEventListener('beforeunload', warnOnRefresh);
+  }
+
+  // Push history state so back-button navigates within the experiment
+  const navPhases = ['task-reaction', 'task-movement', 'task-typing', 'result'];
+  if (navPhases.includes(name)) {
+    const hashName = name === 'result' ? 'result' : name.replace('task-', '');
+    history.pushState({ phase: name }, '', '#exp-' + hashName);
+  } else if (name === 'welcome') {
+    if (window.location.hash) {
+      history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
+    }
+  }
+
   document.querySelectorAll('.exp-phase').forEach(el => {
     el.classList.remove('exp-phase--active');
   });
@@ -31,6 +170,12 @@ function showPhase(name) {
   if (target) {
     requestAnimationFrame(() => {
       target.classList.add('exp-phase--active');
+      // Accessibility: move keyboard focus to the new section heading
+      const heading = target.querySelector('h2, h3');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({ preventScroll: true });
+      }
     });
   }
 
@@ -101,16 +246,31 @@ const PhaseInits = {
 };
 
 // ============================================================
-// SIGNAL 01 â€” REACTION TIMING
+// SIGNAL 01 — REACTION TIMING
 // ============================================================
 function initReactionTask() {
   const state   = ExpState.signals.reaction;
+
+  // Cancel any pending round timeout from a previous or interrupted visit
+  if (state.timeoutId) {
+    clearTimeout(state.timeoutId);
+    state.timeoutId = null;
+  }
+
   state.round   = 0;
   state.times   = [];
   state.status  = 'idle';
 
   const list = document.getElementById('reaction-results');
   if (list) list.innerHTML = '';
+
+  // Reset target button state
+  const target = document.getElementById('reaction-target');
+  if (target) {
+    target.onclick = null;
+    target.dataset.state = 'idle';
+    target.innerHTML = '';
+  }
 
   updateRoundLabel(1);
   startReactionRound();
@@ -127,7 +287,7 @@ function startReactionRound() {
   target.onclick = null;
 
   const delay = 800 + Math.random() * 2200;
-  state.timeoutId = setTimeout(() => {
+  const tid = setTimeout(() => {
     if (ExpState.currentPhase !== 'task-reaction') return;
     state.status     = 'go';
     state.startTime  = performance.now();
@@ -135,6 +295,9 @@ function startReactionRound() {
     target.innerHTML = `<span class="rt-inner-text">NOW!</span>`;
     target.onclick   = handleReactionClick;
   }, delay);
+  // Register with both state (for teardown on reset) and registry (for Back-button teardown)
+  state.timeoutId = tid;
+  ActiveListeners.addTimeout(tid);
 }
 
 function handleReactionClick() {
@@ -207,7 +370,7 @@ function updateRoundLabel(round) {
 }
 
 // ============================================================
-// SIGNAL 02 â€” MOVEMENT ANALYSIS
+// SIGNAL 02 — MOVEMENT ANALYSIS
 // ============================================================
 function initMovementTask() {
   const state = ExpState.signals.movement;
@@ -223,7 +386,7 @@ function initMovementTask() {
   if (timerEl)  timerEl.textContent = '5';
   if (startBtn) startBtn.style.display = '';
 
-  // Size canvas
+  // Size canvas and clear any previous drawing
   const zone = document.getElementById('movement-zone');
   if (canvas && zone) {
     canvas.width  = zone.clientWidth  || 300;
@@ -232,6 +395,7 @@ function initMovementTask() {
   }
 
   if (startBtn) {
+    // Use a fresh onclick each init; no registry needed (single inline handler)
     startBtn.onclick = () => {
       startBtn.style.display = 'none';
       beginMovementCollection(ctx, canvas, timerEl);
@@ -301,9 +465,11 @@ function beginMovementCollection(ctx, canvas, timerEl) {
     }
   };
 
-  zone.addEventListener('mousemove', onMouse);
-  zone.addEventListener('touchmove', onTouch, { passive: false });
-  window.addEventListener('keydown', onKey);
+  // Register all movement-phase listeners with the central registry
+  // so Back-button teardown removes them automatically.
+  ActiveListeners.addListener(zone, 'mousemove', onMouse);
+  ActiveListeners.addListener(zone, 'touchmove', onTouch, { passive: false });
+  ActiveListeners.addListener(window, 'keydown', onKey);
 
   const tick = setInterval(() => {
     if (!state.collecting) { clearInterval(tick); return; }
@@ -313,22 +479,76 @@ function beginMovementCollection(ctx, canvas, timerEl) {
     if (state.timeRemaining <= 0) {
       clearInterval(tick);
       state.collecting = false;
+      // Remove via registry-aware wrappers (listeners already registered above)
       zone.removeEventListener('mousemove', onMouse);
       zone.removeEventListener('touchmove', onTouch);
       window.removeEventListener('keydown', onKey);
-      setTimeout(() => showPhase('task-typing'), 1000);
+
+      // BUG-09: Require at least 10 points; fewer means the user didn't move at all
+      if (state.points.length < 10) {
+        if (timerEl) timerEl.textContent = '!';
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'rgba(239,68,68,0.65)';
+          ctx.font = '13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('No movement detected — tap Start and move your cursor', canvas.width / 2, canvas.height / 2);
+        }
+        // Re-show the start button for a retry
+        const retryBtn = document.getElementById('movement-start-btn');
+        if (retryBtn) {
+          retryBtn.style.display = '';
+          state.timeRemaining = 5;
+          if (timerEl) timerEl.textContent = '5';
+        }
+        return;
+      }
+
+      const advanceTid = setTimeout(() => showPhase('task-typing'), 1000);
+      ActiveListeners.addTimeout(advanceTid);
     }
   }, 1000);
+  ActiveListeners.addInterval(tick);
 }
 
 // ============================================================
-// SIGNAL 03 â€” KEYSTROKE DYNAMICS
+// SIGNAL 03 — KEYSTROKE DYNAMICS
+// ============================================================
+// ============================================================
+// TYPING KEY FILTER
+// Returns true only for printable single-character keys that
+// represent genuine typing intent and are not modifier combos.
+// Modifier-held combos (Ctrl+V, Cmd+A …) are excluded so paste
+// shortcuts do not pollute the rhythm sample.
+// ============================================================
+const EXCLUDED_KEYS = new Set([
+  'Backspace', 'Delete',
+  'Shift', 'Control', 'Alt', 'Meta', 'AltGraph',
+  'CapsLock', 'Tab', 'Escape', 'Enter',
+  'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+  'Home', 'End', 'PageUp', 'PageDown', 'Insert',
+  'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+  'ContextMenu', 'Pause', 'ScrollLock', 'PrintScreen',
+  'NumLock', 'Dead',
+]);
+
+function isPrintableTypingKey(e) {
+  // Must be a single visible character (space counts)
+  if (e.key.length !== 1) return false;
+  // Exclude modifier-held combos such as Ctrl+A, Cmd+C
+  if (e.ctrlKey || e.metaKey) return false;
+  return true;
+}
+
+// ============================================================
+// SIGNAL 03 — KEYSTROKE DYNAMICS
 // ============================================================
 function initTypingTask() {
   const state   = ExpState.signals.typing;
-  state.keyIntervals = [];
-  state.lastKeyTime  = null;
-  state.typed        = '';
+  state.keyIntervals  = [];
+  state.lastKeyTime   = null;
+  state.lastInputLen  = 0;   // used to detect paste / autocomplete bursts
+  state.typed         = '';
 
   // Render target phrase with char spans
   const display = document.getElementById('typing-phrase-display');
@@ -352,6 +572,22 @@ function initTypingTask() {
 
     fresh.addEventListener('keydown', (e) => {
       const now = performance.now();
+
+      // ── Correction keys: pop the last recorded interval so that
+      //    fixing a typo does not inflate the sample.
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        if (state.keyIntervals.length > 0) {
+          state.keyIntervals.pop();
+        }
+        // Reset timing anchor — the correction itself is not measured
+        state.lastKeyTime = null;
+        return;
+      }
+
+      // ── Skip every non-printable / modifier key
+      if (!isPrintableTypingKey(e)) return;
+
+      // ── Record interval only between consecutive printable presses
       if (state.lastKeyTime !== null) {
         state.keyIntervals.push(now - state.lastKeyTime);
       }
@@ -362,6 +598,23 @@ function initTypingTask() {
       const typed  = e.target.value;
       const phrase = state.phrase;
       state.typed  = typed;
+
+      // ── Paste / autocomplete / IME burst detection:
+      //    If the character count jumped by more than 1 since the last
+      //    input event, a non-keystroke source added multiple characters
+      //    at once. Discard the last recorded interval (it was timestamped
+      //    on keydown before the burst) and reset the timing anchor so
+      //    the next genuine key press starts a fresh measurement window.
+      const currentLen = typed.length;
+      const delta      = currentLen - state.lastInputLen;
+      if (delta > 1) {
+        if (state.keyIntervals.length > 0) state.keyIntervals.pop();
+        state.lastKeyTime = null;
+      } else if (delta < 0) {
+        // Bulk delete (select-all + delete, etc.) — same treatment
+        state.lastKeyTime = null;
+      }
+      state.lastInputLen = currentLen;
 
       for (let i = 0; i < phrase.length; i++) {
         const span = document.getElementById(`tc-${i}`);
@@ -383,11 +636,20 @@ function initTypingTask() {
       const correct = [...typed].filter((c, i) => c === phrase[i]).length;
       if (typed.length >= phrase.length * 0.9 && correct >= phrase.length * 0.85) {
         e.target.disabled = true;
-        setTimeout(() => showPhase('analyzing'), 700);
+        // BUG-06: Show visual feedback before phase transition so the change isn't sudden
+        const pb = document.getElementById('typing-progress-bar');
+        if (pb) {
+          pb.style.width = '100%';
+          pb.style.background = 'linear-gradient(90deg, #00ff87, #00f0ff)';
+        }
+        e.target.placeholder = 'Rhythm registered — analyzing…';
+        setTimeout(() => showPhase('analyzing'), 900);
       }
     });
 
-    setTimeout(() => fresh.focus(), 100);
+    // BUG-03: Direct focus — without setTimeout so Safari honours it where possible.
+    // iOS still requires a user gesture; the input field tap-area handles the rest.
+    fresh.focus();
   }
 }
 
@@ -421,8 +683,9 @@ function initAnalyzing() {
     }, 350 + idx * 700);
   });
 
-  // Advance to result
-  setTimeout(() => showPhase('result'), 3600);
+  // Advance to result — registered so Back-button during analyze cancels this timer
+  const advanceTid = setTimeout(() => showPhase('result'), 3600);
+  ActiveListeners.addTimeout(advanceTid);
 }
 
 // ============================================================
@@ -592,11 +855,19 @@ function initResult() {
   if (restartBtn) {
     restartBtn.onclick = () => {
       // Reset all state
+      ExpState.isSessionActive  = false;
       ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0 };
       ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5, score: 0 };
       ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 };
       ExpState.result           = { reaction: 0, movement: 0, typing: 0, overall: 0 };
-      
+
+      // BUG-19: Clear the movement canvas so previous drawings don't persist into next run
+      const movCanvas = document.getElementById('movement-canvas');
+      if (movCanvas) {
+        const ctx2d = movCanvas.getContext('2d');
+        if (ctx2d) ctx2d.clearRect(0, 0, movCanvas.width, movCanvas.height);
+      }
+
       // Reset explainability badges
       ['r', 'm', 't'].forEach(id => {
         const badge = document.getElementById(`exp-badge-${id}`);
@@ -688,13 +959,14 @@ function initMobileNav() {
     const open = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!open));
     toggle.classList.toggle('is-open', !open);
-    nav.classList.toggle('nav-open', !open);
+    // BUG-17: Use 'active' to match script.js on the main site
+    nav.classList.toggle('active', !open);
   });
   document.querySelectorAll('.main-nav a').forEach(link => {
     link.addEventListener('click', () => {
       toggle.setAttribute('aria-expanded', 'false');
       toggle.classList.remove('is-open');
-      nav.classList.remove('nav-open');
+      nav.classList.remove('active');
     });
   });
 }
@@ -720,13 +992,45 @@ document.addEventListener('DOMContentLoaded', () => {
   initCanvasBg();
   initMobileNav();
   initHeaderScroll();
-  showPhase('welcome');
 
-  // Welcome â†’ Instructions
+  const initialHash = window.location.hash;
+  const targetPhase = initialHash ? getPhaseFromHash(initialHash) : 'welcome';
+
+  if (targetPhase !== 'welcome' && !hasValidStateForPhase(targetPhase)) {
+    resetToWelcome();
+  } else {
+    showPhase(targetPhase);
+    if (!initialHash) {
+      history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
+    }
+  }
+
+  window.addEventListener('popstate', (e) => {
+    const phase = (e.state && e.state.phase) || getPhaseFromHash(window.location.hash);
+    if (phase) {
+      if (hasValidStateForPhase(phase)) {
+        showPhase(phase);
+      } else {
+        resetToWelcome();
+      }
+    }
+  });
+
+  // Welcome → Instructions
   const beginBtn = document.getElementById('exp-begin-btn');
-  if (beginBtn) beginBtn.addEventListener('click', () => showPhase('instructions'));
+  if (beginBtn) {
+    beginBtn.addEventListener('click', () => {
+      ExpState.isSessionActive = true;
+      showPhase('instructions');
+    });
+  }
 
-  // Instructions â†’ Task 1
+  // Instructions → Task 1
   const startBtn = document.getElementById('exp-start-btn');
-  if (startBtn) startBtn.addEventListener('click', () => showPhase('task-reaction'));
+  if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      ExpState.isSessionActive = true;
+      showPhase('task-reaction');
+    });
+  }
 });

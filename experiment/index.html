@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     <title>Human Presence Experiment v0.1 | HUMNLABS</title>
     <meta name="description" content="Experimental research demo exploring confidence in human presence through behavioral signals without identity or biometrics.">
@@ -18,13 +18,18 @@
 
 <style>
 /* ================================================================
-   EXPERIMENT PAGE â€” scoped styles only
+   EXPERIMENT PAGE — scoped styles only
    All design tokens come from ../style.css
    ================================================================ */
 
 /* ---- Global phase container ---- */
 .exp-wrapper {
-    --text-dark: #6e8096;
+    /* Raise --text-dark to a WCAG AA-safe level for body copy on this page.
+       Original global value #4e5d70 gives ~2.4:1 on #030305; the local
+       override below gives ~3.2:1 — both fail 4.5:1 normal-text AA.
+       --text-accessible (#8a99ad) matches --text-muted and gives ~4.9:1. */
+    --text-dark:       #4e5d70;   /* kept for purely decorative uses only */
+    --text-accessible: #8a99ad;   /* WCAG AA compliant: ~4.9:1 vs #030305 */
     min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
@@ -123,7 +128,7 @@
     display: inline-flex; align-items: center; gap: 10px;
     font-family: var(--font-heading);
     font-size: 9px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--text-dark);
+    text-transform: uppercase; color: var(--text-accessible);
     margin-bottom: 20px;
 }
 .exp-signal-label span {
@@ -170,7 +175,7 @@
 .welcome-version {
     font-family: var(--font-mono, monospace);
     font-size: 11px; font-weight: 500; letter-spacing: 3px;
-    color: var(--text-dark); text-transform: uppercase;
+    color: var(--text-accessible); text-transform: uppercase;
     margin-bottom: 22px;
 }
 .welcome-body {
@@ -235,7 +240,7 @@
 }
 
 /* ================================================================
-   PHASE: TASK â€” REACTION TIMING
+   PHASE: TASK — REACTION TIMING
    ================================================================ */
 .reaction-instruction {
     font-family: var(--font-body);
@@ -261,6 +266,14 @@
 .reaction-target[data-state="waiting"] {
     border-color: rgba(255,255,255,0.12);
     animation: rt-pulse-wait 1.8s ease-in-out infinite;
+    cursor: default;
+}
+.reaction-target[data-state="invalid"] {
+    background: rgba(239, 68, 68, 0.04);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    cursor: default;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
 }
 .reaction-target[data-state="go"] {
     background: rgba(0,240,255,0.08);
@@ -298,7 +311,7 @@
 .reaction-round-label {
     font-family: var(--font-heading);
     font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--text-dark);
+    text-transform: uppercase; color: var(--text-accessible);
 }
 #reaction-results {
     display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
@@ -314,16 +327,16 @@
 .rt-result-label {
     font-family: var(--font-heading);
     font-size: 9px; font-weight: 700; letter-spacing: 1px;
-    text-transform: uppercase; color: var(--text-dark);
+    text-transform: uppercase; color: var(--text-accessible);
 }
 .rt-result-time {
     font-family: var(--font-heading);
     font-size: 14px; font-weight: 700; color: var(--cyan);
 }
-.rt-result-unit { font-size: 9px; color: var(--text-dark); margin-left: 2px; }
+.rt-result-unit { font-size: 9px; color: var(--text-accessible); margin-left: 2px; }
 
 /* ================================================================
-   PHASE: TASK â€” MOVEMENT ANALYSIS
+   PHASE: TASK — MOVEMENT ANALYSIS
    ================================================================ */
 .movement-instruction {
     font-family: var(--font-body);
@@ -376,7 +389,7 @@
 }
 
 /* ================================================================
-   PHASE: TASK â€” KEYSTROKE ANALYSIS
+   PHASE: TASK — KEYSTROKE ANALYSIS
    ================================================================ */
 .typing-instruction {
     font-family: var(--font-body);
@@ -443,7 +456,7 @@
 }
 .analyzing-sub {
     font-family: var(--font-body);
-    font-size: 14px; color: var(--text-dark); margin-bottom: 40px;
+    font-size: 14px; color: var(--text-accessible); margin-bottom: 40px;
 }
 .analyzing-signals {
     width: 100%; display: flex; flex-direction: column; gap: 20px;
@@ -580,7 +593,7 @@
 
 .result-disclaimer {
     font-family: var(--font-body);
-    font-size: 12px; color: var(--text-dark); line-height: 1.7;
+    font-size: 12px; color: var(--text-accessible); line-height: 1.7;
     margin-bottom: 32px;
     padding: 14px 18px;
     background: rgba(255,255,255,0.015);
@@ -678,7 +691,7 @@
 .result-session-note {
     font-family: var(--font-body);
     font-size: 11px;
-    color: var(--text-dark);
+    color: var(--text-accessible);
     margin-top: 4px;
     text-align: center;
 }
@@ -687,7 +700,7 @@
 .result-context-subtitle {
     font-family: var(--font-body);
     font-size: 11.5px;
-    color: var(--text-dark);
+    color: var(--text-accessible);
     text-align: center;
     margin-top: 6px;
     margin-bottom: 0px;
@@ -800,7 +813,7 @@
 .privacy-grid-item-desc {
     font-family: var(--font-body);
     font-size: 11px;
-    color: var(--text-dark);
+    color: var(--text-accessible);
     line-height: 1.5;
     display: block;
     text-align: left;
@@ -1040,12 +1053,20 @@
     margin-top: 12px;
     font-family: var(--font-body);
     font-size: 13.5px;
-    color: var(--text-muted);
+    color: var(--text-accessible);
     line-height: 1.6;
 }
 </style>
 </head>
 <body>
+<noscript>
+    <div style="position: fixed; inset: 0; background: #030305; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 99999; font-family: sans-serif; padding: 24px; text-align: center;">
+        <div>
+            <h1 style="color: var(--cyan, #00f0ff); margin-bottom: 12px;">JavaScript Required</h1>
+            <p>This interactive human presence experiment requires JavaScript to run behavioral signal collection.</p>
+        </div>
+    </div>
+</noscript>
 <div id="exp-aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <!-- Canvas background -->
@@ -1178,7 +1199,7 @@
 </div>
 
 <!-- ========================
-     PHASE: TASK 1 â€” REACTION
+     PHASE: TASK 1 — REACTION
      ======================== -->
 <div class="exp-phase" id="phase-task-reaction">
     <div class="exp-signal-label">
@@ -1196,7 +1217,7 @@
 </div>
 
 <!-- ========================
-     PHASE: TASK 2 â€” MOVEMENT
+     PHASE: TASK 2 — MOVEMENT
      ======================== -->
 <div class="exp-phase" id="phase-task-movement">
     <div class="exp-signal-label">
@@ -1204,7 +1225,7 @@
         Movement Analysis &mdash; Signal 2 of 3
     </div>
     <p class="movement-instruction">
-        Move your cursor (or finger) freely inside the area below for 5 seconds. No specific path &mdash; just move naturally.
+        Move your cursor (or finger) freely inside the area below for 5 seconds. Keyboard users: use WASD or arrow keys to move the drawing cursor.
     </p>
     <div class="movement-zone-wrapper">
         <div id="movement-zone" tabindex="0" aria-label="Movement area. Use mouse, touch, or arrow keys to draw a line.">
@@ -1218,7 +1239,7 @@
 </div>
 
 <!-- ========================
-     PHASE: TASK 3 â€” TYPING
+     PHASE: TASK 3 — TYPING
      ======================== -->
 <div class="exp-phase" id="phase-task-typing">
     <div class="exp-signal-label">
@@ -1302,7 +1323,7 @@
                 <span class="result-score-num" id="result-score-num">0%</span>
             </div>
         </div>
-        <div class="result-score-label" id="result-score-label">â€”</div>
+        <div class="result-score-label" id="result-score-label">—</div>
         <p class="result-score-caption">Estimated Confidence of Human Presence</p>
         <p class="result-certainty-note">Confidence is not certainty.</p>
         <p class="result-session-note">This estimate applies only to this session.</p>
@@ -1320,21 +1341,21 @@
             <div class="result-signal-row">
                 <div class="result-signal-header">
                     <span class="result-signal-name"><i class="fa-solid fa-stopwatch"></i>Reaction Timing</span>
-                    <span class="result-signal-val" id="res-val-r">â€”</span>
+                    <span class="result-signal-val" id="res-val-r">—</span>
                 </div>
                 <div class="result-signal-track"><div class="result-signal-bar" id="res-bar-r"></div></div>
             </div>
             <div class="result-signal-row">
                 <div class="result-signal-header">
                     <span class="result-signal-name"><i class="fa-solid fa-arrows-up-down-left-right"></i>Movement Analysis</span>
-                    <span class="result-signal-val" id="res-val-m">â€”</span>
+                    <span class="result-signal-val" id="res-val-m">—</span>
                 </div>
                 <div class="result-signal-track"><div class="result-signal-bar" id="res-bar-m"></div></div>
             </div>
             <div class="result-signal-row">
                 <div class="result-signal-header">
                     <span class="result-signal-name"><i class="fa-solid fa-keyboard"></i>Typing Rhythm</span>
-                    <span class="result-signal-val" id="res-val-t">â€”</span>
+                    <span class="result-signal-val" id="res-val-t">—</span>
                 </div>
                 <div class="result-signal-track"><div class="result-signal-bar" id="res-bar-t"></div></div>
             </div>
@@ -1349,17 +1370,17 @@
                 <div class="explainability-item">
                     <span class="explainability-item-label">Reaction Timing</span>
                     <div class="explainability-leader"></div>
-                    <span class="explainability-badge" id="exp-badge-r">â€”</span>
+                    <span class="explainability-badge" id="exp-badge-r">—</span>
                 </div>
                 <div class="explainability-item">
                     <span class="explainability-item-label">Movement Analysis</span>
                     <div class="explainability-leader"></div>
-                    <span class="explainability-badge" id="exp-badge-m">â€”</span>
+                    <span class="explainability-badge" id="exp-badge-m">—</span>
                 </div>
                 <div class="explainability-item">
                     <span class="explainability-item-label">Typing Rhythm</span>
                     <div class="explainability-leader"></div>
-                    <span class="explainability-badge" id="exp-badge-t">â€”</span>
+                    <span class="explainability-badge" id="exp-badge-t">—</span>
                 </div>
             </div>
         </div>
@@ -1425,28 +1446,29 @@
         <details class="faq-item">
             <summary class="faq-question">Does this verify identity? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>No.</p>
+                <p>No. This experiment does not ask for, collect, or check any form of identity — no account, document, email address, or identifying credential of any kind is involved. It observes only anonymous behavioral patterns during this session.</p>
             </div>
         </details>
         <details class="faq-item">
             <summary class="faq-question">Does this prove humanity? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>No.</p>
+                <p>No. The result is a probabilistic confidence estimate, not a proof. It reflects behavioral patterns observed in this session that tend to be consistent with human interaction — but it carries no certainty, no legal weight, and no claim that automated tools could not eventually replicate similar signals.</p>
             </div>
         </details>
         <details class="faq-item">
             <summary class="faq-question">Is personal data collected? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>No.</p>
+                <p>No. All signal processing happens locally inside your browser and is discarded when the session ends. Nothing is transmitted to a server, stored in cookies or local storage, or linked to your device or identity in any way.</p>
             </div>
         </details>
         <details class="faq-item">
             <summary class="faq-question">Why is this an experiment? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>To explore whether privacy-preserving interaction signals can contribute to confidence in human presence.</p>
+                <p>Because the question it explores is genuinely open. We are investigating whether privacy-preserving behavioral signals — reaction timing, movement rhythm, and keystroke patterns — can contribute to reasonable confidence in human presence without requiring identity or biometric data. The methodology is still being refined, and the results are research observations rather than a finished product.</p>
             </div>
         </details>
     </div>
+
 </section>
 
 </main>
@@ -1479,17 +1501,18 @@
             <h5>Initiative</h5>
             <a href="/experiment/">Experiment v0.1</a>
             <a href="/#boundaries">Principles</a>
-            <a href="mailto:hello@humnlabs.ai">Contact</a>
+            <a href="mailto:humnlabsio@gmail.com">Contact</a>
         </div>
         <div class="link-group">
             <h5>Follow</h5>
             <a href="https://x.com/Humnlayer" target="_blank" rel="noopener noreferrer">X / Twitter</a>
             <a href="https://www.linkedin.com/company/119474335/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="/privacy/">Privacy Policy</a>
         </div>
         <div class="footer-bottom">
             <div class="copyright">&copy; 2026 HUMN Labs Inc. All rights reserved.</div>
             <div class="footer-legal-links">
-                <a href="#" class="legal-link">Privacy Policy</a>
+                <a href="/privacy/" class="legal-link">Privacy Policy</a>
                 <span class="divider">|</span>
                 <a href="#" class="legal-link">Terms of Service</a>
             </div>
