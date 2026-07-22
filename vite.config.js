@@ -12,6 +12,16 @@ export default defineConfig({
             res.end()
             return
           }
+          if (req.url === '/privacy') {
+            res.writeHead(301, { Location: '/privacy/' })
+            res.end()
+            return
+          }
+          if (req.url === '/terms') {
+            res.writeHead(301, { Location: '/terms/' })
+            res.end()
+            return
+          }
           next()
         })
       }
@@ -23,6 +33,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         experiment: resolve(__dirname, 'experiment/index.html'),
         privacy: resolve(__dirname, 'privacy/index.html'),
+        terms: resolve(__dirname, 'terms/index.html'),
       },
     },
   },
