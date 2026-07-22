@@ -111,11 +111,15 @@ function hasValidStateForPhase(phase) {
 }
 
 function resetToWelcome() {
-  ExpState.isSessionActive = false;
+  ExpState.isSessionActive  = false;
   if (ExpState.signals.reaction.timeoutId) {
     clearTimeout(ExpState.signals.reaction.timeoutId);
-    ExpState.signals.reaction.timeoutId = null;
   }
+  ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0 };
+  ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5, score: 0 };
+  ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 };
+  ExpState.result           = { reaction: 0, movement: 0, typing: 0, overall: 0 };
+
   history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
   showPhase('welcome');
 }
@@ -123,7 +127,7 @@ function resetToWelcome() {
 // ============================================================
 // PHASE MANAGEMENT
 // ============================================================
-function showPhase(name) {
+function showPhase(name, pushHistory = true) {
   if (name !== 'welcome' && !hasValidStateForPhase(name)) {
     resetToWelcome();
     return;
@@ -151,14 +155,16 @@ function showPhase(name) {
     window.removeEventListener('beforeunload', warnOnRefresh);
   }
 
-  // Push history state so back-button navigates within the experiment
-  const navPhases = ['task-reaction', 'task-movement', 'task-typing', 'result'];
-  if (navPhases.includes(name)) {
-    const hashName = name === 'result' ? 'result' : name.replace('task-', '');
-    history.pushState({ phase: name }, '', '#exp-' + hashName);
-  } else if (name === 'welcome') {
-    if (window.location.hash) {
-      history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
+  // Push history state ONLY for forward user navigation, NOT during popstate history traversal
+  if (pushHistory) {
+    const navPhases = ['task-reaction', 'task-movement', 'task-typing', 'result'];
+    if (navPhases.includes(name)) {
+      const hashName = name === 'result' ? 'result' : name.replace('task-', '');
+      history.pushState({ phase: name }, '', '#exp-' + hashName);
+    } else if (name === 'welcome') {
+      if (window.location.hash) {
+        history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
+      }
     }
   }
 
@@ -206,7 +212,10 @@ function showPhase(name) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const init = PhaseInits[name];
-  if (init) setTimeout(init, 50);
+  if (init) {
+    const initTid = setTimeout(init, 50);
+    ActiveListeners.addTimeout(initTid);
+  }
 }
 
 function updateProgress(phase) {
@@ -326,20 +335,23 @@ function handleReactionClick() {
 
   if (state.round < 3) {
     updateRoundLabel(state.round + 1);
-    setTimeout(() => {
+    const roundTid1 = setTimeout(() => {
       if (ExpState.currentPhase !== 'task-reaction') return;
       if (target) {
         target.dataset.state = 'idle';
         target.innerHTML     = '';
       }
-      setTimeout(startReactionRound, 400);
+      const roundTid2 = setTimeout(startReactionRound, 400);
+      ActiveListeners.addTimeout(roundTid2);
     }, 900);
+    ActiveListeners.addTimeout(roundTid1);
   } else {
     if (target) {
       target.dataset.state = 'done';
       target.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="40" height="40"><polyline points="20 6 9 17 4 12"/></svg>`;
     }
-    setTimeout(() => showPhase('task-movement'), 1600);
+    const moveTid = setTimeout(() => showPhase('task-movement'), 1600);
+    ActiveListeners.addTimeout(moveTid);
   }
 }
 
@@ -529,10 +541,12 @@ const EXCLUDED_KEYS = new Set([
   'Home', 'End', 'PageUp', 'PageDown', 'Insert',
   'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
   'ContextMenu', 'Pause', 'ScrollLock', 'PrintScreen',
-  'NumLock', 'Dead',
+  'NumLock', 'Dead', 'Unidentified'
 ]);
 
 function isPrintableTypingKey(e) {
+  if (!e || e.repeat || e.isComposing) return false;
+  if (EXCLUDED_KEYS.has(e.key)) return false;
   // Must be a single visible character (space counts)
   if (e.key.length !== 1) return false;
   // Exclude modifier-held combos such as Ctrl+A, Cmd+C
@@ -549,6 +563,7 @@ function initTypingTask() {
   state.lastKeyTime   = null;
   state.lastInputLen  = 0;   // used to detect paste / autocomplete bursts
   state.typed         = '';
+  state.isComposing   = false;
 
   // Render target phrase with char spans
   const display = document.getElementById('typing-phrase-display');
@@ -570,7 +585,24 @@ function initTypingTask() {
     input.replaceWith(input.cloneNode(true));
     const fresh = document.getElementById('typing-input');
 
+    // IME Composition tracking
+    fresh.addEventListener('compositionstart', () => {
+      state.isComposing = true;
+      state.lastKeyTime = null;
+    });
+    fresh.addEventListener('compositionend', () => {
+      state.isComposing = false;
+      state.lastKeyTime = null;
+    });
+
+    // Explicit Paste handler
+    fresh.addEventListener('paste', () => {
+      if (state.keyIntervals.length > 0) state.keyIntervals.pop();
+      state.lastKeyTime = null;
+    });
+
     fresh.addEventListener('keydown', (e) => {
+      if (state.isComposing || e.isComposing || e.repeat) return;
       const now = performance.now();
 
       // ── Correction keys: pop the last recorded interval so that
@@ -600,19 +632,27 @@ function initTypingTask() {
       state.typed  = typed;
 
       // ── Paste / autocomplete / IME burst detection:
-      //    If the character count jumped by more than 1 since the last
-      //    input event, a non-keystroke source added multiple characters
-      //    at once. Discard the last recorded interval (it was timestamped
-      //    on keydown before the burst) and reset the timing anchor so
-      //    the next genuine key press starts a fresh measurement window.
+      //    If the character count jumped by more than 1, or inputType indicates paste/replacement,
+      //    discard any pending timing interval and reset timing anchor.
       const currentLen = typed.length;
       const delta      = currentLen - state.lastInputLen;
-      if (delta > 1) {
+      const now        = performance.now();
+      const isPasteOrFill = delta > 1 || (e.inputType && e.inputType.startsWith('insertFromPaste'));
+      
+      if (isPasteOrFill) {
         if (state.keyIntervals.length > 0) state.keyIntervals.pop();
         state.lastKeyTime = null;
       } else if (delta < 0) {
         // Bulk delete (select-all + delete, etc.) — same treatment
         state.lastKeyTime = null;
+      } else if (delta === 1 && !state.isComposing) {
+        // Mobile fallback: if keydown didn't record lastKeyTime (e.g., e.key was 'Unidentified'),
+        // record timing from input events.
+        if (state.lastKeyTime !== null && state.keyIntervals.length === 0) {
+          // state.lastKeyTime was already timestamped by keydown
+        } else if (state.lastKeyTime === null) {
+          state.lastKeyTime = now;
+        }
       }
       state.lastInputLen = currentLen;
 
@@ -643,7 +683,8 @@ function initTypingTask() {
           pb.style.background = 'linear-gradient(90deg, #00ff87, #00f0ff)';
         }
         e.target.placeholder = 'Rhythm registered — analyzing…';
-        setTimeout(() => showPhase('analyzing'), 900);
+        const analyzeTid = setTimeout(() => showPhase('analyzing'), 900);
+        ActiveListeners.addTimeout(analyzeTid);
       }
     });
 
@@ -815,8 +856,15 @@ function initResult() {
   sigs.forEach((s, i) => {
     const bar = document.getElementById(s.bar);
     const val = document.getElementById(s.val);
-    if (bar) { bar.style.width = '0%'; setTimeout(() => { bar.style.width = `${s.score}%`; }, 700 + i * 180); }
-    if (val) setTimeout(() => animateCount(val, 0, s.score, 700), 700 + i * 180);
+    if (bar) {
+      bar.style.width = '0%';
+      const barTid = setTimeout(() => { bar.style.width = `${s.score}%`; }, 700 + i * 180);
+      ActiveListeners.addTimeout(barTid);
+    }
+    if (val) {
+      const valTid = setTimeout(() => animateCount(val, 0, s.score, 700), 700 + i * 180);
+      ActiveListeners.addTimeout(valTid);
+    }
   });
 
   // Contextual message
@@ -1009,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phase = (e.state && e.state.phase) || getPhaseFromHash(window.location.hash);
     if (phase) {
       if (hasValidStateForPhase(phase)) {
-        showPhase(phase);
+        showPhase(phase, false);
       } else {
         resetToWelcome();
       }

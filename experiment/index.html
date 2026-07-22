@@ -28,7 +28,7 @@
        Original global value #4e5d70 gives ~2.4:1 on #030305; the local
        override below gives ~3.2:1 — both fail 4.5:1 normal-text AA.
        --text-accessible (#8a99ad) matches --text-muted and gives ~4.9:1. */
-    --text-dark:       #4e5d70;   /* kept for purely decorative uses only */
+    --text-dark:       #8596a9;   /* WCAG 2.1 AA compliant: 5.2:1 vs #030305 */
     --text-accessible: #8a99ad;   /* WCAG AA compliant: ~4.9:1 vs #030305 */
     min-height: calc(100vh - 80px);
     display: flex;
@@ -1444,27 +1444,27 @@
     <h3 class="faq-title">Frequently Asked Questions</h3>
     <div class="faq-accordion">
         <details class="faq-item">
-            <summary class="faq-question">Does this verify identity? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
+            <summary class="faq-question">Does this verify identity or measure biometrics? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>No. This experiment does not ask for, collect, or check any form of identity — no account, document, email address, or identifying credential of any kind is involved. It observes only anonymous behavioral patterns during this session.</p>
+                <p>No. This experiment measures transient interaction patterns during your active session — such as reaction timing, cursor movement consistency, and typing rhythm. It does NOT ask for, collect, or inspect your identity, credentials, or biometric profiles. No behavioral profile or historical data is ever compiled.</p>
             </div>
         </details>
         <details class="faq-item">
-            <summary class="faq-question">Does this prove humanity? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
+            <summary class="faq-question">Does this prove humanity or guarantee security? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>No. The result is a probabilistic confidence estimate, not a proof. It reflects behavioral patterns observed in this session that tend to be consistent with human interaction — but it carries no certainty, no legal weight, and no claim that automated tools could not eventually replicate similar signals.</p>
+                <p>No. The overall score is a probabilistic confidence estimate based solely on signals observed during the current session. It carries no legal weight, certification status, or guarantee against sophisticated automation. Scores represent confidence levels rather than absolute proof.</p>
             </div>
         </details>
         <details class="faq-item">
-            <summary class="faq-question">Is personal data collected? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
+            <summary class="faq-question">How is privacy protected and how does browser-only processing work? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>No. All signal processing happens locally inside your browser and is discarded when the session ends. Nothing is transmitted to a server, stored in cookies or local storage, or linked to your device or identity in any way.</p>
+                <p>All signal collection and scoring algorithms run completely in your browser's temporary memory. No data is transmitted to remote servers, written to cookies, or stored in local browser storage. Refreshing or leaving the page immediately discards all transient state and redirects to the Welcome screen.</p>
             </div>
         </details>
         <details class="faq-item">
-            <summary class="faq-question">Why is this an experiment? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
+            <summary class="faq-question">Why is this an experimental demonstration and what are its limitations? <i class="fa-solid fa-chevron-down faq-arrow"></i></summary>
             <div class="faq-answer">
-                <p>Because the question it explores is genuinely open. We are investigating whether privacy-preserving behavioral signals — reaction timing, movement rhythm, and keystroke patterns — can contribute to reasonable confidence in human presence without requiring identity or biometric data. The methodology is still being refined, and the results are research observations rather than a finished product.</p>
+                <p>HUMNLABS is an exploratory research initiative investigating privacy-preserving human presence signals. Current limitations include sensitivity to input hardware differences, touch screen variations, and potential overlap with advanced automation tools. The methodology is continuously evaluated as an open research demonstration.</p>
             </div>
         </details>
     </div>
