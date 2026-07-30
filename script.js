@@ -413,6 +413,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.body.classList.remove("nav-open");
             });
         });
+
+        // Close menu on Escape and return focus to the toggle button
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && mainNav.classList.contains("active")) {
+                navToggle.setAttribute("aria-expanded", "false");
+                mainNav.classList.remove("active");
+                document.body.classList.remove("nav-open");
+                navToggle.focus();
+            }
+        });
     }
 
     // ---------------------------------------------------------

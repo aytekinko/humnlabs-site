@@ -1017,6 +1017,15 @@ function initMobileNav() {
       nav.classList.remove('active');
     });
   });
+  // Close menu on Escape and return focus to the toggle button
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav.classList.contains('active')) {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.classList.remove('is-open');
+      nav.classList.remove('active');
+      toggle.focus();
+    }
+  });
 }
 
 // ============================================================

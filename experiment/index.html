@@ -263,6 +263,9 @@
     font-family: var(--font-heading);
     font-size: 12px; font-weight: 700; letter-spacing: 2px;
     color: var(--text-dark);
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
 }
 .reaction-target[data-state="waiting"] {
     border-color: rgba(255,255,255,0.12);
@@ -1211,7 +1214,7 @@
         Click the target the moment it changes to <strong style="color:var(--cyan)">NOW!</strong> &mdash; 3 rounds. Respond naturally, at your own pace.
     </p>
     <div class="reaction-arena">
-        <div class="reaction-target" id="reaction-target" data-state="idle"></div>
+        <button class="reaction-target" id="reaction-target" type="button" data-state="idle" aria-label="Reaction timing target"></button>
         <p class="reaction-round-label" id="reaction-round">Round 1 of 3</p>
         <div id="reaction-results"></div>
     </div>
