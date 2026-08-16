@@ -898,6 +898,42 @@ function initResult() {
     }
   });
 
+  // Signal Quality Labels (v0.4)
+  const rTimes = ExpState.signals.reaction.times || [];
+  const mPoints = ExpState.signals.movement.points || [];
+  const tIntervals = ExpState.signals.typing.keyIntervals || [];
+
+  let rQual = { text: 'Complete Sample', class: 'quality--full' };
+  if (rTimes.some(t => t > 5000)) {
+    rQual = { text: 'Invalid Timing Attempt', class: 'quality--invalid' };
+  } else if (rTimes.length < 2) {
+    rQual = { text: 'Insufficient Input — Fallback Score Applied', class: 'quality--fallback' };
+  } else if (rTimes.length === 2) {
+    rQual = { text: 'Limited Sample (2 of 3 Rounds)', class: 'quality--limited' };
+  }
+
+  let mQual = mPoints.length < 15
+    ? { text: 'Insufficient Input — Fallback Score Applied', class: 'quality--fallback' }
+    : { text: 'Complete Sample', class: 'quality--full' };
+
+  let tQual = tIntervals.length < 4
+    ? { text: 'Insufficient Input — Fallback Score Applied', class: 'quality--fallback' }
+    : { text: 'Complete Sample', class: 'quality--full' };
+
+  const qualMap = [
+    { id: 'quality-label-r', qual: rQual },
+    { id: 'quality-label-m', qual: mQual },
+    { id: 'quality-label-t', qual: tQual }
+  ];
+
+  qualMap.forEach(q => {
+    const el = document.getElementById(q.id);
+    if (el) {
+      el.textContent = q.qual.text;
+      el.className = `signal-quality-label ${q.qual.class}`;
+    }
+  });
+
   // Restart button
   const restartBtn = document.getElementById('result-restart-btn');
   if (restartBtn) {
@@ -916,12 +952,17 @@ function initResult() {
         if (ctx2d) ctx2d.clearRect(0, 0, movCanvas.width, movCanvas.height);
       }
 
-      // Reset explainability badges
+      // Reset explainability badges & quality labels
       ['r', 'm', 't'].forEach(id => {
         const badge = document.getElementById(`exp-badge-${id}`);
         if (badge) {
           badge.textContent = '\u2014';
           badge.className = 'explainability-badge';
+        }
+        const qLabel = document.getElementById(`quality-label-${id}`);
+        if (qLabel) {
+          qLabel.textContent = '';
+          qLabel.className = 'signal-quality-label';
         }
       });
 
@@ -1048,6 +1089,7 @@ function initHeaderScroll() {
 document.addEventListener('DOMContentLoaded', () => {
   initCanvasBg();
   initMobileNav();
+  initSkipNavigation();
   initHeaderScroll();
 
   const initialHash = window.location.hash;
@@ -1091,3 +1133,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// ============================================================
+// v0.4 — SKIP NAVIGATION (router-safe, standalone)
+// ============================================================
+function initSkipNavigation() {
+  const expSkip = document.getElementById('exp-skip-link');
+  if (!expSkip) return;
+  expSkip.addEventListener('click', (e) => {
+    e.preventDefault();
+    // Target heading inside the currently active phase (.exp-phase--active)
+    const activePhase = document.querySelector('.exp-phase--active');
+    const heading = activePhase ? activePhase.querySelector('h2, h3') : null;
+    const target  = heading || activePhase || document.querySelector('main');
+    if (target) {
+      target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: false });
+    }
+    // window.location.hash is intentionally NOT modified
+  });
+}

@@ -1063,6 +1063,7 @@
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link" id="exp-skip-link">Skip to main content</a>
 <noscript>
     <div style="position: fixed; inset: 0; background: #030305; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 99999; font-family: sans-serif; padding: 24px; text-align: center;">
         <div>
@@ -1134,7 +1135,7 @@
 <!-- ============================================================
      EXPERIMENT APP
      ============================================================ -->
-<main class="main-container">
+<main class="main-container" id="main-content">
 <div class="exp-wrapper">
 
 <!-- ========================
@@ -1212,6 +1213,10 @@
     </div>
     <p class="reaction-instruction">
         Click the target the moment it changes to <strong style="color:var(--cyan)">NOW!</strong> &mdash; 3 rounds. Respond naturally, at your own pace.
+    </p>
+    <p class="exp-research-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <strong>Methodology Note:</strong> This task uses a visual 'NOW!' cue and does not currently provide an equivalent non-visual cue. Results may be affected by display, device, and input latency.
     </p>
     <div class="reaction-arena">
         <button class="reaction-target" id="reaction-target" type="button" data-state="idle" aria-label="Reaction timing target"></button>
@@ -1376,16 +1381,19 @@
                     <div class="explainability-leader"></div>
                     <span class="explainability-badge" id="exp-badge-r">—</span>
                 </div>
+                <p class="signal-quality-label" id="quality-label-r"></p>
                 <div class="explainability-item">
                     <span class="explainability-item-label">Movement Analysis</span>
                     <div class="explainability-leader"></div>
                     <span class="explainability-badge" id="exp-badge-m">—</span>
                 </div>
+                <p class="signal-quality-label" id="quality-label-m"></p>
                 <div class="explainability-item">
                     <span class="explainability-item-label">Typing Rhythm</span>
                     <div class="explainability-leader"></div>
                     <span class="explainability-badge" id="exp-badge-t">—</span>
                 </div>
+                <p class="signal-quality-label" id="quality-label-t"></p>
             </div>
         </div>
 
@@ -1428,6 +1436,10 @@
 
         <p class="result-disclaimer">
             <strong>Research note:</strong> This score is not proof of humanity. It is a probabilistic confidence estimate derived from behavioral signals observed during this session only. It has no legal, commercial, or identifying significance. No data from this session is stored or transmitted.
+        </p>
+        <p class="exp-research-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <strong>Methodology Note:</strong> This task uses a visual 'NOW!' cue and does not currently provide an equivalent non-visual cue. Results may be affected by display, device, and input latency.
         </p>
 
         <div class="result-actions">
