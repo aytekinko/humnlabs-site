@@ -608,7 +608,7 @@
                 <form class="waitlist-form" action="https://formspree.io/f/xeedzvqb" method="POST" data-formspree>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-envelope input-icon"></i>
-                        <input type="email" name="email" placeholder="Enter your email address" required id="user-email" class="email-input">
+                        <input type="email" name="email" placeholder="Enter your email address" required id="user-email" class="email-input" aria-describedby="waitlist-privacy-notice">
                     </div>
                     <button type="submit" class="btn-submit">
                         <span class="btn-text">Access the Report</span>
@@ -618,6 +618,10 @@
                 
                 <p class="waitlist-supporting-line">Independent research publication. No product. No hype.</p>
 
+                <p class="waitlist-privacy-notice" id="waitlist-privacy-notice">
+                    By registering, you consent to Smyrna Digitale using your email solely to notify you when the report is released. Your submission is processed through Formspree. You can withdraw and request deletion at any time. Read the <a href="/privacy/" class="waitlist-privacy-link">Privacy Policy</a>.
+                </p>
+
                 <div class="form-feedback" id="form-message">
                     <div class="success-message">
                         <i class="fa-solid fa-circle-check"></i>
@@ -626,7 +630,7 @@
                 </div>
                 
                 <div class="security-caption">
-                    <i class="fa-solid fa-shield-halved"></i> Privacy-first. Zero data harvesting.
+                    <i class="fa-solid fa-shield-halved"></i> No tracking. No data selling. Your email is used only to notify you when the report is released.
                 </div>
             </div>
         </section>

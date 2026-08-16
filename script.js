@@ -322,21 +322,34 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Formspree Early Access Waitlist Ajax Submission
     // ---------------------------------------------------------
     const waitlistForm = document.querySelector(".waitlist-form");
-    const feedbackBlock = document.getElementById("form-message");
-    const submitBtn = waitlistForm.querySelector(".btn-submit");
-    const btnText = submitBtn.querySelector(".btn-text");
-    const btnIcon = submitBtn.querySelector(".btn-icon");
-    const emailInput = document.getElementById("user-email");
     
     if (waitlistForm) {
+        const feedbackBlock = document.getElementById("form-message");
+        const submitBtn = waitlistForm.querySelector(".btn-submit");
+        const btnText = submitBtn ? submitBtn.querySelector(".btn-text") : null;
+        const btnIcon = submitBtn ? submitBtn.querySelector(".btn-icon") : null;
+
+        function resetSubmitButton() {
+            if (!submitBtn || !btnText || !btnIcon) return;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+            btnText.textContent = "Access the Report";
+            btnIcon.className = "fa-solid fa-arrow-right";
+            submitBtn.style.background = "";
+            submitBtn.style.color = "";
+            submitBtn.style.boxShadow = "";
+        }
+
         waitlistForm.addEventListener("submit", async (event) => {
             event.preventDefault();
             
             // Set loading state on button
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = "0.7";
-            btnText.textContent = "Evaluating Signals...";
-            btnIcon.className = "fa-solid fa-spinner fa-spin";
+            if (submitBtn && btnText && btnIcon) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = "0.7";
+                btnText.textContent = "Registering...";
+                btnIcon.className = "fa-solid fa-spinner fa-spin";
+            }
             
             const data = new FormData(event.target);
             
@@ -351,43 +364,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 if (response.ok) {
                     // Success UI Sequence
-                    feedbackBlock.style.display = "block";
-                    feedbackBlock.style.opacity = "0";
-                    setTimeout(() => {
-                        feedbackBlock.style.transition = "opacity 0.5s ease";
-                        feedbackBlock.style.opacity = "1";
-                    }, 50);
+                    if (feedbackBlock) {
+                        feedbackBlock.style.display = "block";
+                        feedbackBlock.style.opacity = "0";
+                        setTimeout(() => {
+                            feedbackBlock.style.transition = "opacity 0.5s ease";
+                            feedbackBlock.style.opacity = "1";
+                        }, 50);
+                    }
                     
                     waitlistForm.reset();
-                    btnText.textContent = "Registered";
-                    btnIcon.className = "fa-solid fa-check";
-                    submitBtn.style.background = "#00ff87";
-                    submitBtn.style.color = "#030305";
-                    submitBtn.style.boxShadow = "0 0 15px rgba(0, 255, 135, 0.4)";
+                    if (submitBtn && btnText && btnIcon) {
+                        btnText.textContent = "Registered";
+                        btnIcon.className = "fa-solid fa-check";
+                        submitBtn.style.background = "#00ff87";
+                        submitBtn.style.color = "#030305";
+                        submitBtn.style.boxShadow = "0 0 15px rgba(0, 255, 135, 0.4)";
+                    }
                 } else {
                     const responseData = await response.json();
                     if (responseData.errors) {
                         alert(responseData.errors.map(error => error.message).join(", "));
                     } else {
-                        alert("An error occurred. Signal evaluation failed. Please try again.");
+                        alert("An error occurred. Please try again.");
                     }
                     resetSubmitButton();
                 }
             } catch (error) {
-                alert("Network latency detected. Signal transmission failed.");
+                alert("We couldn't complete your registration. Please check your connection and try again.");
                 resetSubmitButton();
             }
         });
-    }
-    
-    function resetSubmitButton() {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = "1";
-        btnText.textContent = "Access the Report";
-        btnIcon.className = "fa-solid fa-arrow-right";
-        submitBtn.style.background = "";
-        submitBtn.style.color = "";
-        submitBtn.style.boxShadow = "";
     }
     
     // ---------------------------------------------------------

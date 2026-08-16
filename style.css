@@ -2724,3 +2724,33 @@ a {
     margin-right: 5px;
     font-size: 11px;
 }
+
+/* ==========================================================================
+   Waitlist Point-of-Collection Privacy Notice
+   ========================================================================== */
+.waitlist-privacy-notice {
+    font-size: 12px;
+    font-family: var(--font-body, 'Inter', sans-serif);
+    color: #8a99ad;
+    line-height: 1.6;
+    margin: 12px auto 0;
+    max-width: 480px;
+    text-align: center;
+}
+
+.waitlist-privacy-link {
+    color: var(--cyan, #00f0ff);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.waitlist-privacy-link:hover {
+    color: #ffffff;
+}
+
+.waitlist-privacy-link:focus {
+    outline: 2px solid var(--cyan, #00f0ff);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
