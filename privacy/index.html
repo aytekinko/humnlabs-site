@@ -21,7 +21,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
 
     <style>
@@ -33,44 +32,46 @@
 
         .privacy-header {
             margin-bottom: 40px;
-            text-align: left;
+            text-align: center;
         }
 
         .privacy-main-title {
             font-family: var(--font-heading);
-            font-size: clamp(2.2rem, 5vw, 3.4rem);
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            color: var(--text-pure);
-            text-transform: uppercase;
-            margin-bottom: 12px;
+            font-size: clamp(32px, 5vw, 44px);
+            font-weight: 800;
+            color: var(--text-bright);
+            letter-spacing: -0.5px;
+            margin: 16px 0 12px;
         }
 
         .privacy-effective-date {
-            font-family: var(--font-mono, monospace);
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 2px;
+            font-family: var(--font-mono);
+            font-size: 13px;
             color: var(--cyan);
-            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
+        /* Glance Card */
         .privacy-glance-card {
-            background: rgba(0, 240, 255, 0.03);
-            border: 1px solid rgba(0, 240, 255, 0.18);
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 12px;
             padding: 28px 32px;
             margin-bottom: 48px;
             position: relative;
-            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
         }
 
         .privacy-glance-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, var(--cyan), var(--violet));
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
         }
 
         .glance-title {
@@ -86,6 +87,14 @@
             gap: 8px;
         }
 
+        .glance-title svg,
+        .glance-title i {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
         .glance-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -98,10 +107,14 @@
             gap: 12px;
         }
 
+        .glance-item svg,
         .glance-item i {
             color: var(--cyan);
             font-size: 14px;
+            width: 14px;
+            height: 14px;
             margin-top: 3px;
+            fill: currentColor;
             flex-shrink: 0;
         }
 
@@ -207,6 +220,19 @@
     </style>
 </head>
 <body>
+    <!-- SVG Symbol Definitions -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <defs>
+            <!-- Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0) -->
+            <symbol id="icon-shield-halved" viewBox="0 0 512 512">
+                <path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.9 1 251.4 0 256 0zm0 66.8V448c137.2-64.8 172.9-204 175.7-295.6L256 71.8v-5z"/>
+            </symbol>
+            <symbol id="icon-check" viewBox="0 0 448 512">
+                <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+            </symbol>
+        </defs>
+    </svg>
+
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Ambient Interactive Canvas Background -->
@@ -279,30 +305,30 @@
         <!-- Privacy at a Glance -->
         <div class="privacy-glance-card">
             <div class="glance-title">
-                <i class="fa-solid fa-shield-halved"></i>
+                <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-shield-halved"></use></svg>
                 Privacy at a Glance
             </div>
             <div class="glance-grid">
                 <div class="glance-item">
-                    <i class="fa-solid fa-check"></i>
+                    <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-check"></use></svg>
                     <div class="glance-item-text">
                         <strong>Browser-Only Experiment Signals:</strong> Interaction metrics during the experiment (reaction timing, cursor movement, typing rhythm) are evaluated strictly in volatile browser RAM and never stored or transmitted.
                     </div>
                 </div>
                 <div class="glance-item">
-                    <i class="fa-solid fa-check"></i>
+                    <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-check"></use></svg>
                     <div class="glance-item-text">
                         <strong>Voluntary Report Waitlist:</strong> Supplying an email for the <em>Human Presence &amp; Trust Report 2026</em> notification is completely optional and processed securely via Formspree.
                     </div>
                 </div>
                 <div class="glance-item">
-                    <i class="fa-solid fa-check"></i>
+                    <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-check"></use></svg>
                     <div class="glance-item-text">
                         <strong>No Data Selling or Profiling:</strong> We do not sell, rent, monetize, or track your data across the web, nor do we build personal behavioral profiles.
                     </div>
                 </div>
                 <div class="glance-item">
-                    <i class="fa-solid fa-check"></i>
+                    <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-check"></use></svg>
                     <div class="glance-item-text">
                         <strong>Full User Control &amp; GDPR Rights:</strong> You can withdraw consent or request deletion of your waitlist email at any time by contacting <a href="mailto:privacy@smyrnadigitale.com" class="policy-contact-link">privacy@smyrnadigitale.com</a>.
                     </div>

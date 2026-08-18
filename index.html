@@ -22,12 +22,63 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- SVG Symbol Definitions -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <defs>
+            <!-- Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0) -->
+            <symbol id="icon-chevron-right" viewBox="0 0 320 512">
+                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/>
+            </symbol>
+            <symbol id="icon-user-shield" viewBox="0 0 640 512">
+                <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c-1.8-10.4-2.3-21.1-2.3-32c0-36.8 10.7-71.1 29.2-100.2c-2.4-1.2-5-2.2-7.7-3.1L308.8 333c-27.1-9-56-14.8-85.3-17c-14.8-1.1-29.8-1.9-45.2-2zM528 240c-35.3 0-67.4 14.3-90.7 37.6l-6.8 6.8c-8.4 8.4-14.5 18.7-17.6 30.1L400 361.3c0 78.8 54.4 147.2 128 150.7 73.6-3.5 128-71.9 128-150.7v-46.8c-3.1-11.4-9.2-21.7-17.6-30.1l-6.8-6.8C608.4 254.3 576.3 240 541 240h-13z"/>
+            </symbol>
+            <symbol id="icon-key" viewBox="0 0 512 512">
+                <path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0 160 78.8 160 176c0 18.7 2.9 36.6 8.3 53.4L8 389.7V480c0 17.7 14.3 32 32 32h64v-48h48v-48h48v-48h45.7l26.9-26.9c16.8 5.4 34.7 8.3 53.4 8.3zM376 136a40 40 0 1 1 0-80 40 40 0 1 1 0 80z"/>
+            </symbol>
+            <symbol id="icon-chart-line" viewBox="0 0 512 512">
+                <path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/>
+            </symbol>
+            <symbol id="icon-eye" viewBox="0 0 576 512">
+                <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.9-43.5 78.1-95.4 93-131.1 3.3-7.9 3.3-16.7 0-24.6-14.8-35.7-46.1-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64-11.5 0-22.3-3-31.6-8.4-.2 2.8-.4 5.5-.4 8.4 0 53 43 96 96 96s96-43 96-96-43-96-96-96c-2.8 0-5.6.1-8.4.4 5.3 9.3 8.4 20.1 8.4 31.6z"/>
+            </symbol>
+            <symbol id="icon-scroll" viewBox="0 0 576 512">
+                <path d="M0 96C0 60.7 28.7 32 64 32H448c53 0 96 43 96 96v64c17.7 0 32 14.3 32 32s-14.3 32-32 32h-1.3c-7.4 86.8-74 156.4-158.7 159.7V448c0 17.7-14.3 32-32 32H64c-35.3 0-64-28.7-64-64V96zm64 64v224c0 17.7 14.3 32 32 32H352V128H64c0 10.9 2.7 21.2 7.6 30.2-4.9 1.1-7.6 1.8-7.6 1.8zM416 128v160c44.2 0 80-35.8 80-80s-35.8-80-80-80z"/>
+            </symbol>
+            <symbol id="icon-lock" viewBox="0 0 448 512">
+                <path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/>
+            </symbol>
+            <symbol id="icon-terminal" viewBox="0 0 640 512">
+                <path d="M32 32C14.3 32 0 46.3 0 64v384c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32H32zm145 119c9.4-9.4 24.6-9.4 33.9 0l80 80c9.4 9.4 9.4 24.6 0 33.9l-80 80c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l63-63-63-63c-9.4-9.4-9.4-24.6 0-33.9zm111 169c0-13.3 10.7-24 24-24h128c13.3 0 24 10.7 24 24s-10.7 24-24 24H312c-13.3 0-24-10.7-24-24z"/>
+            </symbol>
+            <symbol id="icon-arrow-right" viewBox="0 0 448 512">
+                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h306.7L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+            </symbol>
+            <symbol id="icon-xmark" viewBox="0 0 384 512">
+                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+            </symbol>
+            <symbol id="icon-circle-info" viewBox="0 0 512 512">
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"/>
+            </symbol>
+            <symbol id="icon-envelope" viewBox="0 0 512 512">
+                <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
+            </symbol>
+            <symbol id="icon-circle-check" viewBox="0 0 512 512">
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 34z"/>
+            </symbol>
+            <symbol id="icon-shield-halved" viewBox="0 0 512 512">
+                <path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.9 1 251.4 0 256 0zm0 66.8V448c137.2-64.8 172.9-204 175.7-295.6L256 71.8v-5z"/>
+            </symbol>
+            <symbol id="icon-spinner" viewBox="0 0 512 512">
+                <path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437.1a48 48 0 1 0 -67.9-67.9 48 48 0 1 0 67.9 67.9zm294.2-294.2a48 48 0 1 0 -67.9-67.9 48 48 0 1 0 67.9 67.9zM142.9 74.9a48 48 0 1 0 -67.9 67.9 48 48 0 1 0 67.9-67.9zm226.3 294.2a48 48 0 1 0 67.9 67.9 48 48 0 1 0 -67.9-67.9z"/>
+            </symbol>
+            <symbol id="icon-check" viewBox="0 0 448 512">
+                <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+            </symbol>
+        </defs>
+    </svg>
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Ambient Interactive Canvas Background -->
@@ -111,7 +162,7 @@
                 <div class="hero-actions reveal-fade">
                     <a href="#waitlist" class="btn-primary">
                         <span>Explore the Research</span>
-                        <i class="fa-solid fa-chevron-right icon-slide"></i>
+                        <svg class="svg-icon icon-slide" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
                     </a>
                     <a href="#boundaries" class="btn-secondary">
                         <span>Read Our Principles</span>
@@ -293,35 +344,35 @@
                         
                         <ul class="tech-bullets">
                             <li>
-                                <div class="bullet-icon"><i class="fa-solid fa-user-shield"></i></div>
+                                <div class="bullet-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-user-shield"></use></svg></div>
                                 <div>
                                     <h3>Human Presence Confidence</h3>
                                     <p>Investigating how confidence-based signals can contribute to validating human presence without requiring identity.</p>
                                 </div>
                             </li>
                             <li>
-                                <div class="bullet-icon"><i class="fa-solid fa-key"></i></div>
+                                <div class="bullet-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-key"></use></svg></div>
                                 <div>
                                     <h3>Privacy-Preserving Signals</h3>
                                     <p>Exploring cryptographic and zero-knowledge methods to pass signals without sharing personal data.</p>
                                 </div>
                             </li>
                             <li>
-                                <div class="bullet-icon"><i class="fa-solid fa-chart-line"></i></div>
+                                <div class="bullet-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-chart-line"></use></svg></div>
                                 <div>
                                     <h3>Confidence-Based Outputs</h3>
                                     <p>Prototyping scoring engines that return probability metrics rather than binary checks.</p>
                                 </div>
                             </li>
                             <li>
-                                <div class="bullet-icon"><i class="fa-solid fa-eye"></i></div>
+                                <div class="bullet-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-eye"></use></svg></div>
                                 <div>
                                     <h3>Explainable Signal Reasoning</h3>
                                     <p>Exploring models that provide transparent indicators for why a specific confidence score was returned.</p>
                                 </div>
                             </li>
                             <li>
-                                <div class="bullet-icon"><i class="fa-solid fa-scroll"></i></div>
+                                <div class="bullet-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-scroll"></use></svg></div>
                                 <div>
                                     <h3>Protocol-Level Research</h3>
                                     <p>Compiling architectural specifications for a long-term vision of a decentralized trust protocol.</p>
@@ -340,7 +391,7 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="mockup-address">
-                                    <i class="fa-solid fa-lock"></i> node-092.humn.layer/signals
+                                    <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 12px; height: 12px; margin-right: 4px;"><use href="#icon-lock"></use></svg> node-092.humn.layer/signals
                                 </div>
                                 <div class="mockup-status">
                                     <span class="pulse-dot"></span> LIVE
@@ -408,7 +459,7 @@
 
                                 <div class="terminal-log">
                                     <div class="terminal-header">
-                                        <i class="fa-solid fa-terminal"></i> PRESENCE ESTIMATION LOGS
+                                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 13px; height: 13px; margin-right: 6px;"><use href="#icon-terminal"></use></svg> PRESENCE ESTIMATION LOGS
                                     </div>
                                     <div class="terminal-lines" id="mockup-terminal">
                                         <div class="line green">&gt; connection established at node-092</div>
@@ -468,7 +519,7 @@
                         </p>
                         <div class="research-project-footer" style="display: flex; justify-content: space-between; width: 100%;">
                             <span>HUMNLABS &mdash; 2026</span>
-                            <span style="color: var(--cyan); font-weight: 500;">Try Experiment <i class="fa-solid fa-arrow-right" style="font-size: 10px; margin-left: 4px;"></i></span>
+                            <span style="color: var(--cyan); font-weight: 500;">Try Experiment <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 10px; height: 10px; margin-left: 4px;"><use href="#icon-arrow-right"></use></svg></span>
                         </div>
                     </a>
 
@@ -522,31 +573,31 @@
                 
                 <div class="boundaries-grid reveal-fade">
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not prove biological humanity.</div>
                     </div>
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not establish identity.</div>
                     </div>
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not guarantee uniqueness.</div>
                     </div>
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not solve Sybil resistance.</div>
                     </div>
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not establish trustworthiness.</div>
                     </div>
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not guarantee that a human is present.</div>
                     </div>
                     <div class="boundary-card glass-panel">
-                        <div class="boundary-icon"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
                         <div class="boundary-text">We do not replace identity systems.</div>
                     </div>
                 </div>
@@ -578,14 +629,14 @@
                 <div class="cta-actions reveal-fade">
                     <a href="/experiment" class="btn-primary">
                         <span>Try the Experiment</span>
-                        <i class="fa-solid fa-chevron-right icon-slide"></i>
+                        <svg class="svg-icon icon-slide" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
                     </a>
                     <span class="cta-secondary-text">v0.1 Research Preview</span>
                 </div>
 
                 <div class="disclaimer-card reveal-fade">
                     <div class="disclaimer-icon">
-                        <i class="fa-solid fa-circle-info"></i>
+                        <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-circle-info"></use></svg>
                     </div>
                     <div class="disclaimer-content">
                         <p class="disclaimer-text-primary">This is an experimental research demonstration.</p>
@@ -607,12 +658,12 @@
                 
                 <form class="waitlist-form" action="https://formspree.io/f/xeedzvqb" method="POST" data-formspree>
                     <div class="input-wrapper">
-                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <svg class="svg-icon input-icon" aria-hidden="true" focusable="false"><use href="#icon-envelope"></use></svg>
                         <input type="email" name="email" placeholder="Enter your email address" required id="user-email" class="email-input" aria-describedby="waitlist-privacy-notice">
                     </div>
                     <button type="submit" class="btn-submit">
                         <span class="btn-text">Access the Report</span>
-                        <i class="fa-solid fa-arrow-right btn-icon"></i>
+                        <svg class="svg-icon btn-icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
                     </button>
                 </form>
                 
@@ -624,13 +675,13 @@
 
                 <div class="form-feedback" id="form-message">
                     <div class="success-message">
-                        <i class="fa-solid fa-circle-check"></i>
+                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 6px;"><use href="#icon-circle-check"></use></svg>
                         <span>You are registered for early access. We will notify you as soon as the report is released.</span>
                     </div>
                 </div>
                 
                 <div class="security-caption">
-                    <i class="fa-solid fa-shield-halved"></i> No tracking. No data selling. Your email is used only to notify you when the report is released.
+                    <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 13px; height: 13px; margin-right: 4px; vertical-align: -1px;"><use href="#icon-shield-halved"></use></svg> No tracking. No data selling. Your email is used only to notify you when the report is released.
                 </div>
             </div>
         </section>

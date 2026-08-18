@@ -333,12 +333,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const btnText = submitBtn ? submitBtn.querySelector(".btn-text") : null;
         const btnIcon = submitBtn ? submitBtn.querySelector(".btn-icon") : null;
 
+        function setButtonIcon(iconId, isSpinning = false) {
+            if (!btnIcon) return;
+            const useElem = btnIcon.querySelector("use");
+            if (useElem) {
+                useElem.setAttribute("href", `#${iconId}`);
+            }
+            if (isSpinning) {
+                btnIcon.classList.add("spin-icon");
+            } else {
+                btnIcon.classList.remove("spin-icon");
+            }
+        }
+
         function resetSubmitButton() {
             if (!submitBtn || !btnText || !btnIcon) return;
             submitBtn.disabled = false;
             submitBtn.style.opacity = "1";
             btnText.textContent = "Access the Report";
-            btnIcon.className = "fa-solid fa-arrow-right";
+            setButtonIcon("icon-arrow-right", false);
             submitBtn.style.background = "";
             submitBtn.style.color = "";
             submitBtn.style.boxShadow = "";
@@ -352,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 submitBtn.disabled = true;
                 submitBtn.style.opacity = "0.7";
                 btnText.textContent = "Registering...";
-                btnIcon.className = "fa-solid fa-spinner fa-spin";
+                setButtonIcon("icon-spinner", true);
             }
             
             const data = new FormData(event.target);
@@ -380,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     waitlistForm.reset();
                     if (submitBtn && btnText && btnIcon) {
                         btnText.textContent = "Registered";
-                        btnIcon.className = "fa-solid fa-check";
+                        setButtonIcon("icon-check", false);
                         submitBtn.style.background = "#00ff87";
                         submitBtn.style.color = "#030305";
                         submitBtn.style.boxShadow = "0 0 15px rgba(0, 255, 135, 0.4)";
