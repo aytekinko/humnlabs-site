@@ -10,13 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("canvas-bg");
     const ctx = canvas.getContext("2d");
     
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    const initialWidth = window.innerWidth;
+    const initialHeight = window.innerHeight;
+    const isMobileOrTablet = initialWidth < 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    canvas.width = initialWidth;
+    canvas.height = initialHeight;
+    let width = initialWidth;
+    let height = initialHeight;
     
     let particles = [];
     
-    // Detect mobile or touch devices to optimize rendering performance
-    const isMobileOrTablet = window.innerWidth < 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const maxParticles = isMobileOrTablet ? 25 : Math.min(100, Math.floor((width * height) / 15000)); 
     const connectionDist = isMobileOrTablet ? 90 : 120; // Reduce line calculations on mobile
     

@@ -861,7 +861,7 @@ a {
     background: rgba(0, 240, 255, 0.05);
 }
 
-.tech-bullets h4 {
+.tech-bullets h3 {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 6px;
@@ -1007,12 +1007,13 @@ a {
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--cyan), transparent);
     box-shadow: 0 0 10px var(--cyan);
+    will-change: transform;
     animation: scanner-move 3s infinite ease-in-out;
 }
 
 @keyframes scanner-move {
-    0%, 100% { top: 0%; }
-    50% { top: 100%; }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(118px); }
 }
 
 .scan-target {
@@ -1387,7 +1388,7 @@ a {
     gap: 10px;
 }
 
-.link-group h5 {
+.link-group h3 {
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -1616,6 +1617,9 @@ a {
         opacity: 1;
         transform: none;
         transition: none;
+    }
+    .scan-bar {
+        animation: none;
     }
 }
 
@@ -1907,6 +1911,11 @@ a {
         height: 100px;
     }
     
+    @keyframes scanner-move {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(98px); }
+    }
+
     /* Card padding tweaks */
     .feature-card {
         padding: 24px;
