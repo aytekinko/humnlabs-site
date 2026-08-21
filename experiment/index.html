@@ -744,6 +744,122 @@
     color: var(--text-muted);
 }
 
+/* ---- Confidence Breakdown Disclosure ---- */
+.confidence-breakdown {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    text-align: left;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.confidence-breakdown:hover,
+.confidence-breakdown[open] {
+    border-color: rgba(0, 240, 255, 0.25);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.confidence-breakdown-summary {
+    font-family: var(--font-heading);
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-bright);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.confidence-breakdown-summary::-webkit-details-marker {
+    display: none;
+}
+
+.confidence-breakdown-summary:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.confidence-breakdown-arrow {
+    width: 12px;
+    height: 12px;
+    color: var(--text-muted);
+    fill: currentColor;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.confidence-breakdown[open] .confidence-breakdown-arrow {
+    transform: rotate(180deg);
+    color: var(--cyan);
+}
+
+.confidence-breakdown-content {
+    margin-top: 16px;
+}
+
+.confidence-breakdown-intro {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-accessible);
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.confidence-breakdown-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.confidence-breakdown-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-sizing: border-box;
+}
+
+.confidence-breakdown-card-title {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-pure);
+    margin-bottom: 6px;
+}
+
+.confidence-breakdown-card-body {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.confidence-breakdown-card--boundary {
+    background: rgba(0, 240, 255, 0.02);
+    border-color: rgba(0, 240, 255, 0.12);
+}
+
+.confidence-breakdown-card--boundary .confidence-breakdown-card-title {
+    color: var(--cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .confidence-breakdown,
+    .confidence-breakdown-arrow {
+        transition: none !important;
+    }
+}
+
 .privacy-card-container {
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1471,6 +1587,35 @@
                 <p class="signal-quality-label" id="quality-label-t"></p>
             </div>
         </div>
+
+        <!-- Confidence Breakdown Disclosure -->
+        <details class="confidence-breakdown" id="confidence-breakdown">
+            <summary class="confidence-breakdown-summary">
+                <span>How this demo forms its confidence</span>
+                <svg class="svg-icon confidence-breakdown-arrow" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
+            </summary>
+            <div class="confidence-breakdown-content">
+                <p class="confidence-breakdown-intro">This interactive demo combines patterns from three short tasks to produce a session-specific confidence estimate.</p>
+                <div class="confidence-breakdown-cards">
+                    <div class="confidence-breakdown-card">
+                        <h4 class="confidence-breakdown-card-title">Reaction timing</h4>
+                        <p class="confidence-breakdown-card-body">The demo considers variation in the time between an on-screen cue and an input. Results may vary with device performance, network conditions, or the way you interact with the page.</p>
+                    </div>
+                    <div class="confidence-breakdown-card">
+                        <h4 class="confidence-breakdown-card-title">Pointer or touch movement</h4>
+                        <p class="confidence-breakdown-card-body">The demo considers continuity and changes in movement during the task. Mouse, trackpad, touchscreen, browser, and assistive-technology settings can affect this signal.</p>
+                    </div>
+                    <div class="confidence-breakdown-card">
+                        <h4 class="confidence-breakdown-card-title">Typing rhythm</h4>
+                        <p class="confidence-breakdown-card-body">The demo considers variation between keystrokes while you type the displayed phrase. It does not assess writing ability, language proficiency, or identity.</p>
+                    </div>
+                    <div class="confidence-breakdown-card confidence-breakdown-card--boundary">
+                        <h4 class="confidence-breakdown-card-title">What this does not establish</h4>
+                        <p class="confidence-breakdown-card-body">This result is an illustrative, probabilistic estimate for this session only. It is not identity verification, a biometric assessment, proof of humanity, or a decision about any person.</p>
+                    </div>
+                </div>
+            </div>
+        </details>
 
         <!-- Privacy Card -->
         <div class="privacy-card-container">
