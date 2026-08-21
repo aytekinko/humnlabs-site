@@ -415,36 +415,90 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     // ---------------------------------------------------------
-    // 5. Mobile Responsive Hamburger Menu Interaction
+    // 5. Mobile Responsive Hamburger Menu Interaction & Focus Trap
     // ---------------------------------------------------------
     const navToggle = document.querySelector(".mobile-nav-toggle");
     const mainNav = document.querySelector(".main-nav");
     const navLinks = document.querySelectorAll(".main-nav .nav-link");
 
     if (navToggle && mainNav) {
+        const getFocusableControls = () => {
+            const links = Array.from(mainNav.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])"));
+            return [navToggle, ...links];
+        };
+
+        const openNav = () => {
+            navToggle.setAttribute("aria-expanded", "true");
+            mainNav.classList.add("active");
+            document.body.classList.add("nav-open");
+            // Move focus into first navigation link inside drawer
+            const firstLink = mainNav.querySelector(".nav-link");
+            if (firstLink) {
+                firstLink.focus();
+            }
+        };
+
+        const closeNav = (returnFocus = true) => {
+            if (!mainNav.classList.contains("active")) return;
+            navToggle.setAttribute("aria-expanded", "false");
+            mainNav.classList.remove("active");
+            document.body.classList.remove("nav-open");
+            if (returnFocus) {
+                navToggle.focus();
+            }
+        };
+
         navToggle.addEventListener("click", () => {
             const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
-            navToggle.setAttribute("aria-expanded", !isExpanded);
-            mainNav.classList.toggle("active");
-            document.body.classList.toggle("nav-open");
+            if (isExpanded) {
+                closeNav(true);
+            } else {
+                openNav();
+            }
         });
 
         // Close menu and restore body scrolling when a link is clicked
         navLinks.forEach((link) => {
             link.addEventListener("click", () => {
-                navToggle.setAttribute("aria-expanded", "false");
-                mainNav.classList.remove("active");
-                document.body.classList.remove("nav-open");
+                closeNav(false);
             });
         });
 
-        // Close menu on Escape and return focus to the toggle button
+        // Focus trap and Escape key handler
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && mainNav.classList.contains("active")) {
-                navToggle.setAttribute("aria-expanded", "false");
-                mainNav.classList.remove("active");
-                document.body.classList.remove("nav-open");
-                navToggle.focus();
+            if (!mainNav.classList.contains("active")) return;
+
+            if (e.key === "Escape") {
+                e.preventDefault();
+                closeNav(true);
+                return;
+            }
+
+            if (e.key === "Tab") {
+                const controls = getFocusableControls();
+                if (controls.length === 0) return;
+
+                const firstControl = controls[0]; // navToggle
+                const lastControl = controls[controls.length - 1]; // last nav link
+
+                if (e.shiftKey) {
+                    if (document.activeElement === firstControl || !mainNav.contains(document.activeElement) && document.activeElement !== navToggle) {
+                        e.preventDefault();
+                        lastControl.focus();
+                    }
+                } else {
+                    if (document.activeElement === lastControl) {
+                        e.preventDefault();
+                        firstControl.focus();
+                    }
+                }
+            }
+        });
+
+        // Reset state cleanly if resized to desktop viewport
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 768 && mainNav.classList.contains("active")) {
+                closeNav(false);
             }
         });
     }

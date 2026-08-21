@@ -2812,6 +2812,12 @@ a {
     .skip-link {
         transition: none !important;
     }
+    .main-nav {
+        transition: none !important;
+    }
+    .mobile-nav-toggle .hamburger-line {
+        transition: none !important;
+    }
 }
 
 /* ==========================================================================

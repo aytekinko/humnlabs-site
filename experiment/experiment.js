@@ -1038,33 +1038,90 @@ function initCanvasBg() {
 }
 
 // ============================================================
-// MOBILE HAMBURGER (reuse homepage script pattern)
+// MOBILE HAMBURGER & ACCESSIBLE FOCUS TRAP
 // ============================================================
 function initMobileNav() {
   const toggle = document.querySelector('.mobile-nav-toggle');
   const nav    = document.querySelector('.main-nav');
   if (!toggle || !nav) return;
+
+  const getFocusableControls = () => {
+    const links = Array.from(nav.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])"));
+    return [toggle, ...links];
+  };
+
+  const openNav = () => {
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.classList.add('is-open');
+    nav.classList.add('active');
+    document.body.classList.add('nav-open');
+    const firstLink = nav.querySelector('.nav-link');
+    if (firstLink) {
+      firstLink.focus();
+    }
+  };
+
+  const closeNav = (returnFocus = true) => {
+    if (!nav.classList.contains('active')) return;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.classList.remove('is-open');
+    nav.classList.remove('active');
+    document.body.classList.remove('nav-open');
+    if (returnFocus) {
+      toggle.focus();
+    }
+  };
+
   toggle.addEventListener('click', () => {
     const open = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!open));
-    toggle.classList.toggle('is-open', !open);
-    // BUG-17: Use 'active' to match script.js on the main site
-    nav.classList.toggle('active', !open);
+    if (open) {
+      closeNav(true);
+    } else {
+      openNav();
+    }
   });
+
   document.querySelectorAll('.main-nav a').forEach(link => {
     link.addEventListener('click', () => {
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.classList.remove('is-open');
-      nav.classList.remove('active');
+      closeNav(false);
     });
   });
-  // Close menu on Escape and return focus to the toggle button
+
+  // Focus trap and Escape key handler
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && nav.classList.contains('active')) {
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.classList.remove('is-open');
-      nav.classList.remove('active');
-      toggle.focus();
+    if (!nav.classList.contains('active')) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeNav(true);
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const controls = getFocusableControls();
+      if (controls.length === 0) return;
+
+      const firstControl = controls[0];
+      const lastControl = controls[controls.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstControl || !nav.contains(document.activeElement) && document.activeElement !== toggle) {
+          e.preventDefault();
+          lastControl.focus();
+        }
+      } else {
+        if (document.activeElement === lastControl) {
+          e.preventDefault();
+          firstControl.focus();
+        }
+      }
+    }
+  });
+
+  // Reset state cleanly if resized to desktop viewport
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && nav.classList.contains('active')) {
+      closeNav(false);
     }
   });
 }
