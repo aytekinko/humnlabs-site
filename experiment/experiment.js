@@ -93,16 +93,16 @@ function hasValidStateForPhase(phase) {
   }
 
   if (phase === 'task-movement') {
-    return s.reaction && Array.isArray(s.reaction.times) && s.reaction.times.length > 0;
+    return s.reaction && Array.isArray(s.reaction.times) && (s.reaction.times.length > 0 || s.reaction.accessibleAlternative === true);
   }
 
   if (phase === 'task-typing') {
-    return s.reaction && Array.isArray(s.reaction.times) && s.reaction.times.length > 0 &&
+    return s.reaction && Array.isArray(s.reaction.times) && (s.reaction.times.length > 0 || s.reaction.accessibleAlternative === true) &&
            s.movement && Array.isArray(s.movement.points) && s.movement.points.length >= 10;
   }
 
   if (phase === 'analyzing' || phase === 'result') {
-    return s.reaction && Array.isArray(s.reaction.times) && s.reaction.times.length > 0 &&
+    return s.reaction && Array.isArray(s.reaction.times) && (s.reaction.times.length > 0 || s.reaction.accessibleAlternative === true) &&
            s.movement && Array.isArray(s.movement.points) && s.movement.points.length >= 10 &&
            s.typing && Array.isArray(s.typing.keyIntervals) && s.typing.keyIntervals.length > 0;
   }
@@ -115,7 +115,7 @@ function resetToWelcome() {
   if (ExpState.signals.reaction.timeoutId) {
     clearTimeout(ExpState.signals.reaction.timeoutId);
   }
-  ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0 };
+  ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0, accessibleAlternative: false };
   ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5, score: 0 };
   ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 };
   ExpState.result           = { reaction: 0, movement: 0, typing: 0, overall: 0 };
@@ -269,6 +269,7 @@ function initReactionTask() {
   state.round   = 0;
   state.times   = [];
   state.status  = 'idle';
+  state.accessibleAlternative = false;
 
   const list = document.getElementById('reaction-results');
   if (list) list.innerHTML = '';
@@ -279,6 +280,27 @@ function initReactionTask() {
     target.onclick = null;
     target.dataset.state = 'idle';
     target.innerHTML = '';
+  }
+
+  // Accessible alternative button handler
+  const altBtn = document.getElementById('reaction-alt-btn');
+  if (altBtn) {
+    altBtn.onclick = () => {
+      // Cancel any pending reaction timer safely
+      if (state.timeoutId) {
+        clearTimeout(state.timeoutId);
+        state.timeoutId = null;
+      }
+      ActiveListeners.teardown();
+
+      // Mark accessible alternative used with empty times array
+      state.times = [];
+      state.accessibleAlternative = true;
+      state.status = 'idle';
+
+      // Move directly to Task 2 (Movement Analysis)
+      showPhase('task-movement');
+    };
   }
 
   updateRoundLabel(1);
@@ -940,7 +962,7 @@ function initResult() {
     restartBtn.onclick = () => {
       // Reset all state
       ExpState.isSessionActive  = false;
-      ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0 };
+      ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0, accessibleAlternative: false };
       ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5, score: 0 };
       ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 };
       ExpState.result           = { reaction: 0, movement: 0, typing: 0, overall: 0 };

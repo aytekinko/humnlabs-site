@@ -348,6 +348,37 @@
 }
 .rt-result-unit { font-size: 9px; color: var(--text-accessible); margin-left: 2px; }
 
+.reaction-accessible-alt {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    max-width: 440px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btn-reaction-alt {
+    cursor: pointer;
+    font-size: 11px;
+    padding: 10px 20px;
+}
+
+.btn-reaction-alt:focus-visible {
+    outline: 2px solid var(--cyan) !important;
+    outline-offset: 3px !important;
+}
+
+.reaction-alt-desc {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--text-accessible);
+    line-height: 1.5;
+    margin: 0;
+}
+
 /* ================================================================
    PHASE: TASK — MOVEMENT ANALYSIS
    ================================================================ */
@@ -1413,6 +1444,10 @@
         <button class="reaction-target" id="reaction-target" type="button" data-state="idle" aria-label="Reaction timing target"></button>
         <p class="reaction-round-label" id="reaction-round">Round 1 of 3</p>
         <div id="reaction-results"></div>
+    </div>
+    <div class="reaction-accessible-alt">
+        <button class="btn-exp-ghost btn-reaction-alt" id="reaction-alt-btn" type="button">Use accessible alternative</button>
+        <p class="reaction-alt-desc">This continues the demo without a reaction-timing sample. Your result will identify it as a limited sample.</p>
     </div>
 </div>
 
