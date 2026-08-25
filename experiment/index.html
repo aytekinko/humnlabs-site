@@ -551,88 +551,221 @@
 /* ================================================================
    PHASE: RESULT
    ================================================================ */
-.result-hero { margin-bottom: 40px; }
-.result-circle-wrapper {
-    position: relative; display: inline-flex;
-    align-items: center; justify-content: center;
-    margin-bottom: 16px;
-}
-.result-circle-svg { transform: rotate(-90deg); }
-.result-circle-bg   { stroke: rgba(255,255,255,0.05); }
-.result-circle-progress { stroke: var(--cyan); stroke-linecap: round; fill: none; }
-.result-circle-inner {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-}
-.result-score-num {
+/* ================================================================
+   PHASE: RESULT (Session Evidence Summary)
+   ================================================================ */
+.result-hero { margin-bottom: 28px; text-align: center; }
+
+.result-title {
     font-family: var(--font-heading);
-    font-size: 2.8rem; font-weight: 900;
-    color: var(--text-pure); line-height: 1;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-pure);
+    margin-bottom: 8px;
+    outline: none;
 }
-.result-score-label {
+
+.result-coverage-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 999px;
     font-family: var(--font-heading);
-    font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    font-variant: small-caps;
-    text-align: center;
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+}
+
+.coverage--complete {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--cyan);
     color: var(--cyan);
 }
-.label--high { color: var(--cyan); }
-.label--mid  { color: #f59e0b; }
-.label--low  { color: #ef4444; }
 
-.result-score-caption {
-    font-family: var(--font-body);
-    font-size: 13px; color: var(--text-muted);
-    margin-top: 2px;
-    margin-bottom: 2px;
+.coverage--limited {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+    color: #f59e0b;
 }
 
-.result-signals {
-    width: 100%; display: flex; flex-direction: column; gap: 16px;
-    margin-bottom: 32px; text-align: left;
+.coverage--insufficient {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
 }
-.result-signal-row { }
-.result-signal-header {
-    display: flex; justify-content: space-between; align-items: center;
+
+.result-coverage-count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pure);
     margin-bottom: 6px;
 }
-.result-signal-name {
-    font-family: var(--font-heading);
-    font-size: 10px; font-weight: 700; letter-spacing: 1px;
-    text-transform: uppercase; color: var(--text-muted);
-    display: flex; align-items: center; gap: 8px;
-}
-.result-signal-name i { color: var(--cyan); font-size: 9px; }
-.result-signal-val {
-    font-family: var(--font-heading);
-    font-size: 12px; font-weight: 700; color: var(--text-pure);
-    min-width: 34px; text-align: right;
-}
-.result-signal-track {
-    height: 4px; background: rgba(255,255,255,0.05);
-    border-radius: 3px; overflow: hidden;
-}
-.result-signal-bar {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg, var(--cyan), #7b3fff);
-    border-radius: 3px;
-    transition: width 0.8s cubic-bezier(0.22,1,0.36,1);
+
+.result-session-note {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-accessible);
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.5;
+    text-align: center;
 }
 
-.result-message {
-    font-family: var(--font-body);
-    font-size: 15px; color: var(--text-muted); line-height: 1.75;
-    margin-bottom: 24px;
-    padding: 18px 20px;
-    background: rgba(0,240,255,0.03);
-    border: 1px solid rgba(0,240,255,0.1);
-    border-radius: 10px;
+.general-boundary-card {
+    background: rgba(0, 240, 255, 0.02);
+    border: 1px solid rgba(0, 240, 255, 0.12);
+    border-radius: 12px;
+    padding: 16px 20px;
     text-align: left;
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.general-boundary-primary {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 6px;
+}
+
+.general-boundary-secondary {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.evidence-task-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.evidence-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.evidence-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.evidence-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.evidence-card-name {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-pure);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.evidence-status-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+}
+
+.status--available {
+    background: rgba(0, 240, 255, 0.08);
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--cyan);
+}
+
+.status--limited {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+}
+
+.status--excluded {
+    background: rgba(167, 139, 250, 0.08);
+    border-color: rgba(167, 139, 250, 0.3);
+    color: #a78bfa;
+}
+
+.status--invalid {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.status--not-available {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+}
+
+.evidence-metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.evidence-metric-val {
+    color: var(--text-pure);
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.evidence-obs {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-accessible);
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+}
+
+.evidence-absence {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+}
+
+.evidence-limitation {
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.04);
 }
 
 .result-disclaimer {
@@ -649,246 +782,6 @@
 
 .result-actions {
     display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-}
-
-/* ================================================================
-   SHARED BUTTON OVERRIDES
-   ================================================================ */
-.btn-exp-primary {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--cyan);
-    color: #000; font-family: var(--font-heading);
-    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase;
-    border: none; border-radius: 8px;
-    padding: 14px 28px; cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-    text-decoration: none;
-}
-.btn-exp-primary:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0,240,255,0.25);
-}
-.btn-exp-ghost {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: transparent;
-    color: var(--text-muted); font-family: var(--font-heading);
-    font-size: 11px; font-weight: 600; letter-spacing: 1px;
-    text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-    padding: 14px 24px; cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-    text-decoration: none;
-}
-.btn-exp-ghost:hover {
-    border-color: rgba(255,255,255,0.25);
-    color: var(--text-pure);
-}
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-/* ================================================================
-   ANIMATION HELPERS
-   ================================================================ */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ================================================================
-   MOBILE OVERRIDES
-   ================================================================ */
-@media (max-width: 768px) {
-    .exp-wrapper { padding: 90px 16px 64px; }
-    .exp-card { padding: 28px 22px; }
-    .welcome-body { font-size: 15px; }
-    #movement-zone { height: 200px; }
-    .result-score-num { font-size: 2.2rem; }
-}
-@media (max-width: 430px) {
-    .exp-wrapper { padding: 84px 14px 56px; }
-    .reaction-target { width: 130px; height: 130px; }
-    .welcome-stats { gap: 6px; }
-    .welcome-stat { font-size: 9px; padding: 4px 10px; }
-}
-
-/* ---- Results Refinement Styles ---- */
-.result-certainty-note {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-top: 8px;
-    font-weight: 600;
-}
-
-.result-session-note {
-    font-family: var(--font-body);
-    font-size: 11px;
-    color: var(--text-accessible);
-    margin-top: 4px;
-    text-align: center;
-}
-
-
-.result-context-subtitle {
-    font-family: var(--font-body);
-    font-size: 11.5px;
-    color: var(--text-accessible);
-    text-align: center;
-    margin-top: 6px;
-    margin-bottom: 0px;
-    opacity: 0.85;
-}
-
-.result-disclaimer-card {
-    background: rgba(239, 68, 68, 0.03);
-    border: 1px solid rgba(239, 68, 68, 0.12);
-    border-radius: 12px;
-    padding: 16px 20px;
-    text-align: center;
-    margin-bottom: 24px;
-    width: 100%;
-}
-
-.result-disclaimer-primary {
-    font-family: var(--font-heading);
-    font-size: 13.5px;
-    font-weight: 700;
-    color: #f87171; /* Soft red text */
-    margin-bottom: 4px;
-}
-
-.result-disclaimer-secondary {
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-/* ---- Confidence Breakdown Disclosure ---- */
-.confidence-breakdown {
-    width: 100%;
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 12px;
-    padding: 18px 22px;
-    margin-bottom: 24px;
-    text-align: left;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.confidence-breakdown:hover,
-.confidence-breakdown[open] {
-    border-color: rgba(0, 240, 255, 0.25);
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.confidence-breakdown-summary {
-    font-family: var(--font-heading);
-    font-size: 13.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--text-bright);
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-}
-
-.confidence-breakdown-summary::-webkit-details-marker {
-    display: none;
-}
-
-.confidence-breakdown-summary:focus-visible {
-    outline: 2px solid var(--cyan);
-    outline-offset: 4px;
-    border-radius: 4px;
-}
-
-.confidence-breakdown-arrow {
-    width: 12px;
-    height: 12px;
-    color: var(--text-muted);
-    fill: currentColor;
-    flex-shrink: 0;
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.confidence-breakdown[open] .confidence-breakdown-arrow {
-    transform: rotate(180deg);
-    color: var(--cyan);
-}
-
-.confidence-breakdown-content {
-    margin-top: 16px;
-}
-
-.confidence-breakdown-intro {
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--text-accessible);
-    line-height: 1.6;
-    margin-bottom: 18px;
-}
-
-.confidence-breakdown-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.confidence-breakdown-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 14px 16px;
-    box-sizing: border-box;
-}
-
-.confidence-breakdown-card-title {
-    font-family: var(--font-heading);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--text-pure);
-    margin-bottom: 6px;
-}
-
-.confidence-breakdown-card-body {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.confidence-breakdown-card--boundary {
-    background: rgba(0, 240, 255, 0.02);
-    border-color: rgba(0, 240, 255, 0.12);
-}
-
-.confidence-breakdown-card--boundary .confidence-breakdown-card-title {
-    color: var(--cyan);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .confidence-breakdown,
-    .confidence-breakdown-arrow {
-        transition: none !important;
-    }
 }
 
 .privacy-card-container {
@@ -1503,33 +1396,10 @@
         <span class="exp-badge-pulse"></span>
         Processing
     </div>
-    <h2 class="analyzing-title">Analyzing behavioral signals</h2>
-    <p class="analyzing-sub">Running local signal analysis &mdash; this takes a moment.</p>
+    <h2 class="analyzing-title">Preparing your session evidence summary…</h2>
+    <p class="analyzing-sub">The available session measurements are being summarized locally in this browser.</p>
 
     <div class="exp-card">
-        <div class="analyzing-signals">
-            <div class="analyze-row">
-                <div class="analyze-row-header">
-                    <span class="analyze-row-label"><svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);margin-right:6px;width:11px;height:11px;"><use href="#icon-stopwatch"></use></svg>Reaction Timing</span>
-                    <span class="analyze-row-val" id="analyze-val-1">0%</span>
-                </div>
-                <div class="analyze-track"><div class="analyze-bar analyze-bar--1" id="analyze-bar-1"></div></div>
-            </div>
-            <div class="analyze-row">
-                <div class="analyze-row-header">
-                    <span class="analyze-row-label"><svg class="svg-icon" aria-hidden="true" focusable="false" style="color:#a78bfa;margin-right:6px;width:11px;height:11px;"><use href="#icon-arrows-up-down-left-right"></use></svg>Movement Analysis</span>
-                    <span class="analyze-row-val" id="analyze-val-2">0%</span>
-                </div>
-                <div class="analyze-track"><div class="analyze-bar analyze-bar--2" id="analyze-bar-2"></div></div>
-            </div>
-            <div class="analyze-row">
-                <div class="analyze-row-header">
-                    <span class="analyze-row-label"><svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);margin-right:6px;width:11px;height:11px;"><use href="#icon-keyboard"></use></svg>Typing Rhythm</span>
-                    <span class="analyze-row-val" id="analyze-val-3">0%</span>
-                </div>
-                <div class="analyze-track"><div class="analyze-bar analyze-bar--3" id="analyze-bar-3"></div></div>
-            </div>
-        </div>
         <div class="analyzing-loader">
             <span class="an-dot"></span>
             <span class="an-dot"></span>
@@ -1544,118 +1414,94 @@
 <div class="exp-phase" id="phase-result">
     <div class="exp-badge">
         <svg class="svg-icon" aria-hidden="true" focusable="false" style="width:10px;height:10px;margin-right:4px;"><use href="#icon-circle-check"></use></svg>
-        Experiment Complete
+        DEMONSTRATION COMPLETE
     </div>
 
     <div class="result-hero">
-        <div class="result-circle-wrapper">
-            <svg class="result-circle-svg" width="148" height="148" viewBox="0 0 148 148">
-                <circle class="result-circle-bg" cx="74" cy="74" r="54" stroke-width="8" fill="none"/>
-                <circle class="result-circle-progress" id="result-circle-progress"
-                        cx="74" cy="74" r="54" stroke-width="8" stroke-linecap="round"/>
-            </svg>
-            <div class="result-circle-inner">
-                <span class="result-score-num" id="result-score-num">0%</span>
-            </div>
-        </div>
-        <div class="result-score-label" id="result-score-label">—</div>
-        <p class="result-score-caption">Estimated Confidence of Human Presence</p>
-        <p class="result-certainty-note">Confidence is not certainty.</p>
-        <p class="result-session-note">This estimate applies only to this session.</p>
-        <p class="result-context-subtitle">Behavioral confidence derived from interaction patterns only.</p>
+        <h2 class="result-title" tabindex="-1">Session Evidence Summary</h2>
+        <div id="result-aria-announcer" aria-live="polite" class="sr-only"></div>
+        <div class="result-coverage-badge" id="res-coverage-badge">EVIDENCE COVERAGE: &mdash;</div>
+        <div class="result-coverage-count" id="res-coverage-count">&mdash; of 3 tasks available</div>
+        <p class="result-session-note">
+            Coverage describes which task summaries were available. It is not a confidence score and does not determine whether someone is human.
+        </p>
     </div>
 
-    <!-- Prominent Disclaimer Cards -->
-    <div class="result-disclaimer-card">
-        <div class="result-disclaimer-primary">This score does not prove that a human is present.</div>
-        <div class="result-disclaimer-secondary">This experiment estimates confidence only.</div>
+    <!-- General Demonstration Boundary Card -->
+    <div class="general-boundary-card">
+        <div class="general-boundary-primary">General Demonstration Boundary</div>
+        <div class="general-boundary-secondary">
+            These observations are descriptive session measurements. They are not identity verification, proof of humanity, bot detection or calibrated Trust Engine output.
+        </div>
     </div>
 
     <div class="exp-card">
-        <div class="result-signals">
-            <div class="result-signal-row">
-                <div class="result-signal-header">
-                    <span class="result-signal-name"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:6px;"><use href="#icon-stopwatch"></use></svg>Reaction Timing</span>
-                    <span class="result-signal-val" id="res-val-r">—</span>
+        <div class="evidence-task-grid">
+            <!-- Task 1: Reaction Timing -->
+            <div class="evidence-card" id="ev-card-reaction">
+                <div class="evidence-card-header">
+                    <span class="evidence-card-name">
+                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:13px;height:13px;"><use href="#icon-stopwatch"></use></svg>
+                        Reaction Timing
+                    </span>
+                    <span class="evidence-status-badge status--not-available" id="res-status-reaction">&mdash;</span>
                 </div>
-                <div class="result-signal-track"><div class="result-signal-bar" id="res-bar-r"></div></div>
+                <div class="evidence-metric-row" id="res-metric-row-reaction" style="display:none;">
+                    <span id="res-metric-label-reaction">Median Response Latency:</span>
+                    <span class="evidence-metric-val" id="res-metric-val-reaction">&mdash;</span>
+                </div>
+                <p class="evidence-obs" id="res-obs-reaction" style="display:none;">&mdash;</p>
+                <p class="evidence-absence" id="res-absence-reaction" style="display:none;">&mdash;</p>
+                <p class="evidence-limitation" id="res-limitation-reaction">
+                    Display, browser, device and input latency affect this session measurement. It does not establish whether someone is human.
+                </p>
             </div>
-            <div class="result-signal-row">
-                <div class="result-signal-header">
-                    <span class="result-signal-name"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:6px;"><use href="#icon-arrows-up-down-left-right"></use></svg>Movement Analysis</span>
-                    <span class="result-signal-val" id="res-val-m">—</span>
+
+            <!-- Task 2: Movement Task -->
+            <div class="evidence-card" id="ev-card-movement">
+                <div class="evidence-card-header">
+                    <span class="evidence-card-name">
+                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:#a78bfa;width:13px;height:13px;"><use href="#icon-arrows-up-down-left-right"></use></svg>
+                        Movement Task
+                    </span>
+                    <span class="evidence-status-badge status--not-available" id="res-status-movement">&mdash;</span>
                 </div>
-                <div class="result-signal-track"><div class="result-signal-bar" id="res-bar-m"></div></div>
+                <div class="evidence-metric-row" id="res-metric-row-movement" style="display:none;">
+                    <span id="res-metric-label-movement">Collection Duration:</span>
+                    <span class="evidence-metric-val" id="res-metric-val-movement">&mdash;</span>
+                </div>
+                <p class="evidence-obs" id="res-obs-movement" style="display:none;">&mdash;</p>
+                <p class="evidence-absence" id="res-absence-movement" style="display:none;">&mdash;</p>
+                <p class="evidence-limitation" id="res-limitation-movement">
+                    Point count and timing depend on the input device and browser sampling behavior. They are not a biometric identity or humanity assessment.
+                </p>
             </div>
-            <div class="result-signal-row">
-                <div class="result-signal-header">
-                    <span class="result-signal-name"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:6px;"><use href="#icon-keyboard"></use></svg>Typing Rhythm</span>
-                    <span class="result-signal-val" id="res-val-t">—</span>
+
+            <!-- Task 3: Typing Rhythm -->
+            <div class="evidence-card" id="ev-card-typing">
+                <div class="evidence-card-header">
+                    <span class="evidence-card-name">
+                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:13px;height:13px;"><use href="#icon-keyboard"></use></svg>
+                        Typing Rhythm
+                    </span>
+                    <span class="evidence-status-badge status--not-available" id="res-status-typing">&mdash;</span>
                 </div>
-                <div class="result-signal-track"><div class="result-signal-bar" id="res-bar-t"></div></div>
+                <div class="evidence-metric-row" id="res-metric-row-typing" style="display:none;">
+                    <span id="res-metric-label-typing">Mean Input Interval:</span>
+                    <span class="evidence-metric-val" id="res-metric-val-typing">&mdash;</span>
+                </div>
+                <p class="evidence-obs" id="res-obs-typing" style="display:none;">&mdash;</p>
+                <p class="evidence-absence" id="res-absence-typing" style="display:none;">&mdash;</p>
+                <p class="evidence-limitation" id="res-limitation-typing">
+                    Input timing depends on keyboard, language, input method and familiarity. It does not establish identity or humanity.
+                </p>
             </div>
         </div>
-
-        <p class="result-message" id="result-message"></p>
-
-        <!-- Explainability Section -->
-        <div class="explainability-section">
-            <h3 class="explainability-title">Why this estimate?</h3>
-            <div class="explainability-list">
-                <div class="explainability-item">
-                    <span class="explainability-item-label">Reaction Timing</span>
-                    <div class="explainability-leader"></div>
-                    <span class="explainability-badge" id="exp-badge-r">—</span>
-                </div>
-                <p class="signal-quality-label" id="quality-label-r"></p>
-                <div class="explainability-item">
-                    <span class="explainability-item-label">Movement Analysis</span>
-                    <div class="explainability-leader"></div>
-                    <span class="explainability-badge" id="exp-badge-m">—</span>
-                </div>
-                <p class="signal-quality-label" id="quality-label-m"></p>
-                <div class="explainability-item">
-                    <span class="explainability-item-label">Typing Rhythm</span>
-                    <div class="explainability-leader"></div>
-                    <span class="explainability-badge" id="exp-badge-t">—</span>
-                </div>
-                <p class="signal-quality-label" id="quality-label-t"></p>
-            </div>
-        </div>
-
-        <!-- Confidence Breakdown Disclosure -->
-        <details class="confidence-breakdown" id="confidence-breakdown">
-            <summary class="confidence-breakdown-summary">
-                <span>How this demo forms its confidence</span>
-                <svg class="svg-icon confidence-breakdown-arrow" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
-            </summary>
-            <div class="confidence-breakdown-content">
-                <p class="confidence-breakdown-intro">This interactive demo combines patterns from three short tasks to produce a session-specific confidence estimate.</p>
-                <div class="confidence-breakdown-cards">
-                    <div class="confidence-breakdown-card">
-                        <h4 class="confidence-breakdown-card-title">Reaction timing</h4>
-                        <p class="confidence-breakdown-card-body">The demo considers variation in the time between an on-screen cue and an input. Results may vary with device performance, network conditions, or the way you interact with the page.</p>
-                    </div>
-                    <div class="confidence-breakdown-card">
-                        <h4 class="confidence-breakdown-card-title">Pointer or touch movement</h4>
-                        <p class="confidence-breakdown-card-body">The demo considers continuity and changes in movement during the task. Mouse, trackpad, touchscreen, browser, and assistive-technology settings can affect this signal.</p>
-                    </div>
-                    <div class="confidence-breakdown-card">
-                        <h4 class="confidence-breakdown-card-title">Typing rhythm</h4>
-                        <p class="confidence-breakdown-card-body">The demo considers variation between keystrokes while you type the displayed phrase. It does not assess writing ability, language proficiency, or identity.</p>
-                    </div>
-                    <div class="confidence-breakdown-card confidence-breakdown-card--boundary">
-                        <h4 class="confidence-breakdown-card-title">What this does not establish</h4>
-                        <p class="confidence-breakdown-card-body">This result is an illustrative, probabilistic estimate for this session only. It is not identity verification, a biometric assessment, proof of humanity, or a decision about any person.</p>
-                    </div>
-                </div>
-            </div>
-        </details>
 
         <!-- Privacy Card -->
         <div class="privacy-card-container">
             <h3 class="privacy-card-title">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:6px;"><use href="#icon-shield-halved"></use></svg> Privacy & Data Protocol
+                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:6px;"><use href="#icon-shield-halved"></use></svg> Local Execution Protocol
             </h3>
             <div class="privacy-grid">
                 <div class="privacy-grid-item">
@@ -1676,33 +1522,29 @@
                     <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-wifi-slash"></use></svg>
                     <div class="privacy-grid-item-text">
                         <span class="privacy-grid-item-label">No data transmitted</span>
-                        <span class="privacy-grid-item-desc">Absolutely no telemetry or credentials are sent to servers.</span>
+                        <span class="privacy-grid-item-desc">The interaction samples are not stored or transmitted.</span>
                     </div>
                 </div>
                 <div class="privacy-grid-item">
                     <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-microchip"></use></svg>
                     <div class="privacy-grid-item-text">
                         <span class="privacy-grid-item-label">Browser-only processing</span>
-                        <span class="privacy-grid-item-desc">All calculations execute strictly within local JS memory.</span>
+                        <span class="privacy-grid-item-desc">Processed locally in this browser.</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <p class="result-disclaimer">
-            <strong>Research note:</strong> This score is not proof of humanity. It is a probabilistic confidence estimate derived from behavioral signals observed during this session only. It has no legal, commercial, or identifying significance. No data from this session is stored or transmitted.
-        </p>
-        <p class="exp-research-note">
-            <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-circle-info"></use></svg>
-            <strong>Methodology Note:</strong> This task uses a visual 'NOW!' cue and does not currently provide an equivalent non-visual cue. Results may be affected by display, device, and input latency.
+            <strong>Privacy Note:</strong> Processed locally in this browser. The interaction samples are not stored or transmitted.
         </p>
 
         <div class="result-actions">
             <button class="btn-exp-primary" id="result-restart-btn">
                 <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-rotate-left"></use></svg> Run Again
             </button>
-            <a href="/" class="btn-exp-ghost">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-arrow-left"></use></svg> Back to HUMNLABS
+            <a href="/#engine-status" class="btn-exp-ghost">
+                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-arrow-left"></use></svg> View Research Status
             </a>
         </div>
     </div>

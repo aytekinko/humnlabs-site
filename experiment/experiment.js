@@ -13,11 +13,11 @@ const ExpState = {
   isSessionActive: false,
   currentPhase: 'welcome',
   signals: {
-    reaction: { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0 },
-    movement: { points: [], collecting: false, timeRemaining: 5, score: 0 },
-    typing:   { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 }
+    reaction: { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, accessibleAlternative: false },
+    movement: { points: [], collecting: false, timeRemaining: 5 },
+    typing:   { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '' }
   },
-  result: { reaction: 0, movement: 0, typing: 0, overall: 0 }
+  result: null
 };
 
 // ============================================================
@@ -115,10 +115,10 @@ function resetToWelcome() {
   if (ExpState.signals.reaction.timeoutId) {
     clearTimeout(ExpState.signals.reaction.timeoutId);
   }
-  ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0, accessibleAlternative: false };
-  ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5, score: 0 };
-  ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 };
-  ExpState.result           = { reaction: 0, movement: 0, typing: 0, overall: 0 };
+  ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, accessibleAlternative: false };
+  ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5 };
+  ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '' };
+  ExpState.result           = null;
 
   history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
   showPhase('welcome');
@@ -160,7 +160,7 @@ function showPhase(name, pushHistory = true) {
     const navPhases = ['task-reaction', 'task-movement', 'task-typing', 'result'];
     if (navPhases.includes(name)) {
       const hashName = name === 'result' ? 'result' : name.replace('task-', '');
-      history.pushState({ phase: name }, '', '#exp-' + hashName);
+      history.pushState({ phase: name }, '', '#' + hashName);
     } else if (name === 'welcome') {
       if (window.location.hash) {
         history.replaceState({ phase: 'welcome' }, '', window.location.pathname + window.location.search);
@@ -177,7 +177,7 @@ function showPhase(name, pushHistory = true) {
     requestAnimationFrame(() => {
       target.classList.add('exp-phase--active');
       // Accessibility: move keyboard focus to the new section heading
-      const heading = target.querySelector('h2, h3');
+      const heading = target.querySelector('h1, h2, h3');
       if (heading) {
         heading.setAttribute('tabindex', '-1');
         heading.focus({ preventScroll: true });
@@ -193,12 +193,12 @@ function showPhase(name, pushHistory = true) {
   if (announcer) {
     const screenFriendlyNames = {
       'welcome': 'Welcome to Human Presence Experiment v0.1',
-      'instructions': 'Instructions phase. Learn how behavioral signal collection works.',
+      'instructions': 'Instructions phase. Learn how signal collection works.',
       'task-reaction': 'Task 1: Reaction timing assessment. Click target when Now appears.',
       'task-movement': 'Task 2: Movement analysis assessment. Draw lines inside the movement area.',
       'task-typing': 'Task 3: Keystroke analysis assessment. Type the phrase shown in input field.',
-      'analyzing': 'Processing collected signals. Running analysis engine.',
-      'result': 'Experiment complete. Reviewing behavioral confidence results.'
+      'analyzing': 'Preparing your session evidence summary. Running local summary.',
+      'result': 'Demonstration complete. Session evidence summary ready.'
     };
     announcer.textContent = screenFriendlyNames[name] || `Switched to phase: ${name}`;
   }
@@ -704,7 +704,7 @@ function initTypingTask() {
           pb.style.width = '100%';
           pb.style.background = 'linear-gradient(90deg, #00ff87, #00f0ff)';
         }
-        e.target.placeholder = 'Rhythm registered — analyzing…';
+        e.target.placeholder = 'Input registered — preparing summary…';
         const analyzeTid = setTimeout(() => showPhase('analyzing'), 900);
         ActiveListeners.addTimeout(analyzeTid);
       }
@@ -720,275 +720,310 @@ function initTypingTask() {
 // ANALYZING PHASE
 // ============================================================
 function initAnalyzing() {
-  const scores = calculateAllScores();
-  ExpState.result = scores;
+  const summary = deriveEvidenceSummary();
+  ExpState.result = summary;
 
-  // Reset bars
-  ['1','2','3'].forEach(i => {
-    const bar = document.getElementById(`analyze-bar-${i}`);
-    const val = document.getElementById(`analyze-val-${i}`);
-    if (bar) bar.style.width = '0%';
-    if (val) val.textContent = '0%';
-  });
+  const isReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const delay = isReducedMotion ? 50 : 1200;
 
-  const signal = [
-    { bar: 'analyze-bar-1', val: 'analyze-val-1', score: scores.reaction },
-    { bar: 'analyze-bar-2', val: 'analyze-val-2', score: scores.movement },
-    { bar: 'analyze-bar-3', val: 'analyze-val-3', score: scores.typing },
-  ];
-
-  signal.forEach((s, idx) => {
-    setTimeout(() => {
-      const bar = document.getElementById(s.bar);
-      const val = document.getElementById(s.val);
-      if (bar) bar.style.width = `${s.score}%`;
-      if (val) animateCount(val, 0, s.score, 900);
-    }, 350 + idx * 700);
-  });
-
-  // Advance to result — registered so Back-button during analyze cancels this timer
-  const advanceTid = setTimeout(() => showPhase('result'), 3600);
+  const advanceTid = setTimeout(() => showPhase('result'), delay);
   ActiveListeners.addTimeout(advanceTid);
 }
 
 // ============================================================
-// SCORING ENGINE (local, deterministic)
+// EVIDENCE SUMMARY DERIVATION (local, deterministic, side-effect-free)
 // ============================================================
-function calculateAllScores() {
-  const r = scoreReaction(ExpState.signals.reaction.times);
-  const m = scoreMovement(ExpState.signals.movement.points);
-  const t = scoreTyping(ExpState.signals.typing.keyIntervals);
-  const overall = clamp(Math.round(r * 0.33 + m * 0.34 + t * 0.33), 22, 97);
-  return { reaction: r, movement: m, typing: t, overall };
-}
+function deriveEvidenceSummary() {
+  const s = ExpState.signals;
 
-function scoreReaction(times) {
-  const hasInvalid = times.some(t => t > 5000);
-  if (hasInvalid) return 24; // Minimum score for invalid timing
+  // 1. REACTION
+  let reactionStatus = 'NOT_AVAILABLE';
+  let reactionMetricLabel = null;
+  let reactionMetricValue = null;
+  let reactionObs = null;
+  let reactionAbsence = null;
+  const reactionLimitation = 'Display, browser, device and input latency affect this session measurement. It does not establish whether someone is human.';
 
-  if (times.length < 2) return 62;
-  const mean = avg(times);
-  const cv   = stdDev(times) / (mean + 1);
-  let s = 48;
-  if (mean >= 130 && mean <= 450) s += 25;
-  else if (mean >= 80 && mean <= 650) s += 12;
-  if (cv >= 0.05 && cv <= 0.45) s += 22;
-  else if (cv >= 0.01 && cv <= 0.70) s += 10;
-  if (mean < 100) s -= 30;
-  return clamp(Math.round(s), 24, 97);
-}
+  if (s.reaction && s.reaction.accessibleAlternative) {
+    reactionStatus = 'EXCLUDED_ACCESSIBILITY';
+    reactionAbsence = 'Visual cue bypassed via accessible alternative. No reaction timing observation was recorded.';
+  } else {
+    const rTimes = (s.reaction && Array.isArray(s.reaction.times)) ? s.reaction.times : [];
+    const validTimes = rTimes.filter(t => typeof t === 'number' && Number.isFinite(t) && t > 0 && t <= 5000);
+    const hasInvalid = rTimes.some(t => typeof t !== 'number' || !Number.isFinite(t) || t <= 0 || t > 5000);
 
-function scoreMovement(points) {
-  if (points.length < 15) return 58;
-  let dirChanges = 0, velocities = [];
-  for (let i = 1; i < points.length - 1; i++) {
-    const dx1 = points[i].x - points[i-1].x,  dy1 = points[i].y - points[i-1].y;
-    const dx2 = points[i+1].x - points[i].x,  dy2 = points[i+1].y - points[i].y;
-    let diff = Math.abs(Math.atan2(dy2, dx2) - Math.atan2(dy1, dx1));
-    if (diff > Math.PI) diff = 2 * Math.PI - diff;
-    if (diff > 0.12) dirChanges++;
-    const dt = points[i].t - points[i-1].t;
-    if (dt > 0) velocities.push(Math.hypot(dx1, dy1) / dt);
-  }
-  const dirRate = dirChanges / points.length;
-  const avgVel = velocities.length ? avg(velocities) : 0;
-  const velCV  = velocities.length ? stdDev(velocities) / (avgVel + 0.001) : 0;
-  
-  let s = 48;
-  
-  // Penalize uniform velocity (typical of pre-programmed macros)
-  if (velCV < 0.12) {
-    s -= 20;
-  } else if (velCV >= 0.3) {
-    s += 20;
-  } else if (velCV >= 0.08) {
-    s += 10;
-  }
-  
-  // Direction rate validation
-  if (dirRate >= 0.08 && dirRate <= 0.65) {
-    s += 26;
-  } else if (dirRate > 0 && dirRate < 0.8) {
-    s += 12;
-  } else if (dirRate >= 0.8) {
-    // Extreme frequency pointer shakes/scribbles
-    s -= 25;
-  }
-  
-  // Unnaturally high speed penalty
-  if (avgVel > 7.5) {
-    s -= 20;
+    if (validTimes.length >= 3) {
+      reactionStatus = 'AVAILABLE';
+      const med = Math.round(median(validTimes));
+      reactionMetricLabel = 'Median Response Latency';
+      reactionMetricValue = `${med} ms`;
+      reactionObs = `Recorded across ${validTimes.length} completed rounds.`;
+    } else if (validTimes.length === 2) {
+      reactionStatus = 'LIMITED';
+      const med = Math.round(median(validTimes));
+      reactionMetricLabel = 'Median Response Latency';
+      reactionMetricValue = `${med} ms`;
+      reactionObs = hasInvalid
+        ? `Recorded across 2 valid rounds (1 invalid round excluded).`
+        : `Recorded across 2 completed rounds.`;
+      if (hasInvalid) {
+        reactionAbsence = 'One round exceeded valid timing limits (> 5000 ms).';
+      }
+    } else if (hasInvalid) {
+      reactionStatus = 'INVALID';
+      reactionAbsence = 'Recorded rounds contained invalid timing values (> 5000 ms).';
+    } else {
+      reactionStatus = 'NOT_AVAILABLE';
+      reactionAbsence = 'Fewer than 2 valid rounds recorded.';
+    }
   }
 
-  return clamp(Math.round(s), 28, 97);
-}
+  // 2. MOVEMENT
+  let movementStatus = 'NOT_AVAILABLE';
+  let movementMetricLabel = null;
+  let movementMetricValue = null;
+  let movementObs = null;
+  let movementAbsence = null;
+  const movementLimitation = 'Point count and timing depend on the input device and browser sampling behavior. They are not a biometric identity or humanity assessment.';
 
-function scoreTyping(intervals) {
-  if (intervals.length < 4) return 63;
-  const mean = avg(intervals);
-  const cv   = stdDev(intervals) / (mean + 1);
-  let s = 48;
-  if (mean >= 70 && mean <= 380) s += 26;
-  else if (mean >= 40 && mean <= 600) s += 12;
-  if (cv >= 0.18 && cv <= 0.90) s += 22;
-  else if (cv >= 0.05 && cv <= 1.3) s += 10;
-  return clamp(Math.round(s), 28, 97);
+  const mPoints = (s.movement && Array.isArray(s.movement.points)) ? s.movement.points : [];
+  let isStructurallyValid = true;
+  for (let i = 0; i < mPoints.length; i++) {
+    const pt = mPoints[i];
+    if (!pt || typeof pt.x !== 'number' || typeof pt.y !== 'number' || typeof pt.t !== 'number' ||
+        !Number.isFinite(pt.x) || !Number.isFinite(pt.y) || !Number.isFinite(pt.t)) {
+      isStructurallyValid = false;
+      break;
+    }
+    if (i > 0 && pt.t <= mPoints[i - 1].t) {
+      isStructurallyValid = false;
+      break;
+    }
+  }
+
+  if (!isStructurallyValid) {
+    movementStatus = 'INVALID';
+    movementAbsence = 'Movement samples contained non-finite coordinates or non-monotonic timestamps.';
+  } else if (mPoints.length >= 15) {
+    const durationMs = mPoints[mPoints.length - 1].t - mPoints[0].t;
+    if (durationMs > 0) {
+      movementStatus = 'AVAILABLE';
+      const durSec = (durationMs / 1000).toFixed(1);
+      movementMetricLabel = 'Collection Duration';
+      movementMetricValue = `${durSec} seconds`;
+      movementObs = `${mPoints.length} points recorded during the collection window.`;
+    } else {
+      movementStatus = 'INVALID';
+      movementAbsence = 'Recorded collection duration was non-positive.';
+    }
+  } else {
+    movementStatus = 'NOT_AVAILABLE';
+    movementAbsence = 'Fewer than 15 sample points recorded.';
+  }
+
+  // 3. TYPING
+  let typingStatus = 'NOT_AVAILABLE';
+  let typingMetricLabel = null;
+  let typingMetricValue = null;
+  let typingObs = null;
+  let typingAbsence = null;
+  const typingLimitation = 'Input timing depends on keyboard, language, input method and familiarity. It does not establish identity or humanity.';
+
+  const tState = s.typing || {};
+  const tIntervals = Array.isArray(tState.keyIntervals) ? tState.keyIntervals : [];
+  const phrase = tState.phrase || 'human presence is not proof of identity';
+  const typed = tState.typed || '';
+
+  const isPhraseComplete = typed.length >= phrase.length * 0.9 &&
+    [...typed].filter((c, i) => c === phrase[i]).length >= phrase.length * 0.85;
+
+  let intervalsValid = true;
+  for (const interval of tIntervals) {
+    if (typeof interval !== 'number' || !Number.isFinite(interval) || interval <= 0) {
+      intervalsValid = false;
+      break;
+    }
+  }
+
+  if (!intervalsValid) {
+    typingStatus = 'INVALID';
+    typingAbsence = 'Recorded keystroke intervals contained non-finite or non-positive values.';
+  } else if (isPhraseComplete && tIntervals.length >= 4) {
+    typingStatus = 'AVAILABLE';
+    const meanVal = Math.round(avg(tIntervals));
+    typingMetricLabel = 'Mean Input Interval';
+    typingMetricValue = `${meanVal} ms`;
+    typingObs = `Recorded across ${tIntervals.length} input intervals during phrase completion.`;
+  } else if (!isPhraseComplete) {
+    typingStatus = 'NOT_AVAILABLE';
+    typingAbsence = 'Phrase entry was not completed.';
+  } else {
+    typingStatus = 'NOT_AVAILABLE';
+    typingAbsence = 'Fewer than 4 valid keystroke intervals recorded.';
+  }
+
+  // Coverage calculation
+  const taskStatuses = [reactionStatus, movementStatus, typingStatus];
+  const availableCount = taskStatuses.filter(st => st === 'AVAILABLE' || st === 'LIMITED').length;
+  const coverageCategory = availableCount === 3 ? 'COMPLETE' : availableCount >= 1 ? 'LIMITED' : 'INSUFFICIENT';
+
+  return {
+    result_type: 'EDUCATIONAL_EVIDENCE_SUMMARY',
+    evidence_coverage: coverageCategory,
+    available_task_count: availableCount,
+    total_task_count: 3,
+    tasks: [
+      {
+        id: 'reaction',
+        name: 'Reaction Timing',
+        status: reactionStatus,
+        metric_label: reactionMetricLabel,
+        metric_value: reactionMetricValue,
+        observation: reactionObs,
+        limitation: reactionLimitation,
+        absence_reason: reactionAbsence
+      },
+      {
+        id: 'movement',
+        name: 'Movement Task',
+        status: movementStatus,
+        metric_label: movementMetricLabel,
+        metric_value: movementMetricValue,
+        observation: movementObs,
+        limitation: movementLimitation,
+        absence_reason: movementAbsence
+      },
+      {
+        id: 'typing',
+        name: 'Typing Rhythm',
+        status: typingStatus,
+        metric_label: typingMetricLabel,
+        metric_value: typingMetricValue,
+        observation: typingObs,
+        limitation: typingLimitation,
+        absence_reason: typingAbsence
+      }
+    ],
+    accessibility: {
+      reaction_alternative_used: !!(s.reaction && s.reaction.accessibleAlternative)
+    },
+    privacy: {
+      browser_local: true,
+      stored: false,
+      transmitted: false
+    }
+  };
 }
 
 // ============================================================
 // RESULT PHASE
 // ============================================================
 function initResult() {
-  const { reaction, movement, typing, overall } = ExpState.result;
+  const summary = ExpState.result || deriveEvidenceSummary();
+  ExpState.result = summary;
 
-  // Circular SVG progress
-  const circle = document.getElementById('result-circle-progress');
-  const scoreEl = document.getElementById('result-score-num');
-  if (circle) {
-    const r = 54, circ = 2 * Math.PI * r;
-    circle.style.strokeDasharray  = circ;
-    circle.style.strokeDashoffset = circ;
-    // Color by score
-    const color = overall >= 70 ? '#00F0FF' : overall >= 50 ? '#f59e0b' : '#ef4444';
-    circle.style.stroke = color;
-    setTimeout(() => {
-      circle.style.transition      = 'stroke-dashoffset 1.6s cubic-bezier(0.22,1,0.36,1)';
-      circle.style.strokeDashoffset = circ - (overall / 100) * circ;
-    }, 150);
-  }
-  if (scoreEl) animateCount(scoreEl, 0, overall, 1600);
-
-  // Score label
-  const labelEl = document.getElementById('result-score-label');
-  if (labelEl) {
-    labelEl.textContent =
-      overall >= 70 ? 'High Confidence' :
-      overall >= 50 ? 'Moderate Confidence' : 'Low Confidence';
-    labelEl.className = 'result-score-label ' + (
-      overall >= 70 ? 'label--high' : overall >= 50 ? 'label--mid' : 'label--low'
+  // 1. Coverage badge & count
+  const badgeEl = document.getElementById('res-coverage-badge');
+  if (badgeEl) {
+    badgeEl.textContent = `EVIDENCE COVERAGE: ${summary.evidence_coverage}`;
+    badgeEl.className = 'result-coverage-badge ' + (
+      summary.evidence_coverage === 'COMPLETE' ? 'coverage--complete' :
+      summary.evidence_coverage === 'LIMITED' ? 'coverage--limited' : 'coverage--insufficient'
     );
   }
 
-  // Signal bars
-  const sigs = [
-    { bar: 'res-bar-r', val: 'res-val-r', score: reaction },
-    { bar: 'res-bar-m', val: 'res-val-m', score: movement },
-    { bar: 'res-bar-t', val: 'res-val-t', score: typing   },
-  ];
-  sigs.forEach((s, i) => {
-    const bar = document.getElementById(s.bar);
-    const val = document.getElementById(s.val);
-    if (bar) {
-      bar.style.width = '0%';
-      const barTid = setTimeout(() => { bar.style.width = `${s.score}%`; }, 700 + i * 180);
-      ActiveListeners.addTimeout(barTid);
-    }
-    if (val) {
-      const valTid = setTimeout(() => animateCount(val, 0, s.score, 700), 700 + i * 180);
-      ActiveListeners.addTimeout(valTid);
-    }
-  });
-
-  // Contextual message
-  const msgEl = document.getElementById('result-message');
-  if (msgEl) {
-    msgEl.textContent =
-      overall >= 75 ? 'The behavioral signals observed in this session show patterns strongly consistent with human interaction.' :
-      overall >= 55 ? 'The behavioral signals show patterns consistent with human interaction, with moderate confidence.' :
-                      'The behavioral signals show limited patterns of typical human behavior in this session.';
+  const countEl = document.getElementById('res-coverage-count');
+  if (countEl) {
+    countEl.textContent = `${summary.available_task_count} of ${summary.total_task_count} tasks available`;
   }
 
-  // Explainability dynamic ratings
-  const getRating = (score) => {
-    if (score >= 75) return { text: 'High', class: 'high' };
-    if (score >= 55) return { text: 'Moderate', class: 'moderate' };
-    return { text: 'Low', class: 'low' };
-  };
-
-  const ratings = [
-    { elId: 'exp-badge-r', score: reaction },
-    { elId: 'exp-badge-m', score: movement },
-    { elId: 'exp-badge-t', score: typing },
-  ];
-
-  ratings.forEach(r => {
-    const el = document.getElementById(r.elId);
-    if (el) {
-      const info = getRating(r.score);
-      el.textContent = info.text;
-      el.className = `explainability-badge explainability-badge--${info.class}`;
-    }
-  });
-
-  // Signal Quality Labels (v0.4)
-  const rTimes = ExpState.signals.reaction.times || [];
-  const mPoints = ExpState.signals.movement.points || [];
-  const tIntervals = ExpState.signals.typing.keyIntervals || [];
-
-  let rQual = { text: 'Complete Sample', class: 'quality--full' };
-  if (rTimes.some(t => t > 5000)) {
-    rQual = { text: 'Invalid Timing Attempt', class: 'quality--invalid' };
-  } else if (rTimes.length < 2) {
-    rQual = { text: 'Insufficient Input — Fallback Score Applied', class: 'quality--fallback' };
-  } else if (rTimes.length === 2) {
-    rQual = { text: 'Limited Sample (2 of 3 Rounds)', class: 'quality--limited' };
+  // 2. Announce in result live region
+  const liveRegion = document.getElementById('result-aria-announcer');
+  if (liveRegion) {
+    liveRegion.textContent = `Evidence coverage: ${summary.evidence_coverage}. ${summary.available_task_count} of ${summary.total_task_count} tasks available.`;
   }
 
-  let mQual = mPoints.length < 15
-    ? { text: 'Insufficient Input — Fallback Score Applied', class: 'quality--fallback' }
-    : { text: 'Complete Sample', class: 'quality--full' };
+  // 3. Bind 3 task cards
+  summary.tasks.forEach(task => {
+    const statusEl = document.getElementById(`res-status-${task.id}`);
+    const metricRow = document.getElementById(`res-metric-row-${task.id}`);
+    const metricLabelEl = document.getElementById(`res-metric-label-${task.id}`);
+    const metricValEl = document.getElementById(`res-metric-val-${task.id}`);
+    const obsEl = document.getElementById(`res-obs-${task.id}`);
+    const absenceEl = document.getElementById(`res-absence-${task.id}`);
+    const limitEl = document.getElementById(`res-limitation-${task.id}`);
 
-  let tQual = tIntervals.length < 4
-    ? { text: 'Insufficient Input — Fallback Score Applied', class: 'quality--fallback' }
-    : { text: 'Complete Sample', class: 'quality--full' };
+    if (statusEl) {
+      statusEl.textContent = task.status;
+      statusEl.className = 'evidence-status-badge ' + (
+        task.status === 'AVAILABLE' ? 'status--available' :
+        task.status === 'LIMITED' ? 'status--limited' :
+        task.status === 'EXCLUDED_ACCESSIBILITY' ? 'status--excluded' :
+        task.status === 'INVALID' ? 'status--invalid' : 'status--not-available'
+      );
+    }
 
-  const qualMap = [
-    { id: 'quality-label-r', qual: rQual },
-    { id: 'quality-label-m', qual: mQual },
-    { id: 'quality-label-t', qual: tQual }
-  ];
+    if (task.metric_label && task.metric_value) {
+      if (metricRow) metricRow.style.display = 'flex';
+      if (metricLabelEl) metricLabelEl.textContent = task.metric_label + ':';
+      if (metricValEl) metricValEl.textContent = task.metric_value;
+    } else {
+      if (metricRow) metricRow.style.display = 'none';
+    }
 
-  qualMap.forEach(q => {
-    const el = document.getElementById(q.id);
-    if (el) {
-      el.textContent = q.qual.text;
-      el.className = `signal-quality-label ${q.qual.class}`;
+    if (task.observation) {
+      if (obsEl) {
+        obsEl.textContent = task.observation;
+        obsEl.style.display = 'block';
+      }
+      if (absenceEl) absenceEl.style.display = 'none';
+    } else {
+      if (obsEl) obsEl.style.display = 'none';
+      if (absenceEl) {
+        absenceEl.textContent = task.absence_reason || 'No observation recorded.';
+        absenceEl.style.display = 'block';
+      }
+    }
+
+    if (limitEl) {
+      limitEl.textContent = task.limitation;
     }
   });
 
-  // Restart button
+  // 4. Restart button handler with focus restoration
   const restartBtn = document.getElementById('result-restart-btn');
   if (restartBtn) {
     restartBtn.onclick = () => {
-      // Reset all state
-      ExpState.isSessionActive  = false;
-      ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, score: 0, accessibleAlternative: false };
-      ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5, score: 0 };
-      ExpState.signals.typing   = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '', score: 0 };
-      ExpState.result           = { reaction: 0, movement: 0, typing: 0, overall: 0 };
+      // Clear all prior state
+      ExpState.isSessionActive = false;
+      ExpState.signals.reaction = { round: 0, times: [], status: 'idle', timeoutId: null, startTime: null, accessibleAlternative: false };
+      ExpState.signals.movement = { points: [], collecting: false, timeRemaining: 5 };
+      ExpState.signals.typing = { phrase: 'human presence is not proof of identity', keyIntervals: [], lastKeyTime: null, typed: '' };
+      ExpState.result = null;
 
-      // BUG-19: Clear the movement canvas so previous drawings don't persist into next run
+      // Clear movement canvas
       const movCanvas = document.getElementById('movement-canvas');
       if (movCanvas) {
         const ctx2d = movCanvas.getContext('2d');
         if (ctx2d) ctx2d.clearRect(0, 0, movCanvas.width, movCanvas.height);
       }
 
-      // Reset explainability badges & quality labels
-      ['r', 'm', 't'].forEach(id => {
-        const badge = document.getElementById(`exp-badge-${id}`);
-        if (badge) {
-          badge.textContent = '\u2014';
-          badge.className = 'explainability-badge';
-        }
-        const qLabel = document.getElementById(`quality-label-${id}`);
-        if (qLabel) {
-          qLabel.textContent = '';
-          qLabel.className = 'signal-quality-label';
+      // Transition to welcome
+      showPhase('welcome');
+
+      // Focus management: move focus to start button on welcome screen
+      requestAnimationFrame(() => {
+        const startBtn = document.getElementById('exp-begin-btn');
+        if (startBtn) {
+          startBtn.focus();
+        } else {
+          const welcomeHeading = document.querySelector('#phase-welcome h1, #phase-welcome h2');
+          if (welcomeHeading) {
+            welcomeHeading.setAttribute('tabindex', '-1');
+            welcomeHeading.focus();
+          }
         }
       });
-
-      showPhase('welcome');
     };
   }
 }
@@ -996,22 +1031,16 @@ function initResult() {
 // ============================================================
 // UTILITIES
 // ============================================================
-function avg(arr) { return arr.reduce((a, b) => a + b, 0) / arr.length; }
-function stdDev(arr) {
-  const m = avg(arr);
-  return Math.sqrt(arr.reduce((s, x) => s + (x - m) ** 2, 0) / arr.length);
+function avg(arr) {
+  if (!arr || arr.length === 0) return 0;
+  return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
-function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-function animateCount(el, from, to, duration) {
-  const start = performance.now();
-  const step  = (now) => {
-    const p = Math.min((now - start) / duration, 1);
-    const e = 1 - Math.pow(1 - p, 3);
-    el.textContent = `${Math.round(from + (to - from) * e)}%`;
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+function median(arr) {
+  if (!arr || arr.length === 0) return 0;
+  const s = [...arr].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 !== 0 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
 // ============================================================
