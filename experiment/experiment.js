@@ -194,11 +194,11 @@ function showPhase(name, pushHistory = true) {
     const screenFriendlyNames = {
       'welcome': 'Welcome to Human Presence Experiment v0.1',
       'instructions': 'Instructions phase. Learn how signal collection works.',
-      'task-reaction': 'Task 1: Reaction timing assessment. Click target when Now appears.',
-      'task-movement': 'Task 2: Movement analysis assessment. Draw lines inside the movement area.',
-      'task-typing': 'Task 3: Keystroke analysis assessment. Type the phrase shown in input field.',
-      'analyzing': 'Preparing your session evidence summary. Running local summary.',
-      'result': 'Demonstration complete. Session evidence summary ready.'
+      'task-reaction': 'Task 1: Reaction timing task. Click target when Now appears.',
+      'task-movement': 'Task 2: Movement tracking task. Draw lines inside the movement area.',
+      'task-typing': 'Task 3: Keystroke timing task. Type the phrase shown in input field.',
+      'analyzing': 'Preparing your educational session signal summary.',
+      'result': 'Demonstration complete. Educational session signal summary ready.'
     };
     announcer.textContent = screenFriendlyNames[name] || `Switched to phase: ${name}`;
   }
@@ -720,7 +720,11 @@ function initTypingTask() {
 // ANALYZING PHASE
 // ============================================================
 function initAnalyzing() {
-  const summary = deriveEvidenceSummary();
+  const summary = deriveEducationalSignalSummary();
+  if (!summary) {
+    resetToWelcome();
+    return;
+  }
   ExpState.result = summary;
 
   const isReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -731,182 +735,128 @@ function initAnalyzing() {
 }
 
 // ============================================================
-// EVIDENCE SUMMARY DERIVATION (local, deterministic, side-effect-free)
+// EDUCATIONAL SIGNAL SUMMARY DERIVATION (local, deterministic, fail-closed)
 // ============================================================
-function deriveEvidenceSummary() {
+function deriveEducationalSignalSummary() {
   const s = ExpState.signals;
+  if (!s || typeof s !== 'object') return null;
 
-  // 1. REACTION
-  let reactionStatus = 'NOT_AVAILABLE';
-  let reactionMetricLabel = null;
-  let reactionMetricValue = null;
-  let reactionObs = null;
-  let reactionAbsence = null;
+  // 1. REACTION TIMING
+  let reactionStatus = null;
+  let reactionDesc = null;
   const reactionLimitation = 'Display, browser, device and input latency affect this session measurement. It does not establish whether someone is human.';
 
-  if (s.reaction && s.reaction.accessibleAlternative) {
-    reactionStatus = 'EXCLUDED_ACCESSIBILITY';
-    reactionAbsence = 'Visual cue bypassed via accessible alternative. No reaction timing observation was recorded.';
-  } else {
-    const rTimes = (s.reaction && Array.isArray(s.reaction.times)) ? s.reaction.times : [];
-    const validTimes = rTimes.filter(t => typeof t === 'number' && Number.isFinite(t) && t > 0 && t <= 5000);
-    const hasInvalid = rTimes.some(t => typeof t !== 'number' || !Number.isFinite(t) || t <= 0 || t > 5000);
+  if (s.reaction && s.reaction.accessibleAlternative === true) {
+    reactionStatus = 'Excluded';
+    reactionDesc = 'The visual reaction task was bypassed using the accessible alternative.';
+  } else if (s.reaction && Array.isArray(s.reaction.times)) {
+    const times = s.reaction.times;
+    if (times.length === 0) return null;
+    const allFinite = times.every(t => typeof t === 'number' && Number.isFinite(t) && t > 0);
+    if (!allFinite) return null;
 
+    const validTimes = times.filter(t => t <= 5000);
     if (validTimes.length >= 3) {
-      reactionStatus = 'AVAILABLE';
-      const med = Math.round(median(validTimes));
-      reactionMetricLabel = 'Median Response Latency';
-      reactionMetricValue = `${med} ms`;
-      reactionObs = `Recorded across ${validTimes.length} completed rounds.`;
+      reactionStatus = 'Available';
+      reactionDesc = 'Reaction timing samples were captured during the completed task.';
     } else if (validTimes.length === 2) {
-      reactionStatus = 'LIMITED';
-      const med = Math.round(median(validTimes));
-      reactionMetricLabel = 'Median Response Latency';
-      reactionMetricValue = `${med} ms`;
-      reactionObs = hasInvalid
-        ? `Recorded across 2 valid rounds (1 invalid round excluded).`
-        : `Recorded across 2 completed rounds.`;
-      if (hasInvalid) {
-        reactionAbsence = 'One round exceeded valid timing limits (> 5000 ms).';
-      }
-    } else if (hasInvalid) {
-      reactionStatus = 'INVALID';
-      reactionAbsence = 'Recorded rounds contained invalid timing values (> 5000 ms).';
+      reactionStatus = 'Limited';
+      reactionDesc = 'The captured reaction timing information was constrained during this session.';
     } else {
-      reactionStatus = 'NOT_AVAILABLE';
-      reactionAbsence = 'Fewer than 2 valid rounds recorded.';
+      return null;
     }
+  } else {
+    return null;
   }
 
-  // 2. MOVEMENT
-  let movementStatus = 'NOT_AVAILABLE';
-  let movementMetricLabel = null;
-  let movementMetricValue = null;
-  let movementObs = null;
-  let movementAbsence = null;
+  // 2. MOVEMENT TRACKING
+  let movementStatus = null;
+  let movementDesc = null;
   const movementLimitation = 'Point count and timing depend on the input device and browser sampling behavior. They are not a biometric identity or humanity assessment.';
 
-  const mPoints = (s.movement && Array.isArray(s.movement.points)) ? s.movement.points : [];
-  let isStructurallyValid = true;
-  for (let i = 0; i < mPoints.length; i++) {
-    const pt = mPoints[i];
-    if (!pt || typeof pt.x !== 'number' || typeof pt.y !== 'number' || typeof pt.t !== 'number' ||
-        !Number.isFinite(pt.x) || !Number.isFinite(pt.y) || !Number.isFinite(pt.t)) {
-      isStructurallyValid = false;
-      break;
-    }
-    if (i > 0 && pt.t <= mPoints[i - 1].t) {
-      isStructurallyValid = false;
-      break;
-    }
-  }
+  if (s.movement && Array.isArray(s.movement.points)) {
+    const pts = s.movement.points;
+    if (pts.length < 10) return null;
 
-  if (!isStructurallyValid) {
-    movementStatus = 'INVALID';
-    movementAbsence = 'Movement samples contained non-finite coordinates or non-monotonic timestamps.';
-  } else if (mPoints.length >= 15) {
-    const durationMs = mPoints[mPoints.length - 1].t - mPoints[0].t;
-    if (durationMs > 0) {
-      movementStatus = 'AVAILABLE';
-      const durSec = (durationMs / 1000).toFixed(1);
-      movementMetricLabel = 'Collection Duration';
-      movementMetricValue = `${durSec} seconds`;
-      movementObs = `${mPoints.length} points recorded during the collection window.`;
+    let prevT = -Infinity;
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      if (!p || typeof p.x !== 'number' || typeof p.y !== 'number' || typeof p.t !== 'number' ||
+          !Number.isFinite(p.x) || !Number.isFinite(p.y) || !Number.isFinite(p.t)) {
+        return null;
+      }
+      if (p.t <= prevT) return null;
+      prevT = p.t;
+    }
+
+    if (pts.length >= 15) {
+      movementStatus = 'Available';
+      movementDesc = 'Movement tracking samples were captured during the completed task.';
     } else {
-      movementStatus = 'INVALID';
-      movementAbsence = 'Recorded collection duration was non-positive.';
+      movementStatus = 'Limited';
+      movementDesc = 'The captured movement tracking information was limited during this session.';
     }
   } else {
-    movementStatus = 'NOT_AVAILABLE';
-    movementAbsence = 'Fewer than 15 sample points recorded.';
+    return null;
   }
 
-  // 3. TYPING
-  let typingStatus = 'NOT_AVAILABLE';
-  let typingMetricLabel = null;
-  let typingMetricValue = null;
-  let typingObs = null;
-  let typingAbsence = null;
+  // 3. TYPING RHYTHM
+  let typingStatus = null;
+  let typingDesc = null;
   const typingLimitation = 'Input timing depends on keyboard, language, input method and familiarity. It does not establish identity or humanity.';
 
-  const tState = s.typing || {};
-  const tIntervals = Array.isArray(tState.keyIntervals) ? tState.keyIntervals : [];
-  const phrase = tState.phrase || 'human presence is not proof of identity';
-  const typed = tState.typed || '';
+  if (s.typing && typeof s.typing === 'object' && Array.isArray(s.typing.keyIntervals)) {
+    const tState = s.typing;
+    const phrase = tState.phrase || 'human presence is not proof of identity';
+    const typed = typeof tState.typed === 'string' ? tState.typed : '';
 
-  const isPhraseComplete = typed.length >= phrase.length * 0.9 &&
-    [...typed].filter((c, i) => c === phrase[i]).length >= phrase.length * 0.85;
+    const correct = [...typed].filter((c, i) => c === phrase[i]).length;
+    const isPhraseComplete = typed.length >= phrase.length * 0.9 && correct >= phrase.length * 0.85;
+    if (!isPhraseComplete) return null;
 
-  let intervalsValid = true;
-  for (const interval of tIntervals) {
-    if (typeof interval !== 'number' || !Number.isFinite(interval) || interval <= 0) {
-      intervalsValid = false;
-      break;
+    const intervals = tState.keyIntervals;
+    for (const iv of intervals) {
+      if (typeof iv !== 'number' || !Number.isFinite(iv) || iv <= 0) {
+        return null;
+      }
     }
-  }
 
-  if (!intervalsValid) {
-    typingStatus = 'INVALID';
-    typingAbsence = 'Recorded keystroke intervals contained non-finite or non-positive values.';
-  } else if (isPhraseComplete && tIntervals.length >= 4) {
-    typingStatus = 'AVAILABLE';
-    const meanVal = Math.round(avg(tIntervals));
-    typingMetricLabel = 'Mean Input Interval';
-    typingMetricValue = `${meanVal} ms`;
-    typingObs = `Recorded across ${tIntervals.length} input intervals during phrase completion.`;
-  } else if (!isPhraseComplete) {
-    typingStatus = 'NOT_AVAILABLE';
-    typingAbsence = 'Phrase entry was not completed.';
+    if (intervals.length >= 4) {
+      typingStatus = 'Available';
+      typingDesc = 'Typing rhythm information was captured during phrase completion.';
+    } else {
+      typingStatus = 'Limited';
+      typingDesc = 'Text entry was completed without sufficient discrete keystroke timing information.';
+    }
   } else {
-    typingStatus = 'NOT_AVAILABLE';
-    typingAbsence = 'Fewer than 4 valid keystroke intervals recorded.';
+    return null;
   }
-
-  // Coverage calculation
-  const taskStatuses = [reactionStatus, movementStatus, typingStatus];
-  const availableCount = taskStatuses.filter(st => st === 'AVAILABLE' || st === 'LIMITED').length;
-  const coverageCategory = availableCount === 3 ? 'COMPLETE' : availableCount >= 1 ? 'LIMITED' : 'INSUFFICIENT';
 
   return {
-    result_type: 'EDUCATIONAL_EVIDENCE_SUMMARY',
-    evidence_coverage: coverageCategory,
-    available_task_count: availableCount,
-    total_task_count: 3,
-    tasks: [
+    type: 'EDUCATIONAL_SIGNAL_SUMMARY',
+    channels: [
       {
         id: 'reaction',
         name: 'Reaction Timing',
         status: reactionStatus,
-        metric_label: reactionMetricLabel,
-        metric_value: reactionMetricValue,
-        observation: reactionObs,
-        limitation: reactionLimitation,
-        absence_reason: reactionAbsence
+        description: reactionDesc,
+        limitation: reactionLimitation
       },
       {
         id: 'movement',
-        name: 'Movement Task',
+        name: 'Movement Tracking',
         status: movementStatus,
-        metric_label: movementMetricLabel,
-        metric_value: movementMetricValue,
-        observation: movementObs,
-        limitation: movementLimitation,
-        absence_reason: movementAbsence
+        description: movementDesc,
+        limitation: movementLimitation
       },
       {
         id: 'typing',
         name: 'Typing Rhythm',
         status: typingStatus,
-        metric_label: typingMetricLabel,
-        metric_value: typingMetricValue,
-        observation: typingObs,
-        limitation: typingLimitation,
-        absence_reason: typingAbsence
+        description: typingDesc,
+        limitation: typingLimitation
       }
     ],
-    accessibility: {
-      reaction_alternative_used: !!(s.reaction && s.reaction.accessibleAlternative)
-    },
     privacy: {
       browser_local: true,
       stored: false,
@@ -919,78 +869,50 @@ function deriveEvidenceSummary() {
 // RESULT PHASE
 // ============================================================
 function initResult() {
-  const summary = ExpState.result || deriveEvidenceSummary();
+  const summary = ExpState.result || deriveEducationalSignalSummary();
+  if (!summary || !Array.isArray(summary.channels)) {
+    resetToWelcome();
+    return;
+  }
   ExpState.result = summary;
 
-  // 1. Coverage badge & count
-  const badgeEl = document.getElementById('res-coverage-badge');
-  if (badgeEl) {
-    badgeEl.textContent = `EVIDENCE COVERAGE: ${summary.evidence_coverage}`;
-    badgeEl.className = 'result-coverage-badge ' + (
-      summary.evidence_coverage === 'COMPLETE' ? 'coverage--complete' :
-      summary.evidence_coverage === 'LIMITED' ? 'coverage--limited' : 'coverage--insufficient'
-    );
-  }
-
-  const countEl = document.getElementById('res-coverage-count');
-  if (countEl) {
-    countEl.textContent = `${summary.available_task_count} of ${summary.total_task_count} tasks available`;
-  }
-
-  // 2. Announce in result live region
+  // 1. Announce in result live region (non-numeric, no aggregate rating)
   const liveRegion = document.getElementById('result-aria-announcer');
   if (liveRegion) {
-    liveRegion.textContent = `Evidence coverage: ${summary.evidence_coverage}. ${summary.available_task_count} of ${summary.total_task_count} tasks available.`;
+    liveRegion.textContent = 'Educational session signal summary complete. Signal channels are displayed below.';
   }
 
-  // 3. Bind 3 task cards
-  summary.tasks.forEach(task => {
-    const statusEl = document.getElementById(`res-status-${task.id}`);
-    const metricRow = document.getElementById(`res-metric-row-${task.id}`);
-    const metricLabelEl = document.getElementById(`res-metric-label-${task.id}`);
-    const metricValEl = document.getElementById(`res-metric-val-${task.id}`);
-    const obsEl = document.getElementById(`res-obs-${task.id}`);
-    const absenceEl = document.getElementById(`res-absence-${task.id}`);
-    const limitEl = document.getElementById(`res-limitation-${task.id}`);
+  // 2. Bind 3 educational signal cards
+  summary.channels.forEach(ch => {
+    const statusEl = document.getElementById(`res-status-${ch.id}`);
+    const obsEl = document.getElementById(`res-obs-${ch.id}`);
+    const limitEl = document.getElementById(`res-limitation-${ch.id}`);
 
     if (statusEl) {
-      statusEl.textContent = task.status;
-      statusEl.className = 'evidence-status-badge ' + (
-        task.status === 'AVAILABLE' ? 'status--available' :
-        task.status === 'LIMITED' ? 'status--limited' :
-        task.status === 'EXCLUDED_ACCESSIBILITY' ? 'status--excluded' :
-        task.status === 'INVALID' ? 'status--invalid' : 'status--not-available'
+      statusEl.textContent = ch.status;
+      statusEl.className = 'signal-status-badge ' + (
+        ch.status === 'Available' ? 'status--available' :
+        ch.status === 'Excluded' ? 'status--excluded' : 'status--limited'
       );
     }
 
-    if (task.metric_label && task.metric_value) {
-      if (metricRow) metricRow.style.display = 'flex';
-      if (metricLabelEl) metricLabelEl.textContent = task.metric_label + ':';
-      if (metricValEl) metricValEl.textContent = task.metric_value;
-    } else {
-      if (metricRow) metricRow.style.display = 'none';
-    }
-
-    if (task.observation) {
-      if (obsEl) {
-        obsEl.textContent = task.observation;
-        obsEl.style.display = 'block';
-      }
-      if (absenceEl) absenceEl.style.display = 'none';
-    } else {
-      if (obsEl) obsEl.style.display = 'none';
-      if (absenceEl) {
-        absenceEl.textContent = task.absence_reason || 'No observation recorded.';
-        absenceEl.style.display = 'block';
-      }
+    if (obsEl) {
+      obsEl.textContent = ch.description;
     }
 
     if (limitEl) {
-      limitEl.textContent = task.limitation;
+      limitEl.textContent = ch.limitation;
     }
   });
 
-  // 4. Restart button handler with focus restoration
+  // 3. Focus management: move focus to result heading
+  const resHeading = document.querySelector('#phase-result h2');
+  if (resHeading) {
+    resHeading.setAttribute('tabindex', '-1');
+    resHeading.focus();
+  }
+
+  // 4. Restart button handler with clean state teardown and focus restoration
   const restartBtn = document.getElementById('result-restart-btn');
   if (restartBtn) {
     restartBtn.onclick = () => {

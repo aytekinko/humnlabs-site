@@ -553,9 +553,9 @@
    PHASE: RESULT
    ================================================================ */
 /* ================================================================
-   PHASE: RESULT (Session Evidence Summary)
+   PHASE: RESULT (Educational Session Signal Summary)
    ================================================================ */
-.result-hero { margin-bottom: 28px; text-align: center; }
+.result-hero { margin-bottom: 24px; text-align: center; }
 
 .result-title {
     font-family: var(--font-heading);
@@ -566,58 +566,7 @@
     outline: none;
 }
 
-.result-coverage-badge {
-    display: inline-block;
-    padding: 6px 16px;
-    border-radius: 999px;
-    font-family: var(--font-heading);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--text-muted);
-}
-
-.coverage--complete {
-    background: rgba(0, 240, 255, 0.1);
-    border-color: var(--cyan);
-    color: var(--cyan);
-}
-
-.coverage--limited {
-    background: rgba(245, 158, 11, 0.1);
-    border-color: #f59e0b;
-    color: #f59e0b;
-}
-
-.coverage--insufficient {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: #ef4444;
-    color: #ef4444;
-}
-
-.result-coverage-count {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-pure);
-    margin-bottom: 6px;
-}
-
-.result-session-note {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--text-accessible);
-    max-width: 540px;
-    margin: 0 auto;
-    line-height: 1.5;
-    text-align: center;
-}
-
-.general-boundary-card {
+.educational-disclaimer-card {
     background: rgba(0, 240, 255, 0.02);
     border: 1px solid rgba(0, 240, 255, 0.12);
     border-radius: 12px;
@@ -628,24 +577,31 @@
     box-sizing: border-box;
 }
 
-.general-boundary-primary {
+.educational-disclaimer-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.educational-disclaimer-title {
     font-family: var(--font-heading);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--cyan);
-    margin-bottom: 6px;
 }
 
-.general-boundary-secondary {
+.educational-disclaimer-body {
     font-family: var(--font-body);
     font-size: 12.5px;
     color: var(--text-muted);
     line-height: 1.6;
+    margin: 0;
 }
 
-.evidence-task-grid {
+.signal-task-grid {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -654,7 +610,7 @@
     text-align: left;
 }
 
-.evidence-card {
+.signal-card {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
@@ -663,18 +619,18 @@
     transition: border-color 0.2s;
 }
 
-.evidence-card:hover {
+.signal-card:hover {
     border-color: rgba(255, 255, 255, 0.12);
 }
 
-.evidence-card-header {
+.signal-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
 
-.evidence-card-name {
+.signal-card-name {
     font-family: var(--font-heading);
     font-size: 13px;
     font-weight: 700;
@@ -684,7 +640,7 @@
     gap: 8px;
 }
 
-.evidence-status-badge {
+.signal-status-badge {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
@@ -713,36 +669,7 @@
     color: #a78bfa;
 }
 
-.status--invalid {
-    background: rgba(239, 68, 68, 0.08);
-    border-color: rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-}
-
-.status--not-available {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: var(--text-muted);
-}
-
-.evidence-metric-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.evidence-metric-val {
-    color: var(--text-pure);
-    font-family: var(--font-mono);
-    font-weight: 700;
-}
-
-.evidence-obs {
+.signal-obs {
     font-family: var(--font-body);
     font-size: 12.5px;
     color: var(--text-accessible);
@@ -750,16 +677,7 @@
     margin: 0 0 8px 0;
 }
 
-.evidence-absence {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--text-muted);
-    font-style: italic;
-    line-height: 1.5;
-    margin: 0 0 8px 0;
-}
-
-.evidence-limitation {
+.signal-limitation {
     font-family: var(--font-body);
     font-size: 11.5px;
     color: var(--text-muted);
@@ -1382,8 +1300,8 @@
                     <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-chart-bar"></use></svg>
                 </div>
                 <div class="inst-text">
-                    <strong>Estimates, not proof</strong>
-                    <span>The result is a probabilistic confidence estimate. It is not proof of humanity, not an identity claim, and not a guarantee of any kind.</span>
+                    <strong>Educational demonstration</strong>
+                    <span>The result is an educational signal summary. It is not proof of humanity, not an identity claim, and not a guarantee of any kind.</span>
                 </div>
             </li>
         </ul>
@@ -1493,81 +1411,64 @@
     </div>
 
     <div class="result-hero">
-        <h2 class="result-title" tabindex="-1">Session Evidence Summary</h2>
+        <h2 class="result-title" tabindex="-1">Educational Session Signal Summary</h2>
         <div id="result-aria-announcer" aria-live="polite" class="sr-only"></div>
-        <div class="result-coverage-badge" id="res-coverage-badge">EVIDENCE COVERAGE: &mdash;</div>
-        <div class="result-coverage-count" id="res-coverage-count">&mdash; of 3 tasks available</div>
-        <p class="result-session-note">
-            Coverage describes which task summaries were available. It is not a confidence score and does not determine whether someone is human.
+    </div>
+
+    <!-- Mandatory Educational Disclaimer Card -->
+    <div class="educational-disclaimer-card" role="note" aria-label="Demonstration Boundary">
+        <div class="educational-disclaimer-header">
+            <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:14px;height:14px;margin-right:6px;"><use href="#icon-circle-info"></use></svg>
+            <span class="educational-disclaimer-title">Demonstration Boundary</span>
+        </div>
+        <p class="educational-disclaimer-body">
+            This browser-local research demonstration is not output from the private HUMNLABS Trust Engine, is not proof of humanity, and is not an identity assessment.
         </p>
     </div>
 
-    <!-- General Demonstration Boundary Card -->
-    <div class="general-boundary-card">
-        <div class="general-boundary-primary">General Demonstration Boundary</div>
-        <div class="general-boundary-secondary">
-            These observations are descriptive session measurements. They are not identity verification, proof of humanity, bot detection or calibrated Trust Engine output.
-        </div>
-    </div>
-
     <div class="exp-card">
-        <div class="evidence-task-grid">
-            <!-- Task 1: Reaction Timing -->
-            <div class="evidence-card" id="ev-card-reaction">
-                <div class="evidence-card-header">
-                    <span class="evidence-card-name">
+        <div class="signal-task-grid">
+            <!-- Channel 1: Reaction Timing -->
+            <div class="signal-card" id="signal-card-reaction">
+                <div class="signal-card-header">
+                    <span class="signal-card-name">
                         <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:13px;height:13px;"><use href="#icon-stopwatch"></use></svg>
                         Reaction Timing
                     </span>
-                    <span class="evidence-status-badge status--not-available" id="res-status-reaction">&mdash;</span>
+                    <span class="signal-status-badge" id="res-status-reaction">&mdash;</span>
                 </div>
-                <div class="evidence-metric-row" id="res-metric-row-reaction" style="display:none;">
-                    <span id="res-metric-label-reaction">Median Response Latency:</span>
-                    <span class="evidence-metric-val" id="res-metric-val-reaction">&mdash;</span>
-                </div>
-                <p class="evidence-obs" id="res-obs-reaction" style="display:none;">&mdash;</p>
-                <p class="evidence-absence" id="res-absence-reaction" style="display:none;">&mdash;</p>
-                <p class="evidence-limitation" id="res-limitation-reaction">
+                <p class="signal-obs" id="res-obs-reaction">&mdash;</p>
+                <p class="signal-limitation" id="res-limitation-reaction">
                     Display, browser, device and input latency affect this session measurement. It does not establish whether someone is human.
                 </p>
             </div>
 
-            <!-- Task 2: Movement Task -->
-            <div class="evidence-card" id="ev-card-movement">
-                <div class="evidence-card-header">
-                    <span class="evidence-card-name">
+            <!-- Channel 2: Movement Tracking -->
+            <div class="signal-card" id="signal-card-movement">
+                <div class="signal-card-header">
+                    <span class="signal-card-name">
                         <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:#a78bfa;width:13px;height:13px;"><use href="#icon-arrows-up-down-left-right"></use></svg>
-                        Movement Task
+                        Movement Tracking
                     </span>
-                    <span class="evidence-status-badge status--not-available" id="res-status-movement">&mdash;</span>
+                    <span class="signal-status-badge" id="res-status-movement">&mdash;</span>
                 </div>
-                <div class="evidence-metric-row" id="res-metric-row-movement" style="display:none;">
-                    <span id="res-metric-label-movement">Collection Duration:</span>
-                    <span class="evidence-metric-val" id="res-metric-val-movement">&mdash;</span>
-                </div>
-                <p class="evidence-obs" id="res-obs-movement" style="display:none;">&mdash;</p>
-                <p class="evidence-absence" id="res-absence-movement" style="display:none;">&mdash;</p>
-                <p class="evidence-limitation" id="res-limitation-movement">
+                <p class="signal-obs" id="res-obs-movement">&mdash;</p>
+                <p class="signal-limitation" id="res-limitation-movement">
                     Point count and timing depend on the input device and browser sampling behavior. They are not a biometric identity or humanity assessment.
                 </p>
             </div>
 
-            <!-- Task 3: Typing Rhythm -->
-            <div class="evidence-card" id="ev-card-typing">
-                <div class="evidence-card-header">
-                    <span class="evidence-card-name">
+            <!-- Channel 3: Typing Rhythm -->
+            <div class="signal-card" id="signal-card-typing">
+                <div class="signal-card-header">
+                    <span class="signal-card-name">
                         <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:13px;height:13px;"><use href="#icon-keyboard"></use></svg>
                         Typing Rhythm
                     </span>
-                    <span class="evidence-status-badge status--not-available" id="res-status-typing">&mdash;</span>
+                    <span class="signal-status-badge" id="res-status-typing">&mdash;</span>
                 </div>
-                <div class="evidence-metric-row" id="res-metric-row-typing" style="display:none;">
-                    <span id="res-metric-label-typing">Mean Input Interval:</span>
-                    <span class="evidence-metric-val" id="res-metric-val-typing">&mdash;</span>
-                </div>
-                <p class="evidence-obs" id="res-obs-typing" style="display:none;">&mdash;</p>
-                <p class="evidence-absence" id="res-absence-typing" style="display:none;">&mdash;</p>
-                <p class="evidence-limitation" id="res-limitation-typing">
+                <p class="signal-obs" id="res-obs-typing">&mdash;</p>
+                <p class="signal-limitation" id="res-limitation-typing">
                     Input timing depends on keyboard, language, input method and familiarity. It does not establish identity or humanity.
                 </p>
             </div>
@@ -1640,13 +1541,13 @@
         <details class="faq-item">
             <summary class="faq-question">Does this prove humanity or guarantee security? <svg class="svg-icon faq-arrow" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg></summary>
             <div class="faq-answer">
-                <p>No. The overall score is a probabilistic confidence estimate based solely on signals observed during the current session. It carries no legal weight, certification status, or guarantee against sophisticated automation. Scores represent confidence levels rather than absolute proof.</p>
+                <p>No. This experiment is an educational demonstration showing how browser-local interaction signals can be observed. It does not produce an authoritative score, human-versus-bot verdict, identity verification, or security guarantee.</p>
             </div>
         </details>
         <details class="faq-item">
             <summary class="faq-question">How is privacy protected and how does browser-only processing work? <svg class="svg-icon faq-arrow" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg></summary>
             <div class="faq-answer">
-                <p>All signal collection and scoring algorithms run completely in your browser's temporary memory. No data is transmitted to remote servers, written to cookies, or stored in local browser storage. Refreshing or leaving the page immediately discards all transient state and redirects to the Welcome screen.</p>
+                <p>All signal collection and signal evaluation logic run completely in your browser's temporary memory. No data is transmitted to remote servers, written to cookies, or stored in local browser storage. Refreshing or leaving the page immediately discards all transient state and redirects to the Welcome screen.</p>
             </div>
         </details>
         <details class="faq-item">
