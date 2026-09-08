@@ -94,3 +94,39 @@ test('experiment link exists on the homepage', async ({ page }) => {
 
   expect(await page.locator('a[href="/experiment"]').count()).toBeGreaterThan(0);
 });
+
+test('completed experiment links to the report release waitlist', async ({ page }) => {
+  await page.goto('/experiment/');
+
+  await page.locator('#exp-begin-btn').click();
+  await page.locator('#exp-start-btn').click();
+  await expect(page.locator('#reaction-target')).toHaveAttribute('data-state', 'waiting');
+  await page.locator('#reaction-alt-btn').click();
+
+  const movementStart = page.locator('#movement-start-btn');
+  await expect(movementStart).toBeVisible();
+  await movementStart.click();
+
+  for (let index = 0; index < 12; index += 1) {
+    await page.keyboard.press(index % 2 === 0 ? 'ArrowRight' : 'ArrowLeft');
+  }
+
+  const typingInput = page.locator('#typing-input');
+  await expect(typingInput).toBeVisible({ timeout: 8_000 });
+  await typingInput.pressSequentially('human presence is not proof of identity', { delay: 20 });
+
+  const result = page.locator('#phase-result');
+  await expect(result).toHaveClass(/exp-phase--active/, { timeout: 5_000 });
+  const resultContext = result.locator('.result-context');
+  await expect(resultContext).toBeVisible();
+  await expect(resultContext).toHaveText(
+    'Want to follow the research beyond this experiment? Request a release notice for the Human Presence & Trust Report 2026.',
+  );
+
+  const reportCta = result.getByRole('link', { name: 'Get the Report Release Notice' });
+  await expect(reportCta).toHaveAttribute('href', '/#waitlist');
+  await reportCta.click();
+
+  await expect(page).toHaveURL(/\/#waitlist$/);
+  await expect(page.locator('#waitlist')).toBeVisible();
+});
