@@ -699,6 +699,16 @@
 }
 .result-disclaimer strong { color: var(--text-muted); }
 
+.result-context {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-accessible);
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0 auto 20px;
+    text-align: center;
+}
+
 .result-actions {
     display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
 }
@@ -1515,12 +1525,16 @@
             <strong>Privacy Note:</strong> Processed locally in this browser. The interaction samples are not stored or transmitted.
         </p>
 
+        <p class="result-context">
+            Want to follow the research beyond this experiment? Request a release notice for the Human Presence &amp; Trust Report 2026.
+        </p>
+
         <div class="result-actions">
             <button class="btn-exp-primary" id="result-restart-btn">
                 <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-rotate-left"></use></svg> Run Again
             </button>
-            <a href="/#engine-status" class="btn-exp-ghost">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-arrow-left"></use></svg> View Research Status
+            <a href="/#waitlist" class="btn-exp-ghost">
+                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-arrow-right"></use></svg> Get the Report Release Notice
             </a>
         </div>
     </div>
