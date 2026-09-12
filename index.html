@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="HUMNLABS — Human Presence & Digital Trust Research">
     <meta property="og:type" content="website">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; object-src 'none'; base-uri 'self'; frame-src 'none';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; object-src 'none'; base-uri 'self'; frame-src 'none';">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://humnlabs.io/og-image.jpg">
 
@@ -30,7 +30,7 @@
 </head>
 <body>
     <!-- SVG Symbol Definitions -->
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <svg class="csp-hidden" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <!-- Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0) -->
             <symbol id="icon-chevron-right" viewBox="0 0 320 512">
@@ -373,7 +373,7 @@
                     </div>
                     
                     <!-- Conceptual Architecture Visualization (Truthful & Bounded) -->
-                    <figure class="tech-mockup reveal-fade" style="margin: 0;" aria-label="Conceptual architecture pipeline model">
+                    <figure class="tech-mockup reveal-fade tech-mockup--flush" aria-label="Conceptual architecture pipeline model">
                         <div class="mockup-frame glass-panel">
                             <div class="mockup-header">
                                 <div class="mockup-dots">
@@ -382,10 +382,10 @@
                                     <span class="dot green"></span>
                                 </div>
                                 <div class="mockup-address">
-                                    <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 12px; height: 12px; margin-right: 4px;"><use href="#icon-lock"></use></svg> concept.architecture / pipeline-model
+                                    <svg class="svg-icon icon-12-leading" aria-hidden="true" focusable="false"><use href="#icon-lock"></use></svg> concept.architecture / pipeline-model
                                 </div>
-                                <div class="mockup-status" style="color: var(--cyan);">
-                                    <span class="pulse-dot" style="background: var(--cyan); box-shadow: 0 0 6px var(--cyan);"></span> CONCEPT
+                                <div class="mockup-status text-cyan">
+                                    <span class="pulse-dot pulse-dot--cyan"></span> CONCEPT
                                 </div>
                             </div>
                             
@@ -393,14 +393,14 @@
                                 <div class="scanner-block">
                                     <div class="scanner-header">
                                         <span>TRUST ENGINE CONCEPT PIPELINE</span>
-                                        <span class="code-font" style="color: var(--text-muted);">MODEL: DETERMINISTIC-V0.1</span>
+                                        <span class="code-font text-muted">MODEL: DETERMINISTIC-V0.1</span>
                                     </div>
                                     <div class="scanner-screen">
                                         <div class="scan-bar"></div>
                                         <div class="scan-grid"></div>
                                         <div class="scan-target">
-                                            <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 48px; height: 48px; color: var(--cyan);"><use href="#icon-shield-halved"></use></svg>
-                                            <div class="scan-status-text" style="color: var(--cyan);">DETERMINISTIC_CHECKS</div>
+                                            <svg class="svg-icon icon-concept-shield" aria-hidden="true" focusable="false"><use href="#icon-shield-halved"></use></svg>
+                                            <div class="scan-status-text text-cyan">DETERMINISTIC_CHECKS</div>
                                         </div>
                                     </div>
                                 </div>
@@ -416,25 +416,25 @@
                                     </div>
                                     <div class="tel-box text-right">
                                         <span class="label">CALIBRATED SCORE</span>
-                                        <span class="value highlight code-font" style="color: var(--text-muted);">NOT_PERFORMED</span>
+                                        <span class="value highlight code-font text-muted">NOT_PERFORMED</span>
                                     </div>
                                 </div>
 
-                                <div class="terminal-log" style="margin-top: 16px;">
+                                <div class="terminal-log terminal-log--spaced">
                                     <div class="terminal-header">
-                                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 13px; height: 13px; margin-right: 6px;"><use href="#icon-terminal"></use></svg> EXPLANATORY STATUS OUTPUT
+                                        <svg class="svg-icon icon-13-leading-6" aria-hidden="true" focusable="false"><use href="#icon-terminal"></use></svg> EXPLANATORY STATUS OUTPUT
                                     </div>
                                     <div class="terminal-lines">
                                         <div class="line green">&gt; stage 1: ingest kinematic samples (volatile memory only)</div>
                                         <div class="line">&gt; stage 2: compute derived observation features (mean, stddev, cv)</div>
                                         <div class="line blue">&gt; stage 3: apply coverage rules &amp; provisional risk indicators</div>
-                                        <div class="line" style="color: var(--text-muted);">&gt; stage 4: abstain from score output (calibration not performed)</div>
+                                        <div class="line text-muted">&gt; stage 4: abstain from score output (calibration not performed)</div>
                                     </div>
                                 </div>
 
-                                <figcaption style="margin-top: 14px; padding: 8px 12px; background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 6px; font-family: var(--font-heading); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cyan); text-align: center;">
+                                <figcaption class="concept-caption">
                                     CONCEPT ARCHITECTURE — NOT A LIVE VERIFICATION SYSTEM
-                                    <span style="display: block; font-family: var(--font-sans); font-size: 11px; font-weight: 400; letter-spacing: normal; text-transform: none; color: var(--text-muted); margin-top: 3px;">Conceptual architecture model. This is not a live verification system.</span>
+                                    <span class="concept-caption-note">Conceptual architecture model. This is not a live verification system.</span>
                                 </figcaption>
                             </div>
                         </div>
@@ -516,7 +516,7 @@
         <!-- =============================================
              RESEARCH & ENGINE STATUS — What Exists Today
              ============================================= -->
-        <section class="current-research-section" id="engine-status" style="border-top: 1px solid rgba(255,255,255,0.05);">
+        <section class="current-research-section research-section--soft-border" id="engine-status">
             <div class="section-container">
                 <div class="section-header-centered reveal-fade">
                     <div class="tag">RESEARCH &amp; ENGINE STATUS</div>
@@ -528,7 +528,7 @@
                     <!-- Status item 1 -->
                     <div class="narrative-card glass-panel reveal-fade">
                         <div class="card-accent-line"></div>
-                        <div class="num" style="color: var(--cyan);">01</div>
+                        <div class="num text-cyan">01</div>
                         <h3>Deterministic Lab Baseline</h3>
                         <p>We built an isolated research engine that computes derived movement, typing and reaction observations. Repeated analyses produced byte-identical output in the recorded laboratory environment. No AI model or LLM participates in the evaluation path.</p>
                     </div>
@@ -536,7 +536,7 @@
                     <!-- Status item 2 -->
                     <div class="narrative-card glass-panel reveal-fade">
                         <div class="card-accent-line"></div>
-                        <div class="num" style="color: var(--cyan);">02</div>
+                        <div class="num text-cyan">02</div>
                         <h3>Synthetic-Only Evaluation</h3>
                         <p>The engine was evaluated across 213 deterministic synthetic scenarios covering sampling frequency, timer quantization and sample loss. No real participant data was collected or processed.</p>
                     </div>
@@ -544,7 +544,7 @@
                     <!-- Status item 3 -->
                     <div class="narrative-card glass-panel reveal-fade">
                         <div class="card-accent-line"></div>
-                        <div class="num" style="color: var(--cyan);">03</div>
+                        <div class="num text-cyan">03</div>
                         <h3>Coverage, Not Classification</h3>
                         <p>The engine reports evidence availability rather than a binary human-or-bot label. Missing inputs and accessibility exclusions reduce coverage without creating anomaly penalties or artificial certainty.</p>
                     </div>
@@ -552,13 +552,13 @@
                     <!-- Status item 4 -->
                     <div class="narrative-card glass-panel reveal-fade">
                         <div class="card-accent-line"></div>
-                        <div class="num" style="color: var(--cyan);">04</div>
+                        <div class="num text-cyan">04</div>
                         <h3>Calibration Not Performed</h3>
                         <p>The laboratory engine does not output a calibrated trust score. Real-world behavioral distributions remain unmeasured, and its provisional risk thresholds remain unvalidated.</p>
                     </div>
                 </div>
 
-                <div class="disclaimer-card reveal-fade" style="margin-top: 32px; text-align: left;">
+                <div class="disclaimer-card reveal-fade disclaimer-card--spaced-left">
                     <div class="disclaimer-icon">
                         <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-circle-info"></use></svg>
                     </div>
@@ -600,12 +600,12 @@
                     </div>
 
                     <!-- Project 2 -->
-                    <a href="/experiment" class="research-project-card glass-panel reveal-fade" style="display: flex; flex-direction: column; text-decoration: none; color: inherit;">
+                    <a href="/experiment" class="research-project-card glass-panel reveal-fade research-project-card--link">
                         <div class="card-glow"></div>
                         <div class="research-project-meta">
                             <span class="research-project-type">Experiment</span>
-                            <span class="research-status-pill in-development" style="background: rgba(0, 255, 135, 0.05); border-color: rgba(0, 255, 135, 0.2); color: var(--green);">
-                                <span class="status-dot" style="background-color: var(--green); box-shadow: 0 0 8px var(--green);"></span>
+                            <span class="research-status-pill in-development research-status-pill--green">
+                                <span class="status-dot status-dot--green"></span>
                                 Public Preview
                             </span>
                         </div>
@@ -613,9 +613,9 @@
                         <p class="research-project-desc">
                             An experimental demonstration exploring whether interaction signals can contribute to confidence that a human may be present.
                         </p>
-                        <div class="research-project-footer" style="display: flex; justify-content: space-between; width: 100%;">
+                        <div class="research-project-footer research-project-footer--split">
                             <span>HUMNLABS &mdash; 2026</span>
-                            <span style="color: var(--cyan); font-weight: 500;">Try Experiment <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 10px; height: 10px; margin-left: 4px;"><use href="#icon-arrow-right"></use></svg></span>
+                            <span class="research-project-link">Try Experiment <svg class="svg-icon icon-10-trailing" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></span>
                         </div>
                     </a>
 
@@ -771,13 +771,13 @@
 
                 <div class="form-feedback" id="form-message">
                     <div class="success-message">
-                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 6px;"><use href="#icon-circle-check"></use></svg>
+                        <svg class="svg-icon icon-leading-6" aria-hidden="true" focusable="false"><use href="#icon-circle-check"></use></svg>
                         <span>You are registered for early access. We will notify you as soon as the report is released.</span>
                     </div>
                 </div>
                 
                 <div class="security-caption">
-                    <svg class="svg-icon" aria-hidden="true" focusable="false" style="width: 13px; height: 13px; margin-right: 4px; vertical-align: -1px;"><use href="#icon-shield-halved"></use></svg> No tracking. No data selling. Your email is used only to notify you when the report is released.
+                    <svg class="svg-icon icon-13-leading" aria-hidden="true" focusable="false"><use href="#icon-shield-halved"></use></svg> No tracking. No data selling. Your email is used only to notify you when the report is released.
                 </div>
             </div>
         </section>

@@ -215,12 +215,9 @@ document.addEventListener("DOMContentLoaded", () => {
         function resetSubmitButton() {
             if (!submitBtn || !btnText || !btnIcon) return;
             submitBtn.disabled = false;
-            submitBtn.style.opacity = "1";
+            submitBtn.classList.remove("is-loading", "is-success");
             btnText.textContent = "Access the Report";
             setButtonIcon("icon-arrow-right", false);
-            submitBtn.style.background = "";
-            submitBtn.style.color = "";
-            submitBtn.style.boxShadow = "";
         }
 
         waitlistForm.addEventListener("submit", async (event) => {
@@ -229,7 +226,8 @@ document.addEventListener("DOMContentLoaded", () => {
             // Set loading state on button
             if (submitBtn && btnText && btnIcon) {
                 submitBtn.disabled = true;
-                submitBtn.style.opacity = "0.7";
+                submitBtn.classList.remove("is-success");
+                submitBtn.classList.add("is-loading");
                 btnText.textContent = "Registering...";
                 setButtonIcon("icon-spinner", true);
             }
@@ -248,11 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     // Success UI Sequence
                     if (feedbackBlock) {
-                        feedbackBlock.style.display = "block";
-                        feedbackBlock.style.opacity = "0";
+                        feedbackBlock.classList.add("is-active");
+                        feedbackBlock.classList.remove("is-visible");
                         setTimeout(() => {
-                            feedbackBlock.style.transition = "opacity 0.5s ease";
-                            feedbackBlock.style.opacity = "1";
+                            feedbackBlock.classList.add("is-visible");
                         }, 50);
                     }
                     
@@ -260,9 +257,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (submitBtn && btnText && btnIcon) {
                         btnText.textContent = "Registered";
                         setButtonIcon("icon-check", false);
-                        submitBtn.style.background = "#00ff87";
-                        submitBtn.style.color = "#030305";
-                        submitBtn.style.boxShadow = "0 0 15px rgba(0, 255, 135, 0.4)";
+                        submitBtn.classList.remove("is-loading");
+                        submitBtn.classList.add("is-success");
                     }
                 } else {
                     const responseData = await response.json();
@@ -379,13 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener("scroll", () => {
             const footerRect = appFooter.getBoundingClientRect();
             // If the top of the footer is visible in the viewport, fade out the FAB
-            if (footerRect.top < window.innerHeight) {
-                xFloatPill.style.opacity = "0";
-                xFloatPill.style.pointerEvents = "none";
-            } else {
-                xFloatPill.style.opacity = "1";
-                xFloatPill.style.pointerEvents = "all";
-            }
+            xFloatPill.classList.toggle("is-footer-overlap", footerRect.top < window.innerHeight);
         });
     }
 
