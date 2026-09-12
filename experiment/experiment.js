@@ -206,7 +206,7 @@ function showPhase(name, pushHistory = true) {
   // Show footer only on welcome and result phases
   const showFooter = name === 'welcome' || name === 'result';
   const footer = document.querySelector('.app-footer');
-  if (footer) footer.style.display = showFooter ? '' : 'none';
+  if (footer) footer.hidden = !showFooter;
 
   // Always scroll to top on phase change so content is visible
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -227,14 +227,13 @@ function updateProgress(phase) {
   if (!bar || !wrapper) return;
 
   if (idx === -1) {
-    wrapper.style.opacity = '0';
-    wrapper.style.pointerEvents = 'none';
+    wrapper.classList.remove('is-active');
+    bar.value = 0;
     return;
   }
 
-  wrapper.style.opacity = '1';
-  wrapper.style.pointerEvents = 'all';
-  bar.style.width = `${((idx + 1) / steps.length) * 100}%`;
+  wrapper.classList.add('is-active');
+  bar.value = idx + 1;
 
   // Update step dots
   steps.forEach((s, i) => {
@@ -349,7 +348,7 @@ function handleReactionClick() {
     target.onclick       = null;
     target.dataset.state = isInvalid ? 'invalid' : 'hit';
     target.innerHTML     = isInvalid 
-      ? `<span class="rt-inner-text" style="color:#ef4444;font-size:12px;font-weight:800;letter-spacing:1px;">INVALID</span>`
+      ? `<span class="rt-inner-text">INVALID</span>`
       : `<span class="rt-inner-text">${Math.round(elapsed)}<br><small>ms</small></span>`;
   }
 
@@ -383,11 +382,10 @@ function appendReactionResult(round, ms) {
   const item = document.createElement('div');
   item.className = 'rt-result-item';
   if (ms > 5000) {
-    item.style.borderColor = 'rgba(239,68,68,0.25)';
-    item.style.background = 'rgba(239,68,68,0.04)';
+    item.classList.add('rt-result-item--invalid');
     item.innerHTML = `
       <span class="rt-result-label">Round ${round}</span>
-      <span class="rt-result-time" style="color:#ef4444;font-size:11px;letter-spacing:0.5px;">INVALID</span>
+      <span class="rt-result-time">INVALID</span>
     `;
   } else {
     item.innerHTML = `
@@ -418,7 +416,7 @@ function initMovementTask() {
   const ctx      = canvas ? canvas.getContext('2d') : null;
 
   if (timerEl)  timerEl.textContent = '5';
-  if (startBtn) startBtn.style.display = '';
+  if (startBtn) startBtn.hidden = false;
 
   // Size canvas and clear any previous drawing
   const zone = document.getElementById('movement-zone');
@@ -431,7 +429,7 @@ function initMovementTask() {
   if (startBtn) {
     // Use a fresh onclick each init; no registry needed (single inline handler)
     startBtn.onclick = () => {
-      startBtn.style.display = 'none';
+      startBtn.hidden = true;
       beginMovementCollection(ctx, canvas, timerEl);
     };
   }
@@ -531,7 +529,7 @@ function beginMovementCollection(ctx, canvas, timerEl) {
         // Re-show the start button for a retry
         const retryBtn = document.getElementById('movement-start-btn');
         if (retryBtn) {
-          retryBtn.style.display = '';
+          retryBtn.hidden = false;
           state.timeRemaining = 5;
           if (timerEl) timerEl.textContent = '5';
         }
@@ -596,7 +594,10 @@ function initTypingTask() {
   }
 
   const progress = document.getElementById('typing-progress-bar');
-  if (progress) progress.style.width = '0%';
+  if (progress) {
+    progress.value = 0;
+    progress.classList.remove('is-complete');
+  }
 
   const input = document.getElementById('typing-input');
   if (input) {
@@ -692,7 +693,7 @@ function initTypingTask() {
 
       const pct = Math.min((typed.length / phrase.length) * 100, 100);
       const pb  = document.getElementById('typing-progress-bar');
-      if (pb) pb.style.width = `${pct}%`;
+      if (pb) pb.value = pct;
 
       // Complete when phrase is fully typed with >= 90% accuracy
       const correct = [...typed].filter((c, i) => c === phrase[i]).length;
@@ -701,8 +702,8 @@ function initTypingTask() {
         // BUG-06: Show visual feedback before phase transition so the change isn't sudden
         const pb = document.getElementById('typing-progress-bar');
         if (pb) {
-          pb.style.width = '100%';
-          pb.style.background = 'linear-gradient(90deg, #00ff87, #00f0ff)';
+          pb.value = 100;
+          pb.classList.add('is-complete');
         }
         e.target.placeholder = 'Input registered — preparing summary…';
         const analyzeTid = setTimeout(() => showPhase('analyzing'), 900);

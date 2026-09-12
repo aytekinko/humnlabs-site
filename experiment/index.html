@@ -20,1106 +20,17 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://humnlabs.io/og-image.jpg">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; frame-src 'none';">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="../style.css">
 
-<style>
-/* ================================================================
-   EXPERIMENT PAGE — scoped styles only
-   All design tokens come from ../style.css
-   ================================================================ */
-
-/* ---- Global phase container ---- */
-.exp-wrapper {
-    /* Raise --text-dark to a WCAG AA-safe level for body copy on this page.
-       Original global value #4e5d70 gives ~2.4:1 on #030305; the local
-       override below gives ~3.2:1 — both fail 4.5:1 normal-text AA.
-       --text-accessible (#8a99ad) matches --text-muted and gives ~4.9:1. */
-    --text-dark:       #8596a9;   /* WCAG 2.1 AA compliant: 5.2:1 vs #030305 */
-    --text-accessible: #8a99ad;   /* WCAG AA compliant: ~4.9:1 vs #030305 */
-    min-height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 100px 24px 80px;
-    position: relative;
-}
-
-/* ---- Progress bar (top) ---- */
-#exp-progress {
-    position: fixed;
-    top: 72px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(255,255,255,0.05);
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.4s;
-}
-#exp-progress-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--cyan), #7b3fff);
-    transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
-}
-.exp-step-dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    position: fixed;
-    top: 80px;
-    left: 0;
-    right: 0;
-    z-index: 999;
-}
-.exp-step {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    transition: background 0.3s, transform 0.3s;
-}
-.exp-step.exp-step--active {
-    background: var(--cyan);
-    transform: scale(1.4);
-    box-shadow: 0 0 8px var(--cyan);
-}
-.exp-step.exp-step--done { background: rgba(0,240,255,0.4); }
-
-/* ---- Phase transitions ---- */
-.exp-phase {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 0.38s ease, transform 0.38s ease;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-.exp-phase.exp-phase--active {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ---- Shared experiment badge ---- */
-.exp-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    border: 1px solid rgba(0,240,255,0.22);
-    background: rgba(0,240,255,0.04);
-    padding: 5px 14px;
-    border-radius: 100px;
-    font-family: var(--font-heading);
-    font-size: 9.5px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--cyan);
-    margin-bottom: 28px;
-}
-.exp-badge-pulse {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--cyan);
-    box-shadow: 0 0 5px var(--cyan);
-    animation: pulse-exp 1.3s ease-in-out infinite;
-}
-@keyframes pulse-exp {
-    0%,100% { opacity: 0.4; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.3); }
-}
-
-/* ---- Shared signal label ---- */
-.exp-signal-label {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: var(--font-heading);
-    font-size: 9px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--text-accessible);
-    margin-bottom: 20px;
-}
-.exp-signal-label span {
-    display: inline-block;
-    width: 24px; height: 24px;
-    border-radius: 6px;
-    background: rgba(0,240,255,0.08);
-    border: 1px solid rgba(0,240,255,0.2);
-    line-height: 24px;
-    text-align: center;
-    font-size: 10px;
-    color: var(--cyan);
-}
-
-/* ---- Shared card panel ---- */
-.exp-card {
-    width: 100%;
-    background: rgba(255,255,255,0.015);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 44px 40px;
-    position: relative;
-    overflow: hidden;
-}
-.exp-card::before {
-    content:'';
-    position:absolute; top:0; left:0; right:0; height:1px;
-    background: linear-gradient(90deg, transparent, rgba(0,240,255,0.35), transparent);
-}
-
-/* ================================================================
-   PHASE: WELCOME
-   ================================================================ */
-.welcome-title {
-    font-family: var(--font-heading);
-    font-size: clamp(2.2rem, 6vw, 3.8rem);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    color: var(--text-pure);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    outline: none;
-}
-.welcome-version {
-    font-family: var(--font-mono, monospace);
-    font-size: 11px; font-weight: 500; letter-spacing: 3px;
-    color: var(--text-accessible); text-transform: uppercase;
-    margin-bottom: 22px;
-}
-.welcome-body {
-    font-family: var(--font-body);
-    font-size: 17px; color: var(--text-muted); line-height: 1.75;
-    max-width: 520px; margin: 0 auto 32px;
-}
-.welcome-stats {
-    display: flex; gap: 6px; flex-wrap: wrap;
-    justify-content: center; margin-bottom: 36px;
-}
-.welcome-stat {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 100px;
-    padding: 5px 12px;
-    font-family: var(--font-heading);
-    font-size: 10px; font-weight: 600; letter-spacing: 0.8px;
-    color: var(--text-muted);
-}
-.welcome-stat i { color: var(--cyan); font-size: 9px; }
-
-/* ================================================================
-   PHASE: INSTRUCTIONS
-   ================================================================ */
-.inst-title {
-    font-family: var(--font-serif);
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
-    color: var(--text-pure); font-weight: 700;
-    margin-bottom: 32px; line-height: 1.25;
-}
-.inst-list {
-    list-style: none; padding: 0; margin: 0 0 36px;
-    display: flex; flex-direction: column; gap: 16px;
-    text-align: left; width: 100%;
-}
-.inst-item {
-    display: flex; gap: 16px; align-items: flex-start;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px; padding: 18px 20px;
-}
-.inst-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-}
-.inst-icon--cyan   { background: rgba(0,240,255,0.06);  border:1px solid rgba(0,240,255,0.18);  color: var(--cyan); }
-.inst-icon--violet { background: rgba(112,0,255,0.06);  border:1px solid rgba(112,0,255,0.18);  color: #a78bfa; }
-.inst-icon--amber  { background: rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.18); color: #f59e0b; }
-.inst-text strong {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
-    text-transform: uppercase; color: var(--text-pure); margin-bottom: 4px;
-}
-.inst-text span {
-    font-family: var(--font-body);
-    font-size: 13px; color: var(--text-muted); line-height: 1.6;
-}
-
-/* ================================================================
-   PHASE: TASK — REACTION TIMING
-   ================================================================ */
-.reaction-instruction {
-    font-family: var(--font-body);
-    font-size: 15px; color: var(--text-muted); line-height: 1.7;
-    max-width: 440px; margin-bottom: 36px;
-}
-.reaction-arena {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 32px; width: 100%;
-}
-.reaction-target {
-    width: 160px; height: 160px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: background 0.25s, box-shadow 0.25s, border-color 0.25s, transform 0.15s;
-    user-select: none;
-    border: 2px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    font-family: var(--font-heading);
-    font-size: 12px; font-weight: 700; letter-spacing: 2px;
-    color: var(--text-dark);
-    padding: 0;
-    appearance: none;
-    -webkit-appearance: none;
-}
-.reaction-target[data-state="waiting"] {
-    border-color: rgba(255,255,255,0.12);
-    animation: rt-pulse-wait 1.8s ease-in-out infinite;
-    cursor: default;
-}
-.reaction-target[data-state="invalid"] {
-    background: rgba(239, 68, 68, 0.04);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #ef4444;
-    cursor: default;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
-}
-.reaction-target[data-state="go"] {
-    background: rgba(0,240,255,0.08);
-    border-color: var(--cyan);
-    box-shadow: 0 0 40px rgba(0,240,255,0.25), 0 0 80px rgba(0,240,255,0.1);
-    color: var(--cyan);
-    animation: rt-pulse-go 0.6s ease-in-out infinite alternate;
-    font-size: 18px;
-}
-.reaction-target[data-state="hit"] {
-    background: rgba(0,240,255,0.05);
-    border-color: rgba(0,240,255,0.4);
-    color: var(--cyan);
-    cursor: default;
-}
-.reaction-target[data-state="done"] {
-    background: rgba(0,240,255,0.06);
-    border-color: rgba(0,240,255,0.35);
-    color: var(--cyan);
-    cursor: default;
-    box-shadow: 0 0 30px rgba(0,240,255,0.15);
-}
-.rt-inner-text { text-align: center; line-height: 1.2; }
-.rt-inner-text small { font-size: 10px; opacity: 0.7; letter-spacing: 1px; }
-
-@keyframes rt-pulse-wait {
-    0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.04); }
-    50% { box-shadow: 0 0 0 10px rgba(255,255,255,0.02); }
-}
-@keyframes rt-pulse-go {
-    0% { box-shadow: 0 0 30px rgba(0,240,255,0.2), 0 0 60px rgba(0,240,255,0.08); }
-    100% { box-shadow: 0 0 50px rgba(0,240,255,0.35), 0 0 100px rgba(0,240,255,0.15); }
-}
-
-.reaction-round-label {
-    font-family: var(--font-heading);
-    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--text-accessible);
-}
-#reaction-results {
-    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-    min-height: 36px;
-}
-.rt-result-item {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(0,240,255,0.04);
-    border: 1px solid rgba(0,240,255,0.12);
-    border-radius: 8px; padding: 6px 14px;
-    animation: fadeInUp 0.3s ease;
-}
-.rt-result-label {
-    font-family: var(--font-heading);
-    font-size: 9px; font-weight: 700; letter-spacing: 1px;
-    text-transform: uppercase; color: var(--text-accessible);
-}
-.rt-result-time {
-    font-family: var(--font-heading);
-    font-size: 14px; font-weight: 700; color: var(--cyan);
-}
-.rt-result-unit { font-size: 9px; color: var(--text-accessible); margin-left: 2px; }
-
-.reaction-accessible-alt {
-    margin-top: 36px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    text-align: center;
-    max-width: 440px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.btn-reaction-alt {
-    cursor: pointer;
-    font-size: 11px;
-    padding: 10px 20px;
-}
-
-.btn-reaction-alt:focus-visible {
-    outline: 2px solid var(--cyan) !important;
-    outline-offset: 3px !important;
-}
-
-.reaction-alt-desc {
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--text-accessible);
-    line-height: 1.5;
-    margin: 0;
-}
-
-/* ================================================================
-   PHASE: TASK — MOVEMENT ANALYSIS
-   ================================================================ */
-.movement-instruction {
-    font-family: var(--font-body);
-    font-size: 15px; color: var(--text-muted); line-height: 1.7;
-    max-width: 420px; margin-bottom: 28px;
-}
-.movement-zone-wrapper {
-    position: relative; width: 100%;
-}
-#movement-zone {
-    width: 100%; height: 260px;
-    border: 1px solid rgba(0,240,255,0.15);
-    border-radius: 12px;
-    background: rgba(0,240,255,0.02);
-    position: relative;
-    overflow: hidden;
-    cursor: crosshair;
-    touch-action: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-#movement-zone:focus {
-    border-color: rgba(0,240,255,0.5);
-    box-shadow: 0 0 0 3px rgba(0,240,255,0.15);
-    outline: none;
-}
-#movement-canvas {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-}
-.movement-timer-badge {
-    position: absolute; top: 12px; right: 14px;
-    font-family: var(--font-heading);
-    font-size: 13px; font-weight: 700;
-    color: var(--cyan); letter-spacing: 1px;
-    background: rgba(0,0,0,0.5);
-    padding: 4px 10px; border-radius: 20px;
-    border: 1px solid rgba(0,240,255,0.15);
-    pointer-events: none;
-}
-.movement-zone-label {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 10px;
-    pointer-events: none;
-}
-#movement-start-btn {
-    position: absolute; inset: 0; margin: auto;
-    width: fit-content; height: fit-content;
-    z-index: 5; cursor: pointer;
-}
-
-/* ================================================================
-   PHASE: TASK — KEYSTROKE ANALYSIS
-   ================================================================ */
-.typing-instruction {
-    font-family: var(--font-body);
-    font-size: 15px; color: var(--text-muted); line-height: 1.7;
-    max-width: 420px; margin-bottom: 28px;
-}
-#typing-phrase-display {
-    font-family: var(--font-serif);
-    font-size: clamp(1.05rem, 3vw, 1.35rem);
-    line-height: 1.7;
-    letter-spacing: 0.02em;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-    word-break: break-word;
-    min-height: 60px;
-}
-.tp-char { transition: color 0.12s; }
-.tp-char--ok     { color: var(--text-pure); }
-.tp-char--err    { color: #ef4444; text-decoration: underline; }
-.tp-char--cursor {
-    color: var(--text-pure);
-    border-left: 2px solid var(--cyan);
-    margin-left: 1px;
-    animation: blink-cur 0.8s step-end infinite;
-}
-@keyframes blink-cur { 50% { border-color: transparent; } }
-
-#typing-input {
-    width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 14px 18px;
-    font-family: var(--font-body);
-    font-size: 15px; color: var(--text-pure);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    margin-bottom: 14px;
-}
-#typing-input:focus {
-    border-color: rgba(0,240,255,0.35);
-    box-shadow: 0 0 0 3px rgba(0,240,255,0.07);
-}
-.typing-progress-track {
-    width: 100%; height: 6px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 3px; overflow: hidden;
-}
-#typing-progress-bar {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg, var(--cyan), #7b3fff);
-    border-radius: 3px;
-    transition: width 0.15s ease;
-}
-
-/* ================================================================
-   PHASE: ANALYZING
-   ================================================================ */
-.analyzing-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-    font-weight: 700; color: var(--text-pure);
-    margin-bottom: 8px;
-}
-.analyzing-sub {
-    font-family: var(--font-body);
-    font-size: 14px; color: var(--text-accessible); margin-bottom: 40px;
-}
-.analyzing-signals {
-    width: 100%; display: flex; flex-direction: column; gap: 20px;
-}
-.analyze-row { text-align: left; }
-.analyze-row-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 8px;
-}
-.analyze-row-label {
-    font-family: var(--font-heading);
-    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
-    text-transform: uppercase; color: var(--text-muted);
-}
-.analyze-row-val {
-    font-family: var(--font-heading);
-    font-size: 12px; font-weight: 700; color: var(--cyan);
-    min-width: 36px; text-align: right;
-}
-.analyze-track {
-    height: 5px; background: rgba(255,255,255,0.05);
-    border-radius: 3px; overflow: hidden;
-}
-.analyze-bar {
-    height: 100%; width: 0%;
-    border-radius: 3px;
-    transition: width 0.9s cubic-bezier(0.22,1,0.36,1);
-}
-.analyze-bar--1 { background: linear-gradient(90deg, #00bfff, var(--cyan)); }
-.analyze-bar--2 { background: linear-gradient(90deg, #7b3fff, #a78bfa); }
-.analyze-bar--3 { background: linear-gradient(90deg, var(--cyan), #7b3fff); }
-
-.analyzing-loader {
-    display: flex; gap: 6px; justify-content: center; margin-top: 36px;
-}
-.an-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--cyan); opacity: 0.3;
-    animation: an-pulse 1.4s ease-in-out infinite;
-}
-.an-dot:nth-child(2) { animation-delay: 0.2s; }
-.an-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes an-pulse {
-    0%,100% { opacity: 0.2; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); }
-}
-
-/* ================================================================
-   PHASE: RESULT
-   ================================================================ */
-/* ================================================================
-   PHASE: RESULT (Educational Session Signal Summary)
-   ================================================================ */
-.result-hero { margin-bottom: 24px; text-align: center; }
-
-.result-title {
-    font-family: var(--font-heading);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-pure);
-    margin-bottom: 8px;
-    outline: none;
-}
-
-.educational-disclaimer-card {
-    background: rgba(0, 240, 255, 0.02);
-    border: 1px solid rgba(0, 240, 255, 0.12);
-    border-radius: 12px;
-    padding: 16px 20px;
-    text-align: left;
-    margin-bottom: 24px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.educational-disclaimer-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-
-.educational-disclaimer-title {
-    font-family: var(--font-heading);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--cyan);
-}
-
-.educational-disclaimer-body {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.signal-task-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    margin-bottom: 24px;
-    text-align: left;
-}
-
-.signal-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    padding: 16px 18px;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-}
-
-.signal-card:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-}
-
-.signal-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.signal-card-name {
-    font-family: var(--font-heading);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-pure);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.signal-status-badge {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    text-transform: uppercase;
-    border: 1px solid transparent;
-}
-
-.status--available {
-    background: rgba(0, 240, 255, 0.08);
-    border-color: rgba(0, 240, 255, 0.3);
-    color: var(--cyan);
-}
-
-.status--limited {
-    background: rgba(245, 158, 11, 0.08);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #f59e0b;
-}
-
-.status--excluded {
-    background: rgba(167, 139, 250, 0.08);
-    border-color: rgba(167, 139, 250, 0.3);
-    color: #a78bfa;
-}
-
-.signal-obs {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--text-accessible);
-    line-height: 1.5;
-    margin: 0 0 8px 0;
-}
-
-.signal-limitation {
-    font-family: var(--font-body);
-    font-size: 11.5px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    margin: 0;
-    padding-top: 6px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.04);
-}
-
-.result-disclaimer {
-    font-family: var(--font-body);
-    font-size: 12px; color: var(--text-accessible); line-height: 1.7;
-    margin-bottom: 32px;
-    padding: 14px 18px;
-    background: rgba(255,255,255,0.015);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-    text-align: left;
-}
-.result-disclaimer strong { color: var(--text-muted); }
-
-.result-context {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-accessible);
-    line-height: 1.6;
-    max-width: 620px;
-    margin: 0 auto 20px;
-    text-align: center;
-}
-
-.result-actions {
-    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-}
-
-.privacy-card-container {
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    text-align: left;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-.privacy-card-container::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.25), transparent);
-}
-
-.privacy-card-title {
-    font-family: var(--font-heading);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-bright);
-    margin-bottom: 18px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    text-align: left;
-}
-
-.privacy-card-title i {
-    color: var(--cyan);
-    flex-shrink: 0;
-}
-
-.privacy-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 24px;
-    width: 100%;
-}
-
-.privacy-grid-item {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 10px;
-    text-align: left;
-}
-
-.privacy-grid-item > i {
-    color: var(--cyan);
-    font-size: 12px;
-    margin-top: 2px;
-    flex-shrink: 0;
-    width: 16px;
-    text-align: center;
-}
-
-.privacy-grid-item-text {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-}
-
-.privacy-grid-item-label {
-    font-family: var(--font-heading);
-    font-size: 11.5px;
-    font-weight: 700;
-    color: var(--text-pure);
-    margin-bottom: 3px;
-    display: block;
-}
-
-.privacy-grid-item-desc {
-    font-family: var(--font-body);
-    font-size: 11px;
-    color: var(--text-accessible);
-    line-height: 1.5;
-    display: block;
-    text-align: left;
-}
-
-.explainability-section {
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    text-align: left;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-.explainability-section::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.25), transparent);
-}
-
-.explainability-title {
-    font-family: var(--font-heading);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-bright);
-    margin-bottom: 16px;
-    display: block;
-    text-align: left;
-}
-
-.explainability-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    width: 100%;
-}
-
-.explainability-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 12px 0;
-    text-align: left;
-    width: 100%;
-}
-
-.explainability-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.explainability-item-label {
-    font-family: var(--font-heading);
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-align: left;
-    white-space: nowrap;
-}
-
-.explainability-leader {
-    flex-grow: 1;
-    border-bottom: 1px dotted rgba(255, 255, 255, 0.15);
-    margin: 0 12px;
-    height: 1px;
-}
-
-.explainability-badge {
-    font-family: var(--font-mono);
-    font-size: 9.5px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    flex-shrink: 0;
-    white-space: nowrap;
-}
-
-.explainability-badge::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-right: 6px;
-    flex-shrink: 0;
-}
-
-.explainability-badge--low {
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
-
-.explainability-badge--low::before {
-    background-color: #ef4444;
-    box-shadow: 0 0 6px #ef4444;
-}
-
-.explainability-badge--moderate {
-    background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
-}
-
-.explainability-badge--moderate::before {
-    background-color: #f59e0b;
-    box-shadow: 0 0 6px #f59e0b;
-}
-
-.explainability-badge--high {
-    background: rgba(0, 240, 255, 0.08);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    color: var(--cyan);
-}
-
-.explainability-badge--high::before {
-    background-color: var(--cyan);
-    box-shadow: 0 0 6px var(--cyan);
-}
-
-@media (max-width: 600px) {
-    .privacy-grid {
-        grid-template-columns: 1fr;
-    }
-}
-.app-footer .footer-container {
-    padding-top: 24px;
-    padding-bottom: 16px;
-    gap: 20px;
-}
-
-/* ---- Experiment Button Styles ---- */
-.btn-exp-primary {
-    appearance: none;
-    -webkit-appearance: none;
-    background: var(--cyan);
-    color: var(--bg-darker);
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-family: var(--font-heading);
-    font-size: 15px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0, 240, 255, 0.25);
-    position: relative;
-    overflow: hidden;
-    transition: var(--transition-medium);
-    text-decoration: none;
-}
-
-.btn-exp-primary:hover {
-    color: var(--bg-darker);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(0, 240, 255, 0.35);
-}
-
-.btn-exp-primary:active {
-    transform: translateY(0);
-}
-
-.btn-exp-ghost {
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--text-bright);
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-family: var(--font-heading);
-    font-size: 15px;
-    font-weight: 600;
-    border: 1px solid var(--border-color);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: var(--transition-medium);
-    text-decoration: none;
-}
-
-.btn-exp-ghost:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.btn-exp-ghost:active {
-    transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .btn-exp-primary,
-    .btn-exp-ghost {
-        transition: none !important;
-        transform: none !important;
-    }
-    .btn-exp-primary:hover,
-    .btn-exp-ghost:hover {
-        transform: none !important;
-    }
-}
-
-/* Accessibility focus states */
-.btn-exp-primary:focus-visible,
-.btn-exp-ghost:focus-visible,
-.nav-link:focus-visible,
-.logo-link:focus-visible,
-.btn-primary-mini:focus-visible,
-.btn-primary:focus-visible,
-.btn-secondary:focus-visible {
-    outline: 2px solid var(--cyan) !important;
-    outline-offset: 4px !important;
-}
-
-@media (max-width: 768px) {
-    .btn-exp-primary, .btn-exp-ghost {
-        padding: 16px 28px !important;
-    }
-}
-
-/* FAQ Accordion Styles */
-.faq-section {
-    width: 100%;
-    max-width: 700px;
-    margin: 40px auto 60px;
-    padding: 0 24px;
-    box-sizing: border-box;
-}
-
-.faq-title {
-    font-family: var(--font-heading);
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-bright);
-    margin-bottom: 24px;
-    text-align: center;
-}
-
-.faq-accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.faq-item {
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
-    padding: 16px 20px;
-    transition: border-color var(--transition-fast), background-color var(--transition-fast);
-}
-
-.faq-item:hover, .faq-item[open] {
-    border-color: rgba(0, 240, 255, 0.2);
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.faq-question {
-    font-family: var(--font-heading);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-bright);
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-}
-
-.faq-question::-webkit-details-marker {
-    display: none;
-}
-
-.faq-arrow {
-    width: 10px;
-    height: 10px;
-    color: var(--text-dark);
-    fill: currentColor;
-    transition: transform 0.2s ease;
-    flex-shrink: 0;
-}
-
-.faq-item[open] .faq-arrow {
-    transform: rotate(180deg);
-    color: var(--cyan);
-}
-
-.faq-question:focus-visible {
-    outline: 2px solid var(--cyan) !important;
-    outline-offset: 4px !important;
-    border-radius: 4px;
-}
-
-.faq-answer {
-    margin-top: 12px;
-    font-family: var(--font-body);
-    font-size: 13.5px;
-    color: var(--text-accessible);
-    line-height: 1.6;
-}
-</style>
 </head>
 <body>
 <!-- SVG Symbol Definitions -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+<svg class="csp-hidden" xmlns="http://www.w3.org/2000/svg">
     <defs>
         <!-- Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0) -->
         <symbol id="icon-clock" viewBox="0 0 512 512">
@@ -1183,9 +94,9 @@
 </svg>
 <a href="#main-content" class="skip-link" id="exp-skip-link">Skip to main content</a>
 <noscript>
-    <div style="position: fixed; inset: 0; background: #030305; color: #fff; display: flex; align-items: center; justify-content: center; z-index: 99999; font-family: sans-serif; padding: 24px; text-align: center;">
+    <div class="noscript-overlay">
         <div>
-            <h1 style="color: var(--cyan, #00f0ff); margin-bottom: 12px;">JavaScript Required</h1>
+            <h1 class="noscript-title">JavaScript Required</h1>
             <p>This interactive human presence experiment requires JavaScript to run behavioral signal collection.</p>
         </div>
     </div>
@@ -1225,7 +136,7 @@
             <a href="/#research-areas" class="nav-link">Research</a>
             <a href="/#current-research" class="nav-link">Our Work</a>
             <a href="/#boundaries" class="nav-link">Principles</a>
-            <a href="/experiment" class="nav-link" aria-current="page" style="color:var(--cyan);">Experiment</a>
+            <a href="/experiment" class="nav-link text-cyan" aria-current="page">Experiment</a>
         </nav>
 
         <div class="header-actions">
@@ -1242,7 +153,7 @@
 
 <!-- Progress bar (shown during tasks) -->
 <div id="exp-progress">
-    <div id="exp-progress-bar"></div>
+    <progress id="exp-progress-bar" max="5" value="0" aria-label="Experiment progress"></progress>
 </div>
 <div class="exp-step-dots">
     <div class="exp-step" id="step-1"></div>
@@ -1270,13 +181,13 @@
         Can interaction-derived signals contribute to confidence in human presence &mdash; without requiring identity, biometrics, or personal data? This experiment explores that question.
     </p>
     <div class="welcome-stats">
-        <span class="welcome-stat"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 4px;"><use href="#icon-clock"></use></svg> ~3 minutes</span>
-        <span class="welcome-stat"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 4px;"><use href="#icon-wave-square"></use></svg> 3 signals</span>
-        <span class="welcome-stat"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 4px;"><use href="#icon-shield-halved"></use></svg> No identity required</span>
-        <span class="welcome-stat"><svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 4px;"><use href="#icon-wifi-slash"></use></svg> No data transmitted</span>
+        <span class="welcome-stat"><svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-clock"></use></svg> ~3 minutes</span>
+        <span class="welcome-stat"><svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-wave-square"></use></svg> 3 signals</span>
+        <span class="welcome-stat"><svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-shield-halved"></use></svg> No identity required</span>
+        <span class="welcome-stat"><svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-wifi-slash"></use></svg> No data transmitted</span>
     </div>
     <button class="btn-exp-primary" id="exp-begin-btn">
-        Begin Experiment <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-left: 4px;"><use href="#icon-arrow-right"></use></svg>
+        Begin Experiment <svg class="svg-icon icon-trailing-4" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
     </button>
 </div>
 
@@ -1316,7 +227,7 @@
             </li>
         </ul>
         <button class="btn-exp-primary" id="exp-start-btn">
-            I understand &mdash; Start <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-left: 4px;"><use href="#icon-play"></use></svg>
+            I understand &mdash; Start <svg class="svg-icon icon-trailing-4" aria-hidden="true" focusable="false"><use href="#icon-play"></use></svg>
         </button>
     </div>
 </div>
@@ -1330,7 +241,7 @@
         Reaction Timing &mdash; Signal 1 of 3
     </div>
     <p class="reaction-instruction">
-        Click the target the moment it changes to <strong style="color:var(--cyan)">NOW!</strong> &mdash; 3 rounds. Respond naturally, at your own pace.
+        Click the target the moment it changes to <strong class="text-cyan">NOW!</strong> &mdash; 3 rounds. Respond naturally, at your own pace.
     </p>
     <p class="exp-research-note">
         <svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-circle-info"></use></svg>
@@ -1362,7 +273,7 @@
         <div id="movement-zone" tabindex="0" aria-label="Movement area. Use mouse, touch, or arrow keys to draw a line.">
             <canvas id="movement-canvas"></canvas>
             <button class="btn-exp-primary" id="movement-start-btn">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right: 4px;"><use href="#icon-play"></use></svg> Start 5-second recording
+                <svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-play"></use></svg> Start 5-second recording
             </button>
             <div class="movement-timer-badge" id="movement-timer">5</div>
         </div>
@@ -1380,13 +291,13 @@
     <p class="typing-instruction">
         Type the phrase below naturally &mdash; no need to rush, just write as you normally would.
     </p>
-    <div class="exp-card" style="text-align:left;">
+    <div class="exp-card exp-card--left">
         <div id="typing-phrase-display"></div>
         <input type="text" id="typing-input"
                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                placeholder="Start typing..." aria-label="Type the phrase">
         <div class="typing-progress-track">
-            <div id="typing-progress-bar"></div>
+            <progress id="typing-progress-bar" max="100" value="0" aria-label="Typing progress"></progress>
         </div>
     </div>
 </div>
@@ -1416,7 +327,7 @@
      ======================== -->
 <div class="exp-phase" id="phase-result">
     <div class="exp-badge">
-        <svg class="svg-icon" aria-hidden="true" focusable="false" style="width:10px;height:10px;margin-right:4px;"><use href="#icon-circle-check"></use></svg>
+        <svg class="svg-icon icon-10-leading" aria-hidden="true" focusable="false"><use href="#icon-circle-check"></use></svg>
         DEMONSTRATION COMPLETE
     </div>
 
@@ -1428,7 +339,7 @@
     <!-- Mandatory Educational Disclaimer Card -->
     <div class="educational-disclaimer-card" role="note" aria-label="Demonstration Boundary">
         <div class="educational-disclaimer-header">
-            <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:14px;height:14px;margin-right:6px;"><use href="#icon-circle-info"></use></svg>
+            <svg class="svg-icon icon-14-cyan-leading" aria-hidden="true" focusable="false"><use href="#icon-circle-info"></use></svg>
             <span class="educational-disclaimer-title">Demonstration Boundary</span>
         </div>
         <p class="educational-disclaimer-body">
@@ -1442,7 +353,7 @@
             <div class="signal-card" id="signal-card-reaction">
                 <div class="signal-card-header">
                     <span class="signal-card-name">
-                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:13px;height:13px;"><use href="#icon-stopwatch"></use></svg>
+                        <svg class="svg-icon icon-13-cyan" aria-hidden="true" focusable="false"><use href="#icon-stopwatch"></use></svg>
                         Reaction Timing
                     </span>
                     <span class="signal-status-badge" id="res-status-reaction">&mdash;</span>
@@ -1457,7 +368,7 @@
             <div class="signal-card" id="signal-card-movement">
                 <div class="signal-card-header">
                     <span class="signal-card-name">
-                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:#a78bfa;width:13px;height:13px;"><use href="#icon-arrows-up-down-left-right"></use></svg>
+                        <svg class="svg-icon icon-13-violet" aria-hidden="true" focusable="false"><use href="#icon-arrows-up-down-left-right"></use></svg>
                         Movement Tracking
                     </span>
                     <span class="signal-status-badge" id="res-status-movement">&mdash;</span>
@@ -1472,7 +383,7 @@
             <div class="signal-card" id="signal-card-typing">
                 <div class="signal-card-header">
                     <span class="signal-card-name">
-                        <svg class="svg-icon" aria-hidden="true" focusable="false" style="color:var(--cyan);width:13px;height:13px;"><use href="#icon-keyboard"></use></svg>
+                        <svg class="svg-icon icon-13-cyan" aria-hidden="true" focusable="false"><use href="#icon-keyboard"></use></svg>
                         Typing Rhythm
                     </span>
                     <span class="signal-status-badge" id="res-status-typing">&mdash;</span>
@@ -1487,7 +398,7 @@
         <!-- Privacy Card -->
         <div class="privacy-card-container">
             <h3 class="privacy-card-title">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:6px;"><use href="#icon-shield-halved"></use></svg> Local Execution Protocol
+                <svg class="svg-icon icon-leading-6" aria-hidden="true" focusable="false"><use href="#icon-shield-halved"></use></svg> Local Execution Protocol
             </h3>
             <div class="privacy-grid">
                 <div class="privacy-grid-item">
@@ -1531,10 +442,10 @@
 
         <div class="result-actions">
             <button class="btn-exp-primary" id="result-restart-btn">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-rotate-left"></use></svg> Run Again
+                <svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-rotate-left"></use></svg> Run Again
             </button>
             <a href="/#waitlist" class="btn-exp-ghost">
-                <svg class="svg-icon" aria-hidden="true" focusable="false" style="margin-right:4px;"><use href="#icon-arrow-right"></use></svg> Get the Report Release Notice
+                <svg class="svg-icon icon-leading-4" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg> Get the Report Release Notice
             </a>
         </div>
     </div>
