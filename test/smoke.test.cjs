@@ -134,3 +134,44 @@ test('sitemap retains all required public URLs', () => {
     assert.ok(sitemap.includes(`<loc>${url}</loc>`), `Sitemap is missing ${url}`);
   }
 });
+
+test('public copy retains operator and product-truth invariants', () => {
+  const mainHtml = readRepositoryFile('index.html');
+  const experimentHtml = readRepositoryFile('experiment/index.html');
+  const experimentJs = readRepositoryFile('experiment/experiment.js');
+  const privacyHtml = readRepositoryFile('privacy/index.html');
+  const termsHtml = readRepositoryFile('terms/index.html');
+
+  assert.equal(mainHtml.includes('confidence-based verification'), false);
+  assert.equal(experimentHtml.includes('HUMN Labs Inc.'), false);
+  assert.ok(
+    experimentHtml.includes('© 2026 HUMNLABS — operated by Smyrna Digitale. All rights reserved.'),
+  );
+
+  for (const legalHtml of [privacyHtml, termsHtml]) {
+    assert.ok(legalHtml.includes('Smyrna Bouw'));
+    assert.ok(legalHtml.includes('72332050'));
+    assert.ok(legalHtml.includes('NL002480877B28'));
+    assert.equal(legalHtml.includes('LEGAL DOKÜMANTASYON'), false);
+  }
+
+  assert.ok(privacyHtml.includes('a trade name of <strong>Smyrna Bouw</strong>'));
+  assert.equal(termsHtml.includes('exclusive property of HUMNLABS'), false);
+
+  assert.equal(experimentHtml.includes('Nothing is sent to any server.'), false);
+  assert.equal(experimentHtml.includes('No cookies, storage, or logs are created or saved.'), false);
+  assert.ok(
+    experimentHtml.includes(
+      'Experiment signal samples are not transmitted to HUMNLABS servers or persistently stored by the experiment.',
+    ),
+  );
+  assert.ok(
+    experimentHtml.includes(
+      'Standard web hosting request logs may still be processed as described in our Privacy Policy.',
+    ),
+  );
+
+  assert.ok(experimentHtml.includes('The reaction signal will be marked as Excluded'));
+  assert.ok(experimentJs.includes("reactionStatus = 'Excluded';"));
+});
+
