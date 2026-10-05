@@ -130,3 +130,14 @@ test('completed experiment links to the report release waitlist', async ({ page 
   await expect(page).toHaveURL(/\/#waitlist$/);
   await expect(page.locator('#waitlist')).toBeVisible();
 });
+
+
+test('custom 404 page is accessible and excluded from indexing', async ({ page }) => {
+  const response = await page.goto('/404.html');
+
+  expect(response && response.ok()).toBe(true);
+  await expect(page.locator('main#main-content')).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page isn’t here.');
+  await expect(page.getByRole('link', { name: 'Return to HUMNLABS' })).toHaveAttribute('href', '/');
+});
