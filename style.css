@@ -1419,3 +1419,4 @@
 #typing-progress-bar.is-complete::-moz-progress-bar {
     background: linear-gradient(90deg, #00ff87, #00f0ff);
 }
+.legacy-anchor{display:block;height:0;overflow:hidden}.limits-card{margin:0 auto;max-width:720px;align-items:flex-start;text-align:left}.limits-card .disclaimer-content p+p{margin-top:10px}.limits-card .disclaimer-text-primary{font-size:15px}.limits-card .disclaimer-text-secondary{font-size:14px;line-height:1.6}
