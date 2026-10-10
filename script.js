@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!submitBtn || !btnText || !btnIcon) return;
             submitBtn.disabled = false;
             submitBtn.classList.remove("is-loading", "is-success");
-            btnText.textContent = "Access the Report";
+            btnText.textContent = "Get the Report Release Notice";
             setButtonIcon("icon-arrow-right", false);
         }
 
