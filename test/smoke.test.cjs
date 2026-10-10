@@ -189,6 +189,11 @@ test('report and experiment-data wording avoids retired or unsupported claims', 
     '100% session-only retention',
     'Discarded immediately',
     'registered for early access',
+    'volatile client-side memory',
+    'immediately discards',
+    'Access the Report',
+    'Report Updates',
+    'notify you when the report is released',
   ];
 
   for (const relativePath of publicPages) {
@@ -205,6 +210,16 @@ test('report and experiment-data wording avoids retired or unsupported claims', 
       `${relativePath} still contains "confidence in human presence"`,
     );
   }
+});
+
+test('waitlist submit button resets to the release-notice label', () => {
+  const script = readRepositoryFile('script.js');
+
+  assert.ok(
+    script.includes('btnText.textContent = "Get the Report Release Notice";'),
+    'Expected resetSubmitButton to restore "Get the Report Release Notice"',
+  );
+  assert.equal(script.includes('Access the Report'), false);
 });
 
 test('public pages keep unique ids and resolvable homepage fragment links', () => {
