@@ -175,3 +175,80 @@ test('public copy retains operator and product-truth invariants', () => {
   assert.ok(experimentJs.includes("reactionStatus = 'Excluded';"));
 });
 
+test('report and experiment-data wording avoids retired or unsupported claims', () => {
+  const publicPages = [
+    'index.html',
+    'privacy/index.html',
+    'terms/index.html',
+    'experiment/index.html',
+  ];
+  const retiredPhrases = [
+    'Human Presence &amp; Trust Report 2026',
+    'Human Presence & Trust Report 2026',
+    'volatile browser RAM',
+    '100% session-only retention',
+    'Discarded immediately',
+    'registered for early access',
+  ];
+
+  for (const relativePath of publicPages) {
+    const html = readRepositoryFile(relativePath);
+    for (const phrase of retiredPhrases) {
+      assert.equal(html.includes(phrase), false, `${relativePath} still contains "${phrase}"`);
+    }
+  }
+
+  for (const relativePath of ['privacy/index.html', 'terms/index.html']) {
+    assert.equal(
+      readRepositoryFile(relativePath).includes('confidence in human presence'),
+      false,
+      `${relativePath} still contains "confidence in human presence"`,
+    );
+  }
+});
+
+test('public pages keep unique ids and resolvable homepage fragment links', () => {
+  const publicPages = [
+    'index.html',
+    'privacy/index.html',
+    'terms/index.html',
+    'experiment/index.html',
+    '404.html',
+  ];
+  const idsFor = (html) => [...html.matchAll(/\sid\s*=\s*"([^"]+)"/g)].map((match) => match[1]);
+  const homepageIds = new Set(idsFor(readRepositoryFile('index.html')));
+  const legacyAnchors = [
+    'insight',
+    'challenge',
+    'problem',
+    'research-areas',
+    'current-research',
+    'methodology',
+    'engine-status',
+    'boundaries',
+    'dashboard',
+    'waitlist',
+  ];
+
+  for (const anchor of legacyAnchors) {
+    assert.ok(homepageIds.has(anchor), `Homepage is missing legacy anchor #${anchor}`);
+  }
+
+  for (const relativePath of publicPages) {
+    const html = readRepositoryFile(relativePath);
+    const ids = idsFor(html);
+    const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+    assert.deepEqual(duplicates, [], `${relativePath} has duplicate ids`);
+
+    const pageIds = new Set(ids);
+    for (const tag of tagsNamed(html, 'a')) {
+      const href = getAttribute(tag, 'href') || '';
+      if (href.startsWith('/#')) {
+        assert.ok(homepageIds.has(href.slice(2)), `${relativePath}: broken link ${href}`);
+      } else if (href.startsWith('#')) {
+        assert.ok(pageIds.has(href.slice(1)), `${relativePath}: broken link ${href}`);
+      }
+    }
+  }
+});
+

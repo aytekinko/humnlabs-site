@@ -120,7 +120,7 @@ test('completed experiment links to the report release waitlist', async ({ page 
   const resultContext = result.locator('.result-context');
   await expect(resultContext).toBeVisible();
   await expect(resultContext).toHaveText(
-    'Want to follow the research beyond this experiment? Request a release notice for the Human Presence & Trust Report 2026.',
+    'Want to follow the research beyond this experiment? Request a release notice for the planned Human Presence & Trust Report. We will notify you if it is published.',
   );
 
   const reportCta = result.getByRole('link', { name: 'Get the Report Release Notice' });
