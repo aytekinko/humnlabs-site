@@ -187,13 +187,12 @@
 
         <!-- =============================================
              THE RESEARCH QUESTION
-             Legacy fragment targets (#insight, #challenge, #problem)
+             Legacy fragment targets (#insight, #challenge)
              are kept so existing links continue to resolve.
              ============================================= -->
         <section class="core-insight-section" id="research-question" aria-labelledby="research-question-title">
             <span class="legacy-anchor" id="insight" aria-hidden="true"></span>
             <span class="legacy-anchor" id="challenge" aria-hidden="true"></span>
-            <span class="legacy-anchor" id="problem" aria-hidden="true"></span>
             <div class="core-insight-inner">
                 <div class="core-insight-label-col reveal-fade">
                     <div class="tag">THE RESEARCH QUESTION</div>
@@ -202,6 +201,57 @@
                     <h2 class="insight-headline insight-headline--paired" id="research-question-title">
                         As AI agents become more capable, what can timing, movement, and typing patterns tell us about the interaction behind a screen?
                     </h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             WHY THIS MATTERS NOW
+             Legacy fragment target (#problem) is kept so existing links continue to resolve.
+             ============================================= -->
+        <section class="importance-section" id="context" aria-labelledby="context-title">
+            <span class="legacy-anchor" id="problem" aria-hidden="true"></span>
+            <div class="section-container">
+                <div class="section-header-centered">
+                    <div class="tag">THE CONTEXT</div>
+                    <h2 class="section-title" id="context-title">Why This Matters Now</h2>
+                    <p class="section-desc">Some AI agents are designed to browse websites and perform actions such as clicking, scrolling, and typing. For websites, surveys, and online communities, this creates an open question: what can browser behavior reveal about the interaction behind a screen? HUMNLABS treats this as a research question, not a settled conclusion.</p>
+                </div>
+
+                <div class="grid-layout cols-2-large gap-md">
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">01</div>
+                        <h3>Browser-Based AI Agents</h3>
+                        <p>Some AI agents can interact with websites through actions such as clicking, scrolling, and typing. We are asking what, if anything, can be observed about those sessions from within the browser.</p>
+                    </div>
+
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">02</div>
+                        <h3>Synthetic Media</h3>
+                        <p>Generative systems can produce text, voice, and images that may appear human-created. We are asking what this means for online checks that rely primarily on content.</p>
+                    </div>
+
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">03</div>
+                        <h3>Automated Accounts</h3>
+                        <p>Automated systems can reproduce some observable interaction patterns. We are asking which browser-local signals, if any, remain informative under those conditions.</p>
+                    </div>
+
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">04</div>
+                        <h3>Identity vs. Presence</h3>
+                        <p>An account-level identity or ownership check does not necessarily show who—or what—is operating a session at a particular moment. That distinction motivates our research question.</p>
+                    </div>
+                </div>
+
+                <div class="section-header-centered reveal-fade mission-question-container">
+                    <p class="mission-question">
+                        What can browser behavior reveal about an interaction—and where does it stop being informative?
+                    </p>
                 </div>
             </div>
         </section>
@@ -236,14 +286,63 @@
         </section>
 
         <!-- =============================================
+             HOW THE PUBLIC EXPERIMENT WORKS
+             Legacy fragment target (#methodology) is kept so existing links continue to resolve.
+             ============================================= -->
+        <section class="narrative-section" id="how-it-works" aria-labelledby="how-it-works-title">
+            <span class="legacy-anchor" id="methodology" aria-hidden="true"></span>
+            <div class="section-container">
+                <div class="section-header-centered reveal-fade">
+                    <div class="tag">METHODOLOGY</div>
+                    <h2 class="section-title" id="how-it-works-title">How the Public Experiment Works</h2>
+                    <p class="section-desc">Human Presence Experiment v0.1 is a three-minute browser demonstration. Here is what it does—and what it does not do.</p>
+                </div>
+
+                <div class="grid-layout cols-2-large gap-md">
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">01</div>
+                        <h3>Three short tasks</h3>
+                        <p>You complete a reaction task, a five-second movement task, and a short typing task. The movement task can be done with the keyboard, and the reaction task has an accessible alternative.</p>
+                    </div>
+
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">02</div>
+                        <h3>Processed in your browser</h3>
+                        <p>Reaction, movement, and typing observations are processed locally in the current page. The experiment does not write the samples to cookies or persistent browser storage.</p>
+                    </div>
+
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">03</div>
+                        <h3>Not sent to or stored by HUMNLABS</h3>
+                        <p>Experiment samples are not transmitted to HUMNLABS or stored by us. No account, identity, or biometric information is requested. Standard web hosting request logs are described in our <a href="/privacy/" class="waitlist-privacy-link">Privacy Policy</a>.</p>
+                    </div>
+
+                    <div class="narrative-card glass-panel reveal-fade">
+                        <div class="card-accent-line"></div>
+                        <div class="num">04</div>
+                        <h3>An educational summary</h3>
+                        <p>The result marks each signal as Available, Limited, or Excluded, with a short note on its limitations. It contains no score, percentage, or probability.</p>
+                    </div>
+                </div>
+
+                <div class="section-header-centered reveal-fade mission-question-container">
+                    <p class="section-desc">
+                        The experiment does not verify identity, prove humanity, detect bots, classify sessions as human or bot, or provide calibrated probabilities.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
              WHAT WE'RE INVESTIGATING
-             Legacy fragment targets (#research-areas, #current-research, #methodology, #engine-status)
+             Legacy fragment targets (#research-areas, #engine-status)
              are kept so existing links continue to resolve.
              ============================================= -->
         <section class="challenge-section" id="investigating" aria-labelledby="investigating-title">
             <span class="legacy-anchor" id="research-areas" aria-hidden="true"></span>
-            <span class="legacy-anchor" id="current-research" aria-hidden="true"></span>
-            <span class="legacy-anchor" id="methodology" aria-hidden="true"></span>
             <span class="legacy-anchor" id="engine-status" aria-hidden="true"></span>
             <div class="challenge-inner">
                 <div class="challenge-label-col reveal-fade">
@@ -261,14 +360,68 @@
         </section>
 
         <!-- =============================================
-             HUMAN PRESENCE & TRUST REPORT 2026 — WAITLIST
+             CURRENT AND PLANNED WORK
+             Legacy fragment target (#current-research) is kept so existing links continue to resolve.
+             ============================================= -->
+        <section class="current-research-section" id="current-work" aria-labelledby="current-work-title">
+            <span class="legacy-anchor" id="current-research" aria-hidden="true"></span>
+            <div class="section-container">
+                <div class="section-header-centered">
+                    <div class="tag">CURRENT AND PLANNED WORK</div>
+                    <h2 class="section-title" id="current-work-title">Current and Planned Work</h2>
+                </div>
+
+                <div class="current-research-grid">
+                    <a href="/experiment/" class="research-project-card glass-panel reveal-fade research-project-card--link">
+                        <div class="card-glow"></div>
+                        <div class="research-project-meta">
+                            <span class="research-project-type">Experiment</span>
+                            <span class="research-status-pill in-development research-status-pill--green">
+                                <span class="status-dot status-dot--green"></span>
+                                Public · v0.1
+                            </span>
+                        </div>
+                        <h3>Human Presence Experiment v0.1</h3>
+                        <p class="research-project-desc">
+                            A three-minute public browser experiment that produces an educational, non-numeric summary of reaction, movement, and typing observations.
+                        </p>
+                        <div class="research-project-footer research-project-footer--split">
+                            <span>HUMNLABS</span>
+                            <span class="research-project-link">Try the Experiment <svg class="svg-icon icon-10-trailing" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></span>
+                        </div>
+                    </a>
+
+                    <a href="#waitlist" class="research-project-card glass-panel reveal-fade research-project-card--link">
+                        <div class="card-glow"></div>
+                        <div class="research-project-meta">
+                            <span class="research-project-type">Research Report</span>
+                            <span class="research-status-pill research-draft">
+                                <span class="status-dot"></span>
+                                Planned
+                            </span>
+                        </div>
+                        <h3>Human Presence &amp; Trust Report</h3>
+                        <p class="research-project-desc">
+                            A planned research report examining questions around human presence, behavioral signals, and trust in AI-mediated online interactions. No publication date has been set, and its scope may change.
+                        </p>
+                        <div class="research-project-footer research-project-footer--split">
+                            <span>HUMNLABS</span>
+                            <span class="research-project-link">Get Report Updates <svg class="svg-icon icon-10-trailing" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             HUMAN PRESENCE & TRUST REPORT — WAITLIST
              ============================================= -->
         <section class="waitlist-section" id="waitlist">
             <div class="waitlist-container glass-panel reveal-fade">
                 <div class="waitlist-glow"></div>
                 <div class="tag">REPORT UPDATES</div>
-                <h2 class="section-title">Human Presence &amp; Trust Report 2026</h2>
-                <p class="section-desc">We’re working toward a report on human presence, behavioral signals, and trust in an AI-driven internet. Join the email list for updates.</p>
+                <h2 class="section-title">Human Presence &amp; Trust Report</h2>
+                <p class="section-desc">We are planning a research report examining questions around human presence, behavioral signals, and trust in AI-mediated online interactions. No publication date has been set, and its scope may change. Join the email list for report updates.</p>
 
                 <form class="waitlist-form" action="https://formspree.io/f/xeedzvqb" method="POST" data-formspree>
                     <div class="input-wrapper">
@@ -301,15 +454,15 @@
         </section>
 
         <!-- =============================================
-             LIMITS
+             WHAT HUMNLABS DOES NOT CLAIM
              Legacy fragment target (#boundaries) is kept so existing links continue to resolve.
              ============================================= -->
         <section class="research-boundaries-section" id="limits" aria-labelledby="limits-title">
             <span class="legacy-anchor" id="boundaries" aria-hidden="true"></span>
             <div class="section-container">
                 <div class="section-header-centered reveal-fade">
-                    <div class="tag">LIMITS</div>
-                    <h2 class="section-title" id="limits-title">What This Research Is—and Isn’t</h2>
+                    <div class="tag">RESEARCH BOUNDARIES</div>
+                    <h2 class="section-title" id="limits-title">What HUMNLABS Does Not Claim</h2>
                 </div>
 
                 <div class="disclaimer-card limits-card reveal-fade">
@@ -322,6 +475,48 @@
                         <p class="disclaimer-text-secondary">We are exploring what behavioral signals can tell us—not claiming that they can reliably distinguish humans from AI agents.</p>
                     </div>
                 </div>
+
+                <div class="section-header-centered reveal-fade">
+                    <p class="section-desc">HUMNLABS does not currently:</p>
+                </div>
+                <ul class="boundaries-grid reveal-fade" role="list">
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Prove biological humanity</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Verify identity</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Detect bots</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Produce a human-versus-bot classification</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Establish trustworthiness</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Provide a calibrated trust or confidence score</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Guarantee that a human is present</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Replace identity systems</div>
+                    </li>
+                    <li class="boundary-card glass-panel">
+                        <div class="boundary-icon"><svg class="svg-icon" aria-hidden="true" focusable="false"><use href="#icon-xmark"></use></svg></div>
+                        <div class="boundary-text">Offer a production-ready verification or detection system, or claim validated accuracy</div>
+                    </li>
+                </ul>
             </div>
         </section>
 
